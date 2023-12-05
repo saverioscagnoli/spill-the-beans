@@ -6,6 +6,10 @@ function App() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  const open = async () => {
+    await backend.openSafe();
+  };
+
   return (
     <div
       className="w-screen h-screen"
@@ -22,8 +26,11 @@ function App() {
         </div>
       </nav>
       <div className="h-[calc(100%-10rem)] flex flex-col justify-center items-center gap-4">
-        <h1 className="text-5xl font-bold ">Welcome back!</h1>
-        <Button>Open safe</Button>
+        <h1 className="text-5xl font-bold select-none">Welcome back!</h1>
+        <div className="flex gap-4">
+          <Button onClick={open}>Open safe</Button>
+          <Button>Create safe</Button>
+        </div>
       </div>
     </div>
   );

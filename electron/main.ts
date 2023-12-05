@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import path from "node:path";
 
 // The built directory structure
@@ -31,6 +31,15 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
+  });
+
+  win.webContents.openDevTools();
+
+  ipcMain.handle("open-safe", () => {
+    return dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "Safe", extensions: ["safe"] }]
+    });
   });
 
   // Test active push message to Renderer-process.
