@@ -1,8 +1,12 @@
+import { Api } from "./types";
+
 declare global {
   const ipcRenderer: Electron.IpcRenderer;
-  const backend: {
-    openSafe: () => Promise<Electron.OpenDialogReturnValue>;
-  };
+  const api: Api;
+
+  interface Window {
+    api: Api;
+  }
 }
 
 // If this file has no import/export statements (i.e. is a script)

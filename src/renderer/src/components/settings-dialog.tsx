@@ -1,21 +1,13 @@
-import { LuWrench } from "react-icons/lu";
-import { Button, Dialog, Tooltip, useTheme } from "tredici";
+import { Settings } from "lucide-react";
+import { Button, Dialog, useTheme } from "tredici";
 
-const SettingsDialog = () => {
+const SettingsDialog = (): JSX.Element => {
   const { toggle } = useTheme();
 
   return (
     <Dialog>
-      <Dialog.Trigger>
-        <Tooltip delayDuration={500}>
-          <Tooltip.Trigger>
-            <Button.Icon icon={<LuWrench />} />
-          </Tooltip.Trigger>
-          <Tooltip.Body>
-            <p>Settings</p>
-            <Tooltip.Arrow />
-          </Tooltip.Body>
-        </Tooltip>
+      <Dialog.Trigger asChild>
+        <Button.Icon variant="ghost" icon={<Settings size={20} />} />
       </Dialog.Trigger>
       <Dialog.Body>
         <div className="flex justify-between items-center">
