@@ -9,3 +9,12 @@
   margin: 0;
   padding: 0;
 }
+
+body {
+  font-family: "Work Sans";
+}
+
+@font-face {
+  font-family: "Work Sans";
+  src: url("work-sans.ttf");
+}
