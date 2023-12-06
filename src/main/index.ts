@@ -3,6 +3,9 @@ import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { QuickDB } from "quick.db";
+import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
+import os from "os";
+import { generate } from "generate-password";
 
 function createWindow(): void {
   // Create the browser window.
@@ -21,6 +24,10 @@ function createWindow(): void {
 
   win.webContents.openDevTools();
 
+  ipcMain.handle("get-username", () => {
+    return os.userInfo().username;
+  });
+
   ipcMain.handle("open-safe", () => {
     return dialog.showOpenDialog({
       properties: ["openFile"],
@@ -28,21 +35,52 @@ function createWindow(): void {
     });
   });
 
-  ipcMain.handle("create-safe", async () => {
-    let { canceled, filePath } = await dialog.showSaveDialog({
-      filters: [{ name: "Safe", extensions: ["safe"] }]
-    });
-
-    if (canceled) return;
-    if (!filePath) return;
-
-    let db = new QuickDB({ filePath });
-
-    for (let i = 0; i < 100; i++) {
-      db.set(`key-${i}`, `value-${i}`);
+  ipcMain.handle("create-safe", async (_, args) => {
+    if (!existsSync(app.getPath("userData"))) {
+      mkdirSync(app.getPath("userData"));
     }
 
-    db.get("key-1");
+    let safesPath = join(app.getPath("userData"), "safes");
+
+    if (!existsSync(safesPath)) {
+      mkdirSync(safesPath);
+    }
+
+    new QuickDB({
+      filePath: join(
+        safesPath,
+        args.name.endsWith(".safe") ? args.name : `${args.name}.safe`
+      )
+    });
+  });
+
+  ipcMain.handle("get-safes", async () => {
+    let safesPath = join(app.getPath("userData"), "safes");
+
+    if (!existsSync(safesPath)) {
+      return [];
+    }
+
+    let safes = readdirSync(safesPath).filter(s => s.endsWith(".safe"));
+
+    return safes.map(name => {
+      let date = statSync(join(safesPath, name)).birthtime;
+      return {
+        name,
+        created:
+          date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+      };
+    });
+  });
+
+  ipcMain.handle("gen-password", async (_, args) => {
+    return generate({
+      length: args.length,
+      numbers: args.numbers,
+      symbols: args.symbols,
+      lowercase: args.lowercase,
+      uppercase: args.uppercase
+    });
   });
 
   win.on("ready-to-show", () => {

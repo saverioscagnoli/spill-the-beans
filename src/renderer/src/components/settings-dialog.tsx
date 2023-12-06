@@ -1,7 +1,7 @@
 import { Settings } from "lucide-react";
 import { Button, Dialog, useTheme } from "tredici";
 
-const SettingsDialog = (): JSX.Element => {
+const SettingsDialog = () => {
   const { toggle } = useTheme();
 
   return (

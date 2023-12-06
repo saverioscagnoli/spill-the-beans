@@ -23,10 +23,12 @@
     "@electron-toolkit/utils": "^2.0.0",
     "better-sqlite3": "^9.2.2",
     "electron-updater": "^6.1.1",
+    "generate-password": "^1.7.1",
+    "keytar": "^7.9.0",
     "lucide-react": "^0.294.0",
     "quick.db": "^9.1.7",
     "react-router-dom": "^6.20.1",
-    "tredici": "^0.2.0"
+    "tredici": "^0.2.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",

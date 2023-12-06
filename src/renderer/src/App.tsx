@@ -2,7 +2,7 @@ import { useTheme } from "tredici";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages";
 
-function App(): JSX.Element {
+const App = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
@@ -20,6 +20,6 @@ function App(): JSX.Element {
       </Router>
     </div>
   );
-}
+};
 
 export default App;

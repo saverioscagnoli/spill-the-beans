@@ -1,7 +1,7 @@
 import { Bean } from "lucide-react";
 import { SettingsDialog } from "./settings-dialog";
 
-const Navbar = (): JSX.Element => {
+const Navbar = () => {
   return (
     <nav className="flex justify-between w-full h-12">
       <div className="flex justify-start items-center gap-2 ml-4">
