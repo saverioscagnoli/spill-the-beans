@@ -1,6 +1,12 @@
-import { Button, Checkbox, Dialog, Tooltip } from "tredici";
+import { Button, Checkbox, Dialog, Input, Tooltip } from "tredici";
 import { Card } from "./card";
-import { Key, ChevronLeft, ChevronRight, ClipboardCopy } from "lucide-react";
+import {
+  Key,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardCopy,
+  ClipboardCheck
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 const GeneratePasswordDialog = () => {
@@ -8,6 +14,7 @@ const GeneratePasswordDialog = () => {
   const [symbols, setSymbols] = useState<boolean | "indeterminate">(true);
   const [lowercase, setLowercase] = useState<boolean | "indeterminate">(true);
   const [uppercase, setUppercase] = useState<boolean | "indeterminate">(true);
+  const [exclude, setExclude] = useState<string>("");
 
   const [open, setOpen] = useState<boolean>(false);
   const [length, setLength] = useState<number>(16);
@@ -21,7 +28,7 @@ const GeneratePasswordDialog = () => {
 
   const gen = () => {
     api
-      .genPassword(length, numbers, symbols, lowercase, uppercase)
+      .genPassword(length, numbers, symbols, lowercase, uppercase, exclude)
       .then(setPassword);
   };
 
@@ -126,14 +133,33 @@ const GeneratePasswordDialog = () => {
             </div>
           </div>
 
+          <div className="flex flex-col">
+            <label htmlFor="exclude" className="text-sm">
+              Characters to exclude
+            </label>
+            <Input
+              id="exclude"
+              className="w-full"
+              onChange={e => setExclude(e.target.value)}
+            />
+          </div>
+
           <div className="w-full h-16 bg-gray-400/25 rounded-xl mt-4 flex justify-center items-center relative">
-            <p className="font-semibold">{password.length === 0 ? "Nothing." : password}</p>
+            <p className="font-semibold">
+              {password.length === 0 ? "Nothing." : password}
+            </p>
             <div className="absolute right-0 mr-4">
               <Tooltip open={tooltipOpen}>
                 <Tooltip.Trigger>
                   <Button.Icon
                     colorScheme="gray"
-                    icon={<ClipboardCopy size={18} />}
+                    icon={
+                      tooltipOpen ? (
+                        <ClipboardCheck size={20} />
+                      ) : (
+                        <ClipboardCopy size={20} />
+                      )
+                    }
                     onClick={() => {
                       navigator.clipboard.writeText(password);
                       setTooltipOpen(true);
@@ -149,9 +175,9 @@ const GeneratePasswordDialog = () => {
           </div>
 
           <div className="w-full flex items-center justify-end gap-2 mt-4">
-            <Dialog.Close>
-              <Button colorScheme="gray">Close</Button>
-            </Dialog.Close>
+            <Button colorScheme="gray" onClick={() => setOpen(false)}>
+              Close
+            </Button>
             <Button colorScheme="green" onClick={gen}>
               Generate
             </Button>

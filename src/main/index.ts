@@ -3,9 +3,10 @@ import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { QuickDB } from "quick.db";
-import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from "fs";
 import os from "os";
 import { generate } from "generate-password";
+import { decrypt, encrypt, init } from "./crypt";
 
 function createWindow(): void {
   // Create the browser window.
@@ -21,8 +22,6 @@ function createWindow(): void {
       sandbox: false
     }
   });
-
-  win.webContents.openDevTools();
 
   ipcMain.handle("get-username", () => {
     return os.userInfo().username;
@@ -64,13 +63,31 @@ function createWindow(): void {
     let safes = readdirSync(safesPath).filter(s => s.endsWith(".safe"));
 
     return safes.map(name => {
-      let date = statSync(join(safesPath, name)).birthtime;
+      let path = join(safesPath, name);
+      let date = statSync(path).birthtime;
       return {
         name,
         created:
-          date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+          date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
+        path
       };
     });
+  });
+
+  ipcMain.handle("delete-safe", async (_, args) => {
+    let safesPath = join(app.getPath("userData"), "safes");
+
+    if (!existsSync(safesPath)) {
+      return;
+    }
+
+    let safePath = join(safesPath, args.name);
+
+    if (!existsSync(safePath)) {
+      return;
+    }
+
+    unlinkSync(safePath);
   });
 
   ipcMain.handle("gen-password", async (_, args) => {
@@ -79,8 +96,26 @@ function createWindow(): void {
       numbers: args.numbers,
       symbols: args.symbols,
       lowercase: args.lowercase,
-      uppercase: args.uppercase
+      uppercase: args.uppercase,
+      exclude: args.exclude
     });
+  });
+
+  ipcMain.handle("get-entries", async (_, args) => {
+    let db = new QuickDB({ filePath: args.path });
+    let entries = await db.all();
+    let decrypted = await Promise.all(
+      entries.map(async entry => ({
+        id: entry.id,
+        password: await decrypt(JSON.parse(entry.value))
+      }))
+    );
+    return decrypted;
+  });
+
+  ipcMain.handle("create-entry", async (_, args) => {
+    let db = new QuickDB({ filePath: args.path });
+    db.set(args.name, JSON.stringify(await encrypt(args.password)));
   });
 
   win.on("ready-to-show", () => {
@@ -96,6 +131,7 @@ function createWindow(): void {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+    win.webContents.openDevTools();
   } else {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   }
@@ -104,7 +140,7 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron");
 
@@ -122,6 +158,8 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+
+  init();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

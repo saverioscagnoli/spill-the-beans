@@ -1,27 +1,24 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { Api } from "./types";
 
-type CheckboxValue = boolean | "indeterminate";
-
 const api: Api = {
   getUsername: () => ipcRenderer.invoke("get-username"),
   openSafe: () => ipcRenderer.invoke("open-safe"),
-  createSafe: (name: string) => ipcRenderer.invoke("create-safe", { name }),
+  createSafe: name => ipcRenderer.invoke("create-safe", { name }),
   getSafes: () => ipcRenderer.invoke("get-safes"),
-  genPassword: (
-    length: number,
-    numbers: CheckboxValue,
-    symbols: CheckboxValue,
-    lowercase: CheckboxValue,
-    uppercase: CheckboxValue
-  ) =>
+  genPassword: (length, numbers, symbols, lowercase, uppercase, exclude) =>
     ipcRenderer.invoke("gen-password", {
       length,
       numbers,
       symbols,
       lowercase,
-      uppercase
-    })
+      uppercase,
+      exclude
+    }),
+  deleteSafe: name => ipcRenderer.invoke("delete-safe", { name }),
+  getEntries: path => ipcRenderer.invoke("get-entries", { path }),
+  createEntry: (name, password, path) =>
+    ipcRenderer.invoke("create-entry", { name, password, path })
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
