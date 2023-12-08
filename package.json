@@ -28,7 +28,7 @@
     "lucide-react": "^0.294.0",
     "quick.db": "^9.1.7",
     "react-router-dom": "^6.20.1",
-    "tredici": "^0.2.3"
+    "tredici": "^0.3.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",

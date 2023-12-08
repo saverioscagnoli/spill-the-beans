@@ -23,6 +23,8 @@ function createWindow(): void {
     }
   });
 
+  win.webContents.openDevTools();
+
   ipcMain.handle("get-username", () => {
     return os.userInfo().username;
   });
@@ -131,7 +133,6 @@ function createWindow(): void {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
-    win.webContents.openDevTools();
   } else {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   }
