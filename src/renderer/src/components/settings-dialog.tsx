@@ -7,7 +7,7 @@ const SettingsDialog = () => {
   return (
     <Dialog>
       <Dialog.Trigger asChild>
-        <Button.Icon variant="ghost" icon={<Settings size={20} />} />
+        <Button.Icon variant="ghost" colorScheme="gray" icon={<Settings size={20} />} />
       </Dialog.Trigger>
       <Dialog.Body>
         <div className="flex justify-between items-center">

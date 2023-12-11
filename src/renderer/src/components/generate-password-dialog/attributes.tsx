@@ -56,7 +56,7 @@ const Attributes: React.FC<AttributesProps> = props => {
           htmlFor="lowercase"
           className="select-none cursor-pointer font-semibold"
         >
-          lowercase
+          Lowercase
         </label>
       </div>
 

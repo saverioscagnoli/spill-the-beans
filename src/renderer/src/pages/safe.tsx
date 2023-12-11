@@ -6,10 +6,12 @@ interface SafePageProps {
   username: string;
 }
 
+type Entry = { name: string; password: string };
+
 const SafePage: React.FC<SafePageProps> = ({ username }) => {
   const location: { state: { path: string } } = useLocation();
   const { path } = location.state;
-  const [entries, setEntries] = useState<any[]>();
+  const [entries, setEntries] = useState<Entry[]>();
 
   useEffect(() => {
     api.getEntries(path).then(setEntries);
@@ -22,7 +24,11 @@ const SafePage: React.FC<SafePageProps> = ({ username }) => {
       <Navbar username={username} />
       <div className="h-[calc(100%-4rem)] flex flex-col justify-between items-center gap-4">
         {entries && entries.length > 0 ? (
-          entries.map(e => <p key={e.id}>{e.id} - {e.password}</p>)
+          entries.map(e => (
+            <p key={e.name}>
+              {e.name} - {e.password}
+            </p>
+          ))
         ) : (
           <div className="flex flex-col items-center gap-4 mt-32">
             <h1 className="text-5xl font-bold select-none ">

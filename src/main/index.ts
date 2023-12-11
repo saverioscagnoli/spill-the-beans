@@ -2,11 +2,11 @@ import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { QuickDB } from "quick.db";
 import { existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from "fs";
 import os from "os";
 import { generate } from "generate-password";
 import { decrypt, encrypt, init } from "./crypt";
+import { Database } from "./database";
 
 function createWindow(): void {
   // Create the browser window.
@@ -47,11 +47,12 @@ function createWindow(): void {
       mkdirSync(safesPath);
     }
 
-    new QuickDB({
-      filePath: join(
+    new Database({
+      path: join(
         safesPath,
         args.name.endsWith(".safe") ? args.name : `${args.name}.safe`
-      )
+      ),
+      fields: ["name", "password", "iv"]
     });
   });
 
@@ -104,20 +105,29 @@ function createWindow(): void {
   });
 
   ipcMain.handle("get-entries", async (_, args) => {
-    let db = new QuickDB({ filePath: args.path });
-    let entries = await db.all();
-    let decrypted = await Promise.all(
-      entries.map(async entry => ({
-        id: entry.id,
-        password: await decrypt(JSON.parse(entry.value))
-      }))
+    let db = new Database({
+      path: args.path,
+      fields: ["name", "password", "iv"]
+    });
+    let entries = await db.getEntries();
+    return Promise.all(
+      entries.map(async e => {
+        return {
+          name: e.name,
+          password: await decrypt({ iv: e.iv, password: e.password })
+        };
+      })
     );
-    return decrypted;
   });
 
   ipcMain.handle("create-entry", async (_, args) => {
-    let db = new QuickDB({ filePath: args.path });
-    db.set(args.name, JSON.stringify(await encrypt(args.password)));
+    let db = new Database({
+      path: args.path,
+      fields: ["name", "password", "iv"]
+    });
+    let data = (await encrypt(args.password)) || { iv: "", password: "" };
+
+    db.addEntry({ name: args.name, password: data.password, iv: data.iv });
   });
 
   win.on("ready-to-show", () => {

@@ -3,6 +3,7 @@ import { Button, Dialog, Tooltip } from "tredici";
 import { useNavigate } from "react-router-dom";
 import { Card } from "./card";
 import { Lock, DoorOpen, Trash } from "lucide-react";
+import { CreateSafeDialog } from "./create-safe-dialog";
 
 const ManageSafesDialog = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -89,12 +90,7 @@ const ManageSafesDialog = () => {
           <Button colorScheme="gray" onClick={() => setOpen(false)}>
             Close
           </Button>
-          <Button
-            colorScheme="green"
-            onClick={() => api.createSafe(Math.random().toString())}
-          >
-            Create
-          </Button>
+          <CreateSafeDialog />
         </div>
       </Dialog.Body>
     </Dialog>
