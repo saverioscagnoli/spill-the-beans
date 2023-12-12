@@ -1,15 +1,27 @@
-import React, { useState, ComponentProps, ChangeEvent } from "react";
+import React, {
+  useState,
+  ComponentProps,
+  ChangeEvent,
+  Dispatch,
+  SetStateAction
+} from "react";
 import { Button, Input, Tooltip } from "tredici";
 import { Eye, EyeOff, Dices } from "lucide-react";
 import { useBool } from "@renderer/hooks";
 
-type PasswordInputProps = ComponentProps<"div">;
+interface PasswordInputProps extends ComponentProps<"div"> {
+  inputId?: string;
+  password: string;
+  setPassword: Dispatch<SetStateAction<string>>;
+}
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
   className,
+  password,
+  setPassword,
+  inputId,
   ...props
 }) => {
-  const [password, setPassword] = useState<string>("");
   const [open, { on, off }] = useBool();
   const [type, setType] = useState<"password" | "text">("password");
   const isPassword = type === "password";
@@ -39,6 +51,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
         className="w-[calc(100%-5.5rem)]"
         value={password}
         onChange={onPasswordChange}
+        id={inputId}
       />
 
       <Tooltip open={open} content={isPassword ? "Show" : "Hide"} side="bottom">

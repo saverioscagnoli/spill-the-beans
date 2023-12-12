@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Dialog, Tooltip } from "tredici";
-import { useNavigate } from "react-router-dom";
+import { Button, Dialog } from "tredici";
 import { Card } from "./card";
-import { Lock, DoorOpen, Trash } from "lucide-react";
+import { Lock, Trash } from "lucide-react";
 import { CreateSafeDialog } from "./create-safe-dialog";
+import { OpenSafeDialog } from "./open-safe-dialog";
 
 const ManageSafesDialog = () => {
   const [safes, setSafes] = useState<
@@ -13,8 +13,6 @@ const ManageSafesDialog = () => {
   useEffect(() => {
     api.getSafes().then(setSafes);
   }, []);
-
-  const navigate = useNavigate();
 
   return (
     <Dialog>
@@ -63,17 +61,7 @@ const ManageSafesDialog = () => {
                   }
                 />
 
-                <Tooltip content="Open safe">
-                  <Button.Icon
-                    icon={<DoorOpen size={20} />}
-                    onClick={() =>
-                      navigate("/safe", {
-                        state: { path: s.path },
-                        replace: true
-                      })
-                    }
-                  />
-                </Tooltip>
+                <OpenSafeDialog safeName={s.name} safePath={s.path} />
               </div>
             </div>
           ))}

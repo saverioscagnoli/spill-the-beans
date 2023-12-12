@@ -1,9 +1,10 @@
 import { Button, Dialog, Input } from "tredici";
-import { PasswordInput } from "../password-input";
 import { useState, ChangeEvent } from "react";
+import { PasswordInput } from "../password-input";
 
 const CreateSafeDialog = () => {
   const [name, setName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const onNameChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setName(evt.target.value);
@@ -38,7 +39,11 @@ const CreateSafeDialog = () => {
           <label htmlFor="password">
             Password <span className="font-bold text-red-500">*</span>
           </label>
-          <PasswordInput id="password" />
+          <PasswordInput
+            inputId="password"
+            password={password}
+            setPassword={setPassword}
+          />
         </div>
 
         <p className="font-bold">
@@ -52,8 +57,8 @@ const CreateSafeDialog = () => {
           </Dialog.Close>
           <Button
             colorScheme="green"
-            disabled={name.length === 0}
-            onClick={() => api.createSafe("sasa")}
+            disabled={name.length === 0 || password.length < 6}
+            onClick={() => api.createSafe(name, password)}
           >
             Create
           </Button>

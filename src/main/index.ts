@@ -1,14 +1,15 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from "fs";
+import { existsSync, readdirSync, statSync, unlinkSync } from "fs";
 import os from "os";
 import { generate } from "generate-password";
 import { decrypt, encrypt, init } from "./crypt";
-import { Database } from "./database";
+import { Database } from "./structs";
+import bcrypt from "bcrypt";
 
-function createWindow(): void {
+async function createWindow(): Promise<void> {
   // Create the browser window.
   const win = new BrowserWindow({
     autoHideMenuBar: true,
@@ -23,29 +24,42 @@ function createWindow(): void {
     }
   });
 
+  const [catalogPath, safesPath] = await init();
+
   win.webContents.openDevTools();
 
   ipcMain.handle("get-username", () => {
     return os.userInfo().username;
   });
 
-  ipcMain.handle("open-safe", () => {
-    return dialog.showOpenDialog({
-      properties: ["openFile"],
-      filters: [{ name: "Safe", extensions: ["safe"] }]
+  ipcMain.handle("open-safe", async (_, args) => {
+    let catalog = new Database({
+      path: catalogPath,
+      fields: ["name", "path", "password"]
     });
+
+    let entries = await catalog.getEntries();
+    let safe = entries.find(e => e.name === args.name.replace(/.safe/g, ""));
+
+    if (!safe) return;
+
+    return await bcrypt.compare(args.password, safe.password);
   });
 
   ipcMain.handle("create-safe", async (_, args) => {
-    if (!existsSync(app.getPath("userData"))) {
-      mkdirSync(app.getPath("userData"));
-    }
+    let catalog = new Database({
+      path: catalogPath,
+      fields: ["name", "path", "password"]
+    });
 
-    let safesPath = join(app.getPath("userData"), "safes");
+    let salt = await bcrypt.genSalt(10);
+    let hash = await bcrypt.hash(args.password, salt);
 
-    if (!existsSync(safesPath)) {
-      mkdirSync(safesPath);
-    }
+    catalog.addEntry({
+      name: args.name,
+      path: join(safesPath, `${args.name}.safe`),
+      password: hash
+    });
 
     new Database({
       path: join(
@@ -57,8 +71,6 @@ function createWindow(): void {
   });
 
   ipcMain.handle("get-safes", async () => {
-    let safesPath = join(app.getPath("userData"), "safes");
-
     if (!existsSync(safesPath)) {
       return [];
     }
@@ -78,8 +90,6 @@ function createWindow(): void {
   });
 
   ipcMain.handle("delete-safe", async (_, args) => {
-    let safesPath = join(app.getPath("userData"), "safes");
-
     if (!existsSync(safesPath)) {
       return;
     }
@@ -169,8 +179,6 @@ app.whenReady().then(async () => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
-
-  init();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
