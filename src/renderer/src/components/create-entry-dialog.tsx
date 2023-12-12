@@ -1,29 +1,23 @@
 import React, { useState } from "react";
 import { Button, Dialog, Input, Tooltip } from "tredici";
 import { Dices, Plus } from "lucide-react";
-import { useBool } from "@renderer/hooks";
 
 interface CreateEntryDialogProps {
   path: string;
 }
 
 const CreateEntryDialog: React.FC<CreateEntryDialogProps> = ({ path }) => {
-  const [open, { toggle }] = useBool();
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   return (
-    <Dialog open={open} onOpenChange={toggle}>
-      <Tooltip>
-        <Tooltip.Trigger>
-          <Button.Icon icon={<Plus size={18} />} onClick={toggle} />
-        </Tooltip.Trigger>
-        <Tooltip.Body side="bottom">
-          <p>Create entry</p>
-          <Tooltip.Arrow />
-        </Tooltip.Body>
+    <Dialog>
+      <Tooltip content="Create entry" side="bottom">
+        <Dialog.Trigger asChild>
+          <Button.Icon colorScheme="green" icon={<Plus />} />
+        </Dialog.Trigger>
       </Tooltip>
-      <Dialog.Body>
+      <Dialog.Content>
         <Dialog.Title className="font-bold">Create entry</Dialog.Title>
         <Dialog.Description>
           You can create a new entry here.
@@ -42,14 +36,8 @@ const CreateEntryDialog: React.FC<CreateEntryDialogProps> = ({ path }) => {
             value={password}
             onChange={evt => setPassword(evt.target.value)}
           />
-          <Tooltip>
-            <Tooltip.Trigger>
-              <Button.Icon colorScheme="gray" icon={<Dices />} />
-            </Tooltip.Trigger>
-            <Tooltip.Body side="bottom">
-              <p>Generate password</p>
-              <Tooltip.Arrow />
-            </Tooltip.Body>
+          <Tooltip content="Generate password" side="bottom">
+            <Button.Icon colorScheme="gray" icon={<Dices />} />
           </Tooltip>
         </div>
 
@@ -61,7 +49,7 @@ const CreateEntryDialog: React.FC<CreateEntryDialogProps> = ({ path }) => {
             Create
           </Button>
         </div>
-      </Dialog.Body>
+      </Dialog.Content>
     </Dialog>
   );
 };

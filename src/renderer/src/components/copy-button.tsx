@@ -1,19 +1,12 @@
 import React, { useEffect } from "react";
 import { ClipboardCopy, ClipboardCheck } from "lucide-react";
-import {
-  Button,
-  ButtonVariant,
-  ButtonSize,
-  ColorScheme,
-  Tooltip,
-  useTheme
-} from "tredici";
+import { Button, ColorScheme, Tooltip, useTheme } from "tredici";
 import { useBool } from "@renderer/hooks";
 
 interface CopyButtonProps {
   text: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+  variant?: "solid" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
   colorScheme?: ColorScheme;
 }
 
@@ -37,20 +30,13 @@ const CopyButton: React.FC<CopyButtonProps> = ({
   }, [open]);
 
   return (
-    <Tooltip open={open}>
-      <Tooltip.Trigger>
-        <Button.Icon
-          {...props}
-          colorScheme={colorScheme}
-          onClick={copy}
-          icon={
-            open ? <ClipboardCheck size={18} /> : <ClipboardCopy size={18} />
-          }
-        />
-      </Tooltip.Trigger>
-      <Tooltip.Body>
-        Copied! <Tooltip.Arrow />
-      </Tooltip.Body>
+    <Tooltip content="Copied!" open={open}>
+      <Button.Icon
+        {...props}
+        colorScheme={colorScheme}
+        onClick={copy}
+        icon={open ? <ClipboardCheck size={18} /> : <ClipboardCopy size={18} />}
+      />
     </Tooltip>
   );
 };

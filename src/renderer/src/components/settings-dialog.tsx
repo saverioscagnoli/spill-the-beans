@@ -7,9 +7,13 @@ const SettingsDialog = () => {
   return (
     <Dialog>
       <Dialog.Trigger asChild>
-        <Button.Icon variant="ghost" colorScheme="gray" icon={<Settings size={20} />} />
+        <Button.Icon
+          variant="ghost"
+          colorScheme="gray"
+          icon={<Settings size={20} />}
+        />
       </Dialog.Trigger>
-      <Dialog.Body>
+      <Dialog.Content>
         <div className="flex justify-between items-center">
           <Dialog.Title className="font-bold">Settings</Dialog.Title>
         </div>
@@ -17,14 +21,14 @@ const SettingsDialog = () => {
           <Button onClick={toggle}> Toggle theme</Button>
         </Dialog.Description>
         <div className="flex gap-4 mt-2 justify-end items-center">
-          <Dialog.Close>
+          <Dialog.Close asChild>
             <Button colorScheme="gray">Close</Button>
           </Dialog.Close>
-          <Dialog.Close>
+          <Dialog.Close asChild>
             <Button>Save</Button>
           </Dialog.Close>
         </div>
-      </Dialog.Body>
+      </Dialog.Content>
     </Dialog>
   );
 };

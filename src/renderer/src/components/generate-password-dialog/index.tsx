@@ -1,17 +1,12 @@
 import { Dialog, Slider, Input, Button } from "tredici";
 import { Card } from "../card";
 import { Key } from "lucide-react";
-import {
-  useBool,
-  useExclude,
-  usePasswordGeneratorAttributes
-} from "@renderer/hooks";
+import { useExclude, usePasswordGeneratorAttributes } from "@renderer/hooks";
 import { Attributes } from "./attributes";
 import { useState } from "react";
 import { CopyButton } from "../copy-button";
 
 const GeneratePasswordDialog = () => {
-  const [open, { toggle }] = useBool();
   const attributes = usePasswordGeneratorAttributes();
   const [length, setLength] = useState<number>(16);
   const { excludeString, onExcludeChange } = useExclude();
@@ -31,7 +26,7 @@ const GeneratePasswordDialog = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={toggle}>
+    <Dialog>
       <Dialog.Trigger>
         <Card>
           <Key />
@@ -41,7 +36,7 @@ const GeneratePasswordDialog = () => {
           </p>
         </Card>
       </Dialog.Trigger>
-      <Dialog.Body>
+      <Dialog.Content>
         <Dialog.Title className="font-bold">Generate a password</Dialog.Title>
         <Dialog.Description>
           Select the attributes you want your password to have.
@@ -88,14 +83,14 @@ const GeneratePasswordDialog = () => {
         </div>
 
         <div className="w-full flex gap-2 justify-end">
-          <Button colorScheme="gray" onClick={toggle}>
-            Close
-          </Button>
+          <Dialog.Close asChild>
+            <Button colorScheme="gray">Close</Button>
+          </Dialog.Close>
           <Button colorScheme="green" onClick={generate}>
             Generate
           </Button>
         </div>
-      </Dialog.Body>
+      </Dialog.Content>
     </Dialog>
   );
 };

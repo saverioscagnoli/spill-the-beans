@@ -27,7 +27,7 @@
     "lucide-react": "^0.294.0",
     "react-router-dom": "^6.20.1",
     "sqlite3": "^5.1.6",
-    "tredici": "^0.3.1"
+    "tredici": "^1.0.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",

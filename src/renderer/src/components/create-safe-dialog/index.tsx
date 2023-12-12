@@ -1,10 +1,8 @@
 import { Button, Dialog, Input } from "tredici";
 import { PasswordInput } from "../password-input";
-import { useBool } from "@renderer/hooks";
 import { useState, ChangeEvent } from "react";
 
 const CreateSafeDialog = () => {
-  const [open, { toggle, off }] = useBool();
   const [name, setName] = useState<string>("");
 
   const onNameChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -12,11 +10,11 @@ const CreateSafeDialog = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={toggle}>
+    <Dialog>
       <Dialog.Trigger asChild>
         <Button colorScheme="green">Create</Button>
       </Dialog.Trigger>
-      <Dialog.Body>
+      <Dialog.Content>
         <Dialog.Title className="font-bold">Create safe</Dialog.Title>
         <Dialog.Description>Here you can create a safe.</Dialog.Description>
 
@@ -49,14 +47,18 @@ const CreateSafeDialog = () => {
         </p>
 
         <div className="w-full flex justify-end gap-2 mt-8">
-          <Button colorScheme="gray" onClick={off}>
-            Cancel
-          </Button>
-          <Button colorScheme="green" disabled={name.length === 0}>
+          <Dialog.Close asChild>
+            <Button colorScheme="gray">Cancel</Button>
+          </Dialog.Close>
+          <Button
+            colorScheme="green"
+            disabled={name.length === 0}
+            onClick={() => api.createSafe("sasa")}
+          >
             Create
           </Button>
         </div>
-      </Dialog.Body>
+      </Dialog.Content>
     </Dialog>
   );
 };

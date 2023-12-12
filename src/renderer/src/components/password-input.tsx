@@ -41,29 +41,17 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
         onChange={onPasswordChange}
       />
 
-      <Tooltip open={open}>
-        <Tooltip.Trigger>
-          <Button.Icon
-            icon={isPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-            onClick={toggleType}
-            onMouseEnter={on}
-            onMouseLeave={off}
-          />
-        </Tooltip.Trigger>
-        <Tooltip.Body side="bottom">
-          <p>{isPassword ? "Show" : "Hide"}</p>
-          <Tooltip.Arrow />
-        </Tooltip.Body>
+      <Tooltip open={open} content={isPassword ? "Show" : "Hide"} side="bottom">
+        <Button.Icon
+          icon={isPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+          onClick={toggleType}
+          onMouseEnter={on}
+          onMouseLeave={off}
+        />
       </Tooltip>
 
-      <Tooltip>
-        <Tooltip.Trigger>
-          <Button.Icon colorScheme="gray" icon={<Dices />} onClick={generate} />
-        </Tooltip.Trigger>
-        <Tooltip.Body side="bottom">
-          <p>Generate password</p>
-          <Tooltip.Arrow />
-        </Tooltip.Body>
+      <Tooltip content="Generate password" side="bottom">
+        <Button.Icon colorScheme="gray" icon={<Dices />} onClick={generate} />
       </Tooltip>
     </div>
   );

@@ -6,7 +6,6 @@ import { Lock, DoorOpen, Trash } from "lucide-react";
 import { CreateSafeDialog } from "./create-safe-dialog";
 
 const ManageSafesDialog = () => {
-  const [open, setOpen] = useState<boolean>(false);
   const [safes, setSafes] = useState<
     { name: string; created: string; path: string }[]
   >([]);
@@ -18,7 +17,7 @@ const ManageSafesDialog = () => {
   const navigate = useNavigate();
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <Dialog.Trigger>
         <Card>
           <Lock />
@@ -28,7 +27,7 @@ const ManageSafesDialog = () => {
           </p>
         </Card>
       </Dialog.Trigger>
-      <Dialog.Body>
+      <Dialog.Content>
         <Dialog.Title className="font-bold">Manage safes</Dialog.Title>
         <Dialog.Description>
           You can open, create and delete safes here.
@@ -64,22 +63,16 @@ const ManageSafesDialog = () => {
                   }
                 />
 
-                <Tooltip>
-                  <Tooltip.Trigger>
-                    <Button.Icon
-                      icon={<DoorOpen size={20} />}
-                      onClick={() =>
-                        navigate("/safe", {
-                          state: { path: s.path },
-                          replace: true
-                        })
-                      }
-                    />
-                  </Tooltip.Trigger>
-                  <Tooltip.Body>
-                    <p>Open safe</p>
-                    <Tooltip.Arrow />
-                  </Tooltip.Body>
+                <Tooltip content="Open safe">
+                  <Button.Icon
+                    icon={<DoorOpen size={20} />}
+                    onClick={() =>
+                      navigate("/safe", {
+                        state: { path: s.path },
+                        replace: true
+                      })
+                    }
+                  />
                 </Tooltip>
               </div>
             </div>
@@ -87,12 +80,12 @@ const ManageSafesDialog = () => {
         </div>
 
         <div className="w-full flex gap-2 justify-end items-center">
-          <Button colorScheme="gray" onClick={() => setOpen(false)}>
-            Close
-          </Button>
+          <Dialog.Close asChild>
+            <Button colorScheme="gray">Close</Button>
+          </Dialog.Close>
           <CreateSafeDialog />
         </div>
-      </Dialog.Body>
+      </Dialog.Content>
     </Dialog>
   );
 };

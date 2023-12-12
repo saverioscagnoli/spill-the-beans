@@ -17,16 +17,13 @@ const Navbar: React.FC<NavbarProps> = ({ username }) => {
     <nav className="flex justify-between w-full h-16">
       <div className="flex justify-start items-center gap-6 ml-4">
         <Avatar
-          colorScheme="gray"
+          colorScheme="b/w"
+          fallback={username[0] && username[0].toUpperCase()}
           /*         className="cursor-pointer"
           onMouseEnter={() => setAvatarHover(true)}
           onMouseLeave={() => setAvatarHover(false)} */
-        >
-          <Avatar.Image />
-          <Avatar.Fallback
-            content={/* avatarHover ? <Upload size={18} /> :  */ username[0]}
-          />
-        </Avatar>
+        />
+
         {location.pathname === "/safe" && (
           <Button.Icon
             onClick={() => navigate("/", { replace: true })}
