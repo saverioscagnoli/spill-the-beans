@@ -1,13 +1,13 @@
-module.exports = {
-  extends: [
+{
+  "ëxtends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "@electron-toolkit/eslint-config-ts/recommended"
   ],
-  rules: {
+  "rules": {
     "prefer-const": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
-    
+    "@typescript-eslint/no-explicit-any": "off"
   }
-};
+}

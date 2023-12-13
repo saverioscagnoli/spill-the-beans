@@ -1,17 +1,35 @@
-import { Button, Dialog, Input } from "tredici";
-import { useState, ChangeEvent } from "react";
+import { Button, Dialog, Input, Spinner } from "tredici";
+import React, { useState, ChangeEvent, Dispatch, SetStateAction } from "react";
 import { PasswordInput } from "../password-input";
+import { Safe } from ".";
+import { useBool } from "@renderer/hooks";
 
-const CreateSafeDialog = () => {
+interface CreateSafeDialogProps {
+  setSafes: Dispatch<SetStateAction<Safe[]>>;
+}
+
+const CreateSafeDialog: React.FC<CreateSafeDialogProps> = ({ setSafes }) => {
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, { on, off }] = useBool();
+  const [dialogOpen, { toggle: toggleDialog, off: closeDialog }] = useBool();
 
   const onNameChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setName(evt.target.value);
   };
 
+  const createSafe = () => {
+    on();
+    api
+      .createSafe(name, password)
+      .then(() => api.getSafes())
+      .then(setSafes)
+      .then(off)
+      .then(closeDialog);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={toggleDialog}>
       <Dialog.Trigger asChild>
         <Button colorScheme="green">Create</Button>
       </Dialog.Trigger>
@@ -57,9 +75,18 @@ const CreateSafeDialog = () => {
           </Dialog.Close>
           <Button
             colorScheme="green"
-            disabled={name.length === 0 || password.length < 6}
-            onClick={() => api.createSafe(name, password)}
+            disabled={name.length === 0 || password.length < 6 || loading}
+            onClick={createSafe}
+            
           >
+            {loading && (
+              <Spinner
+                colorScheme="green"
+                size="sm"
+                className="mr-2"
+                style={{ animationDuration: "400ms" }}
+              />
+            )}
             Create
           </Button>
         </div>

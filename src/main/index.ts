@@ -6,7 +6,7 @@ import { existsSync, readdirSync, statSync, unlinkSync } from "fs";
 import os from "os";
 import { generate } from "generate-password";
 import { decrypt, encrypt, init } from "./crypt";
-import { Database } from "./structs";
+import { Backend, Database } from "./structs";
 import bcrypt from "bcrypt";
 
 async function createWindow(): Promise<void> {
@@ -26,119 +26,8 @@ async function createWindow(): Promise<void> {
 
   const [catalogPath, safesPath] = await init();
 
-  win.webContents.openDevTools();
-
-  ipcMain.handle("get-username", () => {
-    return os.userInfo().username;
-  });
-
-  ipcMain.handle("open-safe", async (_, args) => {
-    let catalog = new Database({
-      path: catalogPath,
-      fields: ["name", "path", "password"]
-    });
-
-    let entries = await catalog.getEntries();
-    let safe = entries.find(e => e.name === args.name.replace(/.safe/g, ""));
-
-    if (!safe) return;
-
-    return await bcrypt.compare(args.password, safe.password);
-  });
-
-  ipcMain.handle("create-safe", async (_, args) => {
-    let catalog = new Database({
-      path: catalogPath,
-      fields: ["name", "path", "password"]
-    });
-
-    let salt = await bcrypt.genSalt(10);
-    let hash = await bcrypt.hash(args.password, salt);
-
-    catalog.addEntry({
-      name: args.name,
-      path: join(safesPath, `${args.name}.safe`),
-      password: hash
-    });
-
-    new Database({
-      path: join(
-        safesPath,
-        args.name.endsWith(".safe") ? args.name : `${args.name}.safe`
-      ),
-      fields: ["name", "password", "iv"]
-    });
-  });
-
-  ipcMain.handle("get-safes", async () => {
-    if (!existsSync(safesPath)) {
-      return [];
-    }
-
-    let safes = readdirSync(safesPath).filter(s => s.endsWith(".safe"));
-
-    return safes.map(name => {
-      let path = join(safesPath, name);
-      let date = statSync(path).birthtime;
-      return {
-        name,
-        created:
-          date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
-        path
-      };
-    });
-  });
-
-  ipcMain.handle("delete-safe", async (_, args) => {
-    if (!existsSync(safesPath)) {
-      return;
-    }
-
-    let safePath = join(safesPath, args.name);
-
-    if (!existsSync(safePath)) {
-      return;
-    }
-
-    unlinkSync(safePath);
-  });
-
-  ipcMain.handle("gen-password", async (_, args) => {
-    return generate({
-      length: args.length,
-      numbers: args.numbers,
-      symbols: args.symbols,
-      lowercase: args.lowercase,
-      uppercase: args.uppercase,
-      exclude: args.exclude
-    });
-  });
-
-  ipcMain.handle("get-entries", async (_, args) => {
-    let db = new Database({
-      path: args.path,
-      fields: ["name", "password", "iv"]
-    });
-    let entries = await db.getEntries();
-    return Promise.all(
-      entries.map(async e => {
-        return {
-          name: e.name,
-          password: await decrypt({ iv: e.iv, password: e.password })
-        };
-      })
-    );
-  });
-
-  ipcMain.handle("create-entry", async (_, args) => {
-    let db = new Database({
-      path: args.path,
-      fields: ["name", "password", "iv"]
-    });
-    let data = (await encrypt(args.password)) || { iv: "", password: "" };
-
-    db.addEntry({ name: args.name, password: data.password, iv: data.iv });
-  });
+  const backend = Backend.build({ catalogPath, safesPath });
+  backend.listen();
 
   win.on("ready-to-show", () => {
     win.show();
@@ -153,6 +42,7 @@ async function createWindow(): Promise<void> {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+    win.webContents.openDevTools();
   } else {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   }

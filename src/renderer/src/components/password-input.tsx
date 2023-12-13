@@ -13,13 +13,17 @@ interface PasswordInputProps extends ComponentProps<"div"> {
   inputId?: string;
   password: string;
   setPassword: Dispatch<SetStateAction<string>>;
+  inputClassName?: string;
+  withRandomGenerator?: boolean;
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
-  className,
+  className = "",
+  inputClassName = "",
+  inputId = "",
   password,
   setPassword,
-  inputId,
+  withRandomGenerator = true,
   ...props
 }) => {
   const [open, { on, off }] = useBool();
@@ -45,27 +49,42 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   };
 
   return (
-    <div className={className + "w-full flex gap-2 items-center"} {...props}>
+    <div
+      className={className + " w-full flex justify-between items-center gap-2"}
+      {...props}
+    >
       <Input
         type={type}
-        className="w-[calc(100%-5.5rem)]"
+        className={inputClassName + " flex-grow"}
         value={password}
         onChange={onPasswordChange}
         id={inputId}
       />
 
-      <Tooltip open={open} content={isPassword ? "Show" : "Hide"} side="bottom">
-        <Button.Icon
-          icon={isPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-          onClick={toggleType}
-          onMouseEnter={on}
-          onMouseLeave={off}
-        />
-      </Tooltip>
+      <div className="flex items-center gap-2">
+        <Tooltip
+          open={open}
+          content={isPassword ? "Show" : "Hide"}
+          side="bottom"
+        >
+          <Button.Icon
+            icon={isPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+            onClick={toggleType}
+            onMouseEnter={on}
+            onMouseLeave={off}
+          />
+        </Tooltip>
 
-      <Tooltip content="Generate password" side="bottom">
-        <Button.Icon colorScheme="gray" icon={<Dices />} onClick={generate} />
-      </Tooltip>
+        {withRandomGenerator && (
+          <Tooltip content="Generate password" side="bottom">
+            <Button.Icon
+              colorScheme="gray"
+              icon={<Dices />}
+              onClick={generate}
+            />
+          </Tooltip>
+        )}
+      </div>
     </div>
   );
 };
