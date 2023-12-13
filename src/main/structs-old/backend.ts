@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { Database } from "./database";
+import { Database } from "../structs/database";
 import os from "os";
 import bcrypt from "bcrypt";
 import { join } from "path";
@@ -92,8 +92,7 @@ class Backend {
       let date = statSync(path).birthtime;
       return {
         name,
-        created:
-          date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
+        created: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
         path
       };
     });
@@ -150,10 +149,7 @@ class Backend {
     );
   }
 
-  private async createEntry(
-    _,
-    args: { path: string; name: string; password: string }
-  ) {
+  private async createEntry(_, args: { path: string; name: string; password: string }) {
     let safe = new Database({
       path: args.path,
       fields: ["name", "password", "iv"]

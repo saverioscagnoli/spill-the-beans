@@ -13,7 +13,7 @@ interface SettingsContextProviderProps {
 const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
   children
 }) => {
-  const [settings, setSettings] = useState<Settings>({ username: "" });
+  const [settings, setSettings] = useState<Settings>({ username: "", propic: "" });
 
   useEffect(() => {
     setDefaultSettings();

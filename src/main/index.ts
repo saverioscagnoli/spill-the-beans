@@ -20,6 +20,7 @@ async function createWindow(): Promise<void> {
   });
 
   const backend = Backend.build();
+  backend.init();
   backend.listen();
 
   win.on("ready-to-show", () => {

@@ -1,4 +1,4 @@
-import { Card, PasswordGenerator } from "@renderer/components";
+import { Card, PasswordGenerator, SafeManager } from "@renderer/components";
 import { useSettings } from "@renderer/hooks";
 import { LuKey, LuLock } from "react-icons/lu";
 
@@ -19,13 +19,15 @@ const HomePage = () => {
             </p>
           </Card>
         </PasswordGenerator>
-        <Card>
-          <LuLock size={24} />
-          <h2 className="text-lg font-semibold">Manage safes</h2>
-          <p className="text-center">
-            Safes are encrypted containers that contain your passwords.
-          </p>
-        </Card>
+        <SafeManager>
+          <Card>
+            <LuLock size={24} />
+            <h2 className="text-lg font-semibold">Manage safes</h2>
+            <p className="text-center">
+              Safes are encrypted containers that contain your passwords.
+            </p>
+          </Card>
+        </SafeManager>
       </div>
     </>
   );

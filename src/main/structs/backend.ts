@@ -1,11 +1,21 @@
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 import { generate } from "generate-password";
+import { Database } from "./database";
 import os from "os";
+import { join } from "path";
+import { existsSync, mkdirSync } from "fs";
 
 class Backend {
   private static instance: Backend;
 
-  private constructor() {}
+  private catalog: Database<"name" | "path" | "created">;
+
+  private constructor() {
+    this.catalog = new Database({
+      path: join(app.getPath("appData"), "Catalog"),
+      fields: ["name", "created", "path"]
+    });
+  }
 
   /**
    * @returns The singleton instance of the Backend class.
@@ -17,6 +27,20 @@ class Backend {
     }
 
     return Backend.instance;
+  }
+
+  /**
+   * Initializes the Backend class.
+   * Must be called only once.
+   */
+  public init() {
+    let safeFolderPath = join(app.getPath("appData"), "Safes");
+
+    console.log(safeFolderPath);
+
+    if (existsSync(safeFolderPath)) {
+      mkdirSync(safeFolderPath);
+    }
   }
 
   /**
@@ -35,6 +59,9 @@ class Backend {
     return os.userInfo().username;
   }
 
+  /**
+   * @returns A randomly generated password.
+   */
   private generatePassword(
     _,
     args: {
@@ -48,6 +75,8 @@ class Backend {
   ): string {
     return generate({ ...args });
   }
+
+  private getSafes() {}
 }
 
 export { Backend };
