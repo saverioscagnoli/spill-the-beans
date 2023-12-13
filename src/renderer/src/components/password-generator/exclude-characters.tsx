@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent } from "react";
 import { usePasswordGenerator } from "@renderer/hooks";
 import { Input } from "tredici";
 import { removeDuplicates } from "@renderer/lib";

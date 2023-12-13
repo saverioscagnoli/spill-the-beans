@@ -1,6 +1,6 @@
 import { Attribute } from "@renderer/contexts";
 import { useBoolean, usePasswordGenerator } from "@renderer/hooks";
-import { Attributes, useEffect } from "react";
+import {  useEffect } from "react";
 import { Checkbox, Tooltip } from "tredici";
 
 interface AttributeFormProps {
