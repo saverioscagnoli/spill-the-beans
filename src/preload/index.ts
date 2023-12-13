@@ -8,8 +8,8 @@ const api: Api = {
   createSafe: (name, password) =>
     ipcRenderer.invoke("create-safe", { name, password }),
   getSafes: () => ipcRenderer.invoke("get-safes"),
-  genPassword: (length, numbers, symbols, lowercase, uppercase, exclude) =>
-    ipcRenderer.invoke("gen-password", {
+  generatePassword: (length, numbers, symbols, lowercase, uppercase, exclude) =>
+    ipcRenderer.invoke("generate-password", {
       length,
       numbers,
       symbols,

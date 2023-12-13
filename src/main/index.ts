@@ -1,13 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { existsSync, readdirSync, statSync, unlinkSync } from "fs";
-import os from "os";
-import { generate } from "generate-password";
-import { decrypt, encrypt, init } from "./crypt";
-import { Backend, Database } from "./structs";
-import bcrypt from "bcrypt";
+import { Backend } from "./structs";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.
@@ -24,9 +19,7 @@ async function createWindow(): Promise<void> {
     }
   });
 
-  const [catalogPath, safesPath] = await init();
-
-  const backend = Backend.build({ catalogPath, safesPath });
+  const backend = Backend.build();
   backend.listen();
 
   win.on("ready-to-show", () => {

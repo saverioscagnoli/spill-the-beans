@@ -11,7 +11,7 @@ interface Api {
     password: string
   ) => Promise<Electron.SaveDialogReturnValue>;
   getSafes: () => Promise<{ name: string; created: string; path: string }[]>;
-  genPassword: (
+  generatePassword: (
     length: number,
     numbers: CheckboxValue,
     symbols: CheckboxValue,
