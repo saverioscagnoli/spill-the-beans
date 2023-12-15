@@ -12,7 +12,7 @@ class Backend {
 
   private constructor() {
     this.catalog = new Database({
-      path: join(app.getPath("appData"), "Catalog"),
+      path: join(app.getPath("userData"), "Catalog"),
       fields: ["name", "created", "path"]
     });
   }
@@ -34,11 +34,9 @@ class Backend {
    * Must be called only once.
    */
   public init() {
-    let safeFolderPath = join(app.getPath("appData"), "Safes");
+    let safeFolderPath = join(app.getPath("userData"), "Safes");
 
-    console.log(safeFolderPath);
-
-    if (existsSync(safeFolderPath)) {
+    if (!existsSync(safeFolderPath)) {
       mkdirSync(safeFolderPath);
     }
   }
@@ -50,6 +48,8 @@ class Backend {
   public listen() {
     ipcMain.handle("get-username", this.getUsername.bind(this));
     ipcMain.handle("generate-password", this.generatePassword.bind(this));
+    ipcMain.handle("get-safes", this.getSafes.bind(this));
+    ipcMain.handle("create-safe", this.createSafe.bind(this));
   }
 
   /**
@@ -76,7 +76,31 @@ class Backend {
     return generate({ ...args });
   }
 
-  private getSafes() {}
+  /**
+   * @returns The list of safes.
+   */
+  private async getSafes() {
+    let safes = await this.catalog.getEntries();
+    return safes.map(safe => ({
+      name: safe.name,
+      created: safe.created,
+      path: safe.path
+    }));
+  }
+
+  private async createSafe(_, args: { name: string }) {
+    let safePath = join(app.getPath("userData"), "Safes", args.name);
+    new Database({
+      path: safePath,
+      fields: ["name", "username", "password"]
+    });
+
+    this.catalog.addEntry({
+      name: args.name,
+      created: new Date().toISOString(),
+      path: safePath
+    });
+  }
 }
 
 export { Backend };
