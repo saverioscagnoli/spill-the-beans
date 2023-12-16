@@ -1,9 +1,5 @@
-import { Dispatch, SetStateAction, createContext } from "react";
-
-export type Attribute<T> = {
-  get: () => T;
-  set: Dispatch<SetStateAction<T>>;
-} & (T extends boolean ? { toggle: () => void } : {});
+import { createContext } from "react";
+import { Attribute } from "./types";
 
 export interface PasswordGeneratorContextProps {
   /**

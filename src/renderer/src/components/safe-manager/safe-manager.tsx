@@ -1,7 +1,9 @@
 import React, { ReactNode } from "react";
 import { Dialog } from "tredici";
-import { ManagerActions } from "./manager-actions";
 import { Bank } from "./bank";
+import { useSafeManager } from "@renderer/hooks";
+import { CreateSafe } from "./create-safe";
+import { motion } from "framer-motion";
 
 interface SafeManagerProps {
   /**
@@ -12,19 +14,33 @@ interface SafeManagerProps {
 }
 
 const SafeManager: React.FC<SafeManagerProps> = ({ children }) => {
+  const { content } = useSafeManager();
+  const animations = {
+    initial: { opacity: 0, y: 100 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -100 }
+  };
+
+
   return (
     <Dialog>
       <Dialog.Trigger>{children}</Dialog.Trigger>
-      <Dialog.Content>
-        <Dialog.Title>Manage safes</Dialog.Title>
-        <Dialog.Description>
-          You can open, add or remove safes from here.
-        </Dialog.Description>
-
-        <Bank />
-
-        <ManagerActions />
-      </Dialog.Content>
+      <motion.div
+        variants={animations}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.25 }}
+      >
+        <Dialog.Content className="transition-all">
+          {
+            {
+              bank: <Bank />,
+              "create-safe": <CreateSafe />
+            }[content]
+          }
+        </Dialog.Content>
+      </motion.div>
     </Dialog>
   );
 };

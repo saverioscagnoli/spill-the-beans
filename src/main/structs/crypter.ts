@@ -3,8 +3,11 @@ import { genSaltSync } from "bcrypt";
 import { createReadStream, createWriteStream, renameSync, unlinkSync } from "fs";
 import "dotenv/config";
 
+const SALT_LENGTH = 29;
+const IV_LENGTH = 16;
+
 function generateKey(password: string, salt: string) {
-  return pbkdf2Sync(password, salt, 100000, 32, "sha512").toString("hex");
+  return pbkdf2Sync(password, salt, 100000, 16, "sha512").toString("hex");
 }
 
 function encrypt(path: string, password: string): Promise<void> {
@@ -23,6 +26,7 @@ function encrypt(path: string, password: string): Promise<void> {
     createReadStream(path).pipe(cipher).pipe(writeStream);
 
     writeStream.on("finish", () => {
+      unlinkSync(path);
       renameSync(path + ".tmp", path);
       res();
     });
@@ -36,22 +40,27 @@ function decrypt(path: string, password: string): Promise<boolean> {
 
     saltReadStream.on("readable", () => {
       if (!salt) {
-        salt = saltReadStream.read(16);
+        salt = saltReadStream.read(SALT_LENGTH);
       }
 
       if (!iv) {
-        iv = saltReadStream.read(16);
+        iv = saltReadStream.read(IV_LENGTH);
       }
 
       if (salt && iv) {
         saltReadStream.close();
 
-        let key = generateKey(password, salt.toString("hex"));
+        let key = generateKey(password, salt.toString("ascii"));
         let decipher = createDecipheriv(process.env.ALGORITHM!, key, iv);
 
-        decipher.on("error", () => res(false));
+        decipher.on("error", err => {
+          res(false);
+          console.error(err);
+        });
 
-        let readStream = createReadStream(path, { start: 32 });
+        let readStream = createReadStream(path, {
+          start: SALT_LENGTH + IV_LENGTH
+        });
         let writeStream = createWriteStream(path + ".tmp");
 
         readStream.pipe(decipher).pipe(writeStream);
@@ -60,7 +69,6 @@ function decrypt(path: string, password: string): Promise<boolean> {
           unlinkSync(path);
           renameSync(path + ".tmp", path);
           res(true);
-
           writeStream.close();
         });
       }

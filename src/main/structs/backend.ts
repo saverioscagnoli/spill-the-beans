@@ -3,7 +3,8 @@ import { generate } from "generate-password";
 import { Database } from "./database";
 import os from "os";
 import { join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, readdirSync } from "fs";
+import { encrypt } from "./crypter";
 
 class Backend {
   private static instance: Backend;
@@ -80,26 +81,33 @@ class Backend {
    * @returns The list of safes.
    */
   private async getSafes() {
-    let safes = await this.catalog.getEntries();
-    return safes.map(safe => ({
-      name: safe.name,
-      created: safe.created,
-      path: safe.path
-    }));
+    let safes = readdirSync(join(app.getPath("userData"), "Safes"));
+
+    return safes.map(safe => {
+      return {
+        name: safe,
+        created: new Date().toISOString(),
+        path: join(app.getPath("userData"), "Safes", safe)
+      };
+    });
   }
 
-  private async createSafe(_, args: { name: string }) {
+  private async createSafe(_, args: { name: string; password: string }) {
     let safePath = join(app.getPath("userData"), "Safes", args.name);
     new Database({
       path: safePath,
       fields: ["name", "username", "password"]
     });
 
-    this.catalog.addEntry({
-      name: args.name,
-      created: new Date().toISOString(),
-      path: safePath
-    });
+    this.catalog
+      .addEntry({
+        name: args.name,
+        created: new Date().toISOString(),
+        path: safePath
+      })
+      .then(() => {
+        encrypt(safePath, args.password);
+      });
   }
 }
 
