@@ -1,5 +1,5 @@
 import { createCipheriv, createDecipheriv, pbkdf2Sync, randomBytes } from "crypto";
-import { genSaltSync } from "bcrypt";
+import { compareSync, genSaltSync, hashSync } from "bcrypt";
 import { createReadStream, createWriteStream, renameSync, unlinkSync } from "fs";
 import "dotenv/config";
 
@@ -15,7 +15,8 @@ function encrypt(path: string, password: string): Promise<void> {
     let salt = genSaltSync(16);
     let iv = randomBytes(16);
 
-    let key = generateKey(password, salt);
+    let hash = hashSync(password, 16);
+    let key = generateKey(hash, salt);
 
     let cipher = createCipheriv(process.env.ALGORITHM!, key, iv);
     let writeStream = createWriteStream(path + ".tmp");
@@ -49,8 +50,15 @@ function decrypt(path: string, password: string): Promise<boolean> {
 
       if (salt && iv) {
         saltReadStream.close();
-
         let key = generateKey(password, salt.toString("ascii"));
+
+        let isCorrect = compareSync(password, key);
+
+        if (!isCorrect) {
+          res(false);
+          return;
+        }
+
         let decipher = createDecipheriv(process.env.ALGORITHM!, key, iv);
 
         decipher.on("error", err => {

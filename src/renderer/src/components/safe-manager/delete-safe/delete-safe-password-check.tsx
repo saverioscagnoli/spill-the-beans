@@ -1,0 +1,3 @@
+const DeleteSafePasswordCheck = () => {};
+
+export { DeleteSafePasswordCheck };

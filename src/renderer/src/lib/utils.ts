@@ -1,3 +1,6 @@
+import clsx, { ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 function removeDuplicates(str: string) {
   return str
     .split("")
@@ -5,4 +8,8 @@ function removeDuplicates(str: string) {
     .join("");
 }
 
-export { removeDuplicates };
+function cn(...classes: ClassValue[]) {
+  return twMerge(clsx(classes));
+}
+
+export { removeDuplicates, cn };

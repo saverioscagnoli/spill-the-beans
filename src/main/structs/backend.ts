@@ -92,22 +92,26 @@ class Backend {
     });
   }
 
-  private async createSafe(_, args: { name: string; password: string }) {
+  private async createSafe(_, args: { name: string; password: string }): Promise<void> {
     let safePath = join(app.getPath("userData"), "Safes", args.name);
     new Database({
       path: safePath,
       fields: ["name", "username", "password"]
     });
 
-    this.catalog
-      .addEntry({
-        name: args.name,
-        created: new Date().toISOString(),
-        path: safePath
-      })
-      .then(() => {
-        encrypt(safePath, args.password);
-      });
+    return new Promise((res, rej) => {
+      this.catalog
+        .addEntry({
+          name: args.name,
+          created: new Date().toISOString(),
+          path: safePath
+        })
+        .then(() => {
+          encrypt(safePath, args.password);
+          res();
+        })
+        .catch(rej);
+    });
   }
 }
 
