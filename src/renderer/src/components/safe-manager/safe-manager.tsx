@@ -15,32 +15,33 @@ interface SafeManagerProps {
 
 const SafeManager: React.FC<SafeManagerProps> = ({ children }) => {
   const { content } = useSafeManager();
-  const animations = {
-    initial: { opacity: 0, y: 100 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -100 }
-  };
 
+  //TODO: remove animation when first opening the dialog
 
   return (
     <Dialog>
       <Dialog.Trigger>{children}</Dialog.Trigger>
-      <motion.div
-        variants={animations}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        transition={{ duration: 0.25 }}
-      >
-        <Dialog.Content className="transition-all">
+      <Dialog.Content className="overflow-hidden">
+        <motion.div
+          key={content}
+          variants={{
+            initial: { opacity: 0, x: 100 },
+            animate: { opacity: 1, x: 0 },
+            exit: { opacity: 0, x: -100 }
+          }}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: 0.1 }}
+        >
           {
             {
               bank: <Bank />,
               "create-safe": <CreateSafe />
             }[content]
           }
-        </Dialog.Content>
-      </motion.div>
+        </motion.div>
+      </Dialog.Content>
     </Dialog>
   );
 };
