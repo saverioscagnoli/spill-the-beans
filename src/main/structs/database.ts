@@ -16,9 +16,7 @@ class Database<T extends string> {
     this.db = new sqlite3.Database(path);
     this.db.serialize(() => {
       this.db.run(
-        `CREATE TABLE IF NOT EXISTS entries (${fields
-          .map(f => `${f} TEXT`)
-          .join(", ")})`
+        `CREATE TABLE IF NOT EXISTS entries (${fields.map(f => `${f} TEXT`).join(", ")})`
       );
     });
     this.db.close();
@@ -46,9 +44,7 @@ class Database<T extends string> {
     return new Promise((res, rej) => {
       this.db = new sqlite3.Database(this.path);
       this.db.run(
-        `INSERT INTO entries (${Object.keys(entry).join(
-          ", "
-        )}) VALUES (${qms})`,
+        `INSERT INTO entries (${Object.keys(entry).join(", ")}) VALUES (${qms})`,
         values,
         err => {
           if (err) {
@@ -62,27 +58,17 @@ class Database<T extends string> {
     });
   }
 
-  public async deleteEntry(entry: Entry<T>): Promise<void> {
-    let qms = Object.keys(entry)
-      .map(() => "?")
-      .join(", ");
-    let values = Object.values(entry);
+  public async deleteEntryByKey(key: T, value: string): Promise<void> {
     return new Promise((res, rej) => {
       this.db = new sqlite3.Database(this.path);
-      this.db.run(
-        `DELETE FROM entries WHERE (${Object.keys(entry).join(
-          ", "
-        )}) = (${qms})`,
-        values,
-        err => {
-          if (err) {
-            this.db.close();
-            rej(err);
-          }
+      this.db.run(`DELETE FROM entries WHERE ${key} = ?`, [value], err => {
+        if (err) {
           this.db.close();
-          res();
+          rej(err);
         }
-      );
+        this.db.close();
+        res();
+      });
     });
   }
 }

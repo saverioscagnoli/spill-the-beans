@@ -21,6 +21,8 @@ const SafeDisplay = () => {
     api.getSafes().then(setSafes);
   }, []);
 
+  const onDelete = (name: string) => () => switchToDeleteSafe(name);
+
   return (
     <div className="w-full h-72 flex flex-col mt-4 gap-2 p-2 bg-gray-300/50 dark:bg-gray-600/30 rounded-lg overflow-auto">
       {safes.map(safe => (
@@ -37,7 +39,7 @@ const SafeDisplay = () => {
               <Button.Icon
                 colorScheme="crimson"
                 icon={<LuTrash2 size={20} />}
-                onClick={switchToDeleteSafe}
+                onClick={onDelete(safe.name)}
               />
             </Tooltip>
             <Tooltip content="Open" disableHoverableContent>

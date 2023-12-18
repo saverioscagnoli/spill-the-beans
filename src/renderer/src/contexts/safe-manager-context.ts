@@ -5,14 +5,15 @@ import { Variants } from "framer-motion";
 interface SafeManagerContextProps {
   switchToBank: () => void;
   switchToCreateSafe: () => void;
-  switchToDeleteSafe: () => void;
-  content: "bank" | "create-safe" | "delete-safe";
+  switchToDeleteSafe: (name: string) => void;
 
   name: Attribute<string>;
   password: Attribute<string>;
 
   animations: Variants;
   isAnimating: Attribute<boolean>;
+
+  
 }
 
 const SafeManagerContext = createContext<SafeManagerContextProps | null>(null);
