@@ -1,23 +1,16 @@
 import { app, ipcMain } from "electron";
 import { generate } from "generate-password";
-import { Database } from "./database";
 import os from "os";
 import { join } from "path";
 import { existsSync, mkdirSync, readdirSync } from "fs";
 import { checkPassword, decrypt, encrypt } from "./crypter";
 import { deleteFile } from "../lib";
+import { CSV } from "csv-rw";
 
 class Backend {
   private static instance: Backend;
 
-  private catalog: Database<"name" | "path" | "created">;
-
-  private constructor() {
-    this.catalog = new Database({
-      path: join(app.getPath("userData"), "Catalog"),
-      fields: ["name", "created", "path"]
-    });
-  }
+  private constructor() {}
 
   /**
    * @returns The singleton instance of the Backend class.
@@ -100,24 +93,12 @@ class Backend {
 
   private async createSafe(_, args: { name: string; password: string }): Promise<void> {
     let safePath = join(app.getPath("userData"), "Safes", args.name);
-    new Database({
-      path: safePath,
-      fields: ["name", "username", "password"]
-    });
+    let { name, password } = args;
 
-    return new Promise((res, rej) => {
-      this.catalog
-        .addEntry({
-          name: args.name,
-          created: new Date().toISOString(),
-          path: safePath
-        })
-        .then(() => {
-          encrypt(safePath, args.password);
-          res();
-        })
-        .catch(rej);
-    });
+    let csv = new CSV({ path: safePath, headers: ["index", "name", "password"] });
+
+    await csv.write({ index: 0, name, password });
+    await encrypt(safePath, password);
   }
 
   private async deleteSafe(
@@ -155,16 +136,12 @@ class Backend {
 
     await decrypt(safePath, args.password);
 
-    let db = new Database({
-      path: safePath,
-      fields: ["name", "username", "password"]
-    });
-
-
-    //let entries = await db.getEntries();
+    let csv = new CSV({ path: safePath, headers: ["index", "name", "password"] });
+    let entries = await csv.read();
 
     await encrypt(safePath, args.password);
 
+    return entries;
   }
 }
 

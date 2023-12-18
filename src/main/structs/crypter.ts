@@ -27,7 +27,7 @@ function encrypt(path: string, password: string): Promise<boolean> {
   let tmpPath = path + ".tmp";
 
   return new Promise((res, rej) => {
-    let salt = bcrypt.genSaltSync(16);
+    let salt = bcrypt.genSaltSync(10);
     let iv = crypto.randomBytes(16);
 
     let key = deriveKey(password, salt);
@@ -84,6 +84,8 @@ function decryptLogic(
         });
 
         let piped = reader.pipe(decipher).on("err", rej);
+
+        //reader.unpipe(decipher);
 
         if (!check) {
           let writer = fs.createWriteStream(tmpPath);

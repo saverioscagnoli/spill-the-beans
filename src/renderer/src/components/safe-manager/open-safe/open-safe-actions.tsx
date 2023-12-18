@@ -29,13 +29,13 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
   const { switchToBank } = useSafeManager();
   const [loading, { on, off }] = useBoolean();
 
-  const onOpen = () => {
+  const onOpen = async () => {
     on();
-    api.openSafe(name, password).then(res => {
-      off();
-      if (res) navigate(`/${name}`, { replace: true, state: { name, password } });
-      else toggleWrongPassword();
-    });
+    let res = await api.openSafe(name, password);
+    off();
+
+    if (res) navigate(`/${name}`, { replace: true, state: { name, password } });
+    else toggleWrongPassword();
   };
 
   return (
