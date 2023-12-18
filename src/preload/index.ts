@@ -3,10 +3,8 @@ import { Api } from "./types";
 
 const api: Api = {
   getUsername: () => ipcRenderer.invoke("get-username"),
-  openSafe: (name, password) =>
-    ipcRenderer.invoke("open-safe", { name, password }),
-  createSafe: (name, password) =>
-    ipcRenderer.invoke("create-safe", { name, password }),
+  openSafe: (name, password) => ipcRenderer.invoke("open-safe", { name, password }),
+  createSafe: (name, password) => ipcRenderer.invoke("create-safe", { name, password }),
   getSafes: () => ipcRenderer.invoke("get-safes"),
   generatePassword: (length, numbers, symbols, lowercase, uppercase, exclude) =>
     ipcRenderer.invoke("generate-password", {
@@ -17,7 +15,7 @@ const api: Api = {
       uppercase,
       exclude
     }),
-  deleteSafe: name => ipcRenderer.invoke("delete-safe", { name }),
+  deleteSafe: (name, password) => ipcRenderer.invoke("delete-safe", { name, password }),
   getEntries: path => ipcRenderer.invoke("get-entries", { path }),
   createEntry: (name, password, path) =>
     ipcRenderer.invoke("create-entry", { name, password, path })

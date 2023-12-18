@@ -2,6 +2,7 @@ import { SafeManagerContext } from "@renderer/contexts";
 import { useBoolean } from "@renderer/hooks";
 import { Variants } from "framer-motion";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface SafeManagerContextProviderProps {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ interface SafeManagerContextProviderProps {
 const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
   children
 }) => {
-  const [content, setContent] = useState<"bank" | "create-safe" | "delete-safe">("bank");
+  const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [animations, setAnimations] = useState<Variants>({
@@ -20,7 +21,7 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
   const [isAnimating, { set, toggle }] = useBoolean();
 
   const switchToBank = () => {
-    setContent("bank");
+    navigate("/", { replace: true });
     setName("");
     setPassword("");
     setAnimations({
@@ -30,15 +31,18 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
   };
 
   const switchToCreateSafe = () => {
-    setContent("create-safe");
+    navigate("manage/create", { replace: true });
     setAnimations({
       initial: { x: 400 },
       exit: { x: -400 }
     });
   };
 
-  const switchToDeleteSafe = () => {
-    setContent("delete-safe");
+  /**
+   * @param name The name of the safe to delete.
+   */
+  const switchToDeleteSafe = (name: string) => {
+    navigate(`manage/delete/${name}`, { replace: true });
     setAnimations({
       initial: { x: 400 },
       exit: { x: -400 }
@@ -48,7 +52,6 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
   return (
     <SafeManagerContext.Provider
       value={{
-        content,
         switchToBank,
         switchToCreateSafe,
         switchToDeleteSafe,

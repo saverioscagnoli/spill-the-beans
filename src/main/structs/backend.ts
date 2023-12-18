@@ -4,7 +4,8 @@ import { Database } from "./database";
 import os from "os";
 import { join } from "path";
 import { existsSync, mkdirSync, readdirSync } from "fs";
-import { encrypt } from "./crypter";
+import { checkPassword, encrypt } from "./crypter";
+import { deleteFile } from "../lib";
 
 class Backend {
   private static instance: Backend;
@@ -51,6 +52,7 @@ class Backend {
     ipcMain.handle("generate-password", this.generatePassword.bind(this));
     ipcMain.handle("get-safes", this.getSafes.bind(this));
     ipcMain.handle("create-safe", this.createSafe.bind(this));
+    ipcMain.handle("delete-safe", this.deleteSafe.bind(this));
   }
 
   /**
@@ -83,13 +85,15 @@ class Backend {
   private async getSafes() {
     let safes = readdirSync(join(app.getPath("userData"), "Safes"));
 
-    return safes.map(safe => {
-      return {
-        name: safe,
-        created: new Date().toISOString(),
-        path: join(app.getPath("userData"), "Safes", safe)
-      };
-    });
+    return safes
+      .map(safe => {
+        return {
+          name: safe,
+          created: new Date().toISOString(),
+          path: join(app.getPath("userData"), "Safes", safe)
+        };
+      })
+      .filter(safe => !safe.name.endsWith(".tmp"));
   }
 
   private async createSafe(_, args: { name: string; password: string }): Promise<void> {
@@ -112,6 +116,23 @@ class Backend {
         })
         .catch(rej);
     });
+  }
+
+  private async deleteSafe(
+    _,
+    args: { name: string; password: string }
+  ): Promise<boolean> {
+    let safePath = join(app.getPath("userData"), "Safes", args.name);
+
+    let isCorrect = await checkPassword(safePath, args.password);
+
+    if (!isCorrect) {
+      return false;
+    }
+
+    await deleteFile(safePath);
+
+    return true;
   }
 }
 

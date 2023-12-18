@@ -16,7 +16,7 @@ const ExcludeCharacters = () => {
       <label className="text-sm">Characters to exclude</label>
       <Input
         spellCheck={false}
-        className="w-full"
+        className="w-full mt-1"
         value={exclude.get()}
         onChange={onExcludeChange}
       />

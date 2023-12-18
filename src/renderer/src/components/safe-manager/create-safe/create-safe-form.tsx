@@ -26,7 +26,7 @@ const CreateSafeForm = () => {
         </label>
         <Input
           spellCheck={false}
-          className="w-full"
+          className="w-full mt-1"
           value={name.get()}
           onChange={onNameChange}
         />
@@ -36,7 +36,7 @@ const CreateSafeForm = () => {
         <label htmlFor="safe-password" className="text-sm">
           Password
         </label>
-        <div className="flex gap-1">
+        <div className="flex gap-1 mt-1">
           <Input
             spellCheck={false}
             style={{ width: "calc(100% - 4.5rem)" }}

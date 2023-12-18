@@ -27,11 +27,8 @@
     "electron-updater": "^6.1.1",
     "framer-motion": "^10.16.16",
     "generate-password": "^1.7.1",
-    "hidefile": "^3.0.0",
-    "keytar": "^7.9.0",
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.20.1",
-    "react-transition-group": "^4.4.5",
     "sqlite3": "^5.1.6",
     "tailwind-merge": "^2.1.0",
     "tredici": "^1.0.1"

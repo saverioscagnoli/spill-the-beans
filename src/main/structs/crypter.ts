@@ -1,87 +1,121 @@
-import { createCipheriv, createDecipheriv, pbkdf2Sync, randomBytes } from "crypto";
-import { compareSync, genSaltSync, hashSync } from "bcrypt";
-import { createReadStream, createWriteStream, renameSync, unlinkSync } from "fs";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
+import fs from "fs";
+import { deleteFile, renameFile } from "../lib";
 import "dotenv/config";
 
 const SALT_LENGTH = 29;
 const IV_LENGTH = 16;
 
-function generateKey(password: string, salt: string) {
-  return pbkdf2Sync(password, salt, 100000, 16, "sha512").toString("hex");
+async function checkPassword(path: string, password: string): Promise<boolean> {
+  let res: boolean;
+  try {
+    res = await decryptLogic(path, password, true);
+  } catch {
+    return false;
+  }
+
+  return res;
 }
 
-function encrypt(path: string, password: string): Promise<void> {
-  return new Promise(res => {
-    let salt = genSaltSync(16);
-    let iv = randomBytes(16);
+function deriveKey(password: string, salt: string) {
+  let hashed = bcrypt.hashSync(password, salt);
+  return crypto.pbkdf2Sync(hashed, salt, 100000, 16, "sha512").toString("hex");
+}
 
-    let hash = hashSync(password, 16);
-    let key = generateKey(hash, salt);
+function encrypt(path: string, password: string): Promise<boolean> {
+  let tmpPath = path + ".tmp";
 
-    let cipher = createCipheriv(process.env.ALGORITHM!, key, iv);
-    let writeStream = createWriteStream(path + ".tmp");
+  return new Promise((res, rej) => {
+    let salt = bcrypt.genSaltSync(16);
+    let iv = crypto.randomBytes(16);
 
-    writeStream.write(salt);
-    writeStream.write(iv);
+    let key = deriveKey(password, salt);
 
-    createReadStream(path).pipe(cipher).pipe(writeStream);
+    let cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+    let writer = fs.createWriteStream(tmpPath);
 
-    writeStream.on("finish", () => {
-      unlinkSync(path);
-      renameSync(path + ".tmp", path);
-      res();
+    writer.write(salt);
+    writer.write(iv);
+
+    fs.createReadStream(path).pipe(cipher).pipe(writer);
+
+    writer.on("finish", async () => {
+      await deleteFile(path);
+      await renameFile(path + ".tmp", path);
+      res(true);
+      writer.close();
     });
+
+    writer.on("error", rej);
   });
 }
 
-function decrypt(path: string, password: string): Promise<boolean> {
-  return new Promise(res => {
-    let saltReadStream = createReadStream(path);
+function decryptLogic(
+  path: string,
+  password: string,
+  check: boolean = false
+): Promise<boolean> {
+  return new Promise((res, rej) => {
+    let reader = fs.createReadStream(path);
     let salt: Buffer, iv: Buffer;
 
-    saltReadStream.on("readable", () => {
+    let tmpPath = path + ".tmp";
+
+    reader.on("readable", () => {
       if (!salt) {
-        salt = saltReadStream.read(SALT_LENGTH);
+        salt = reader.read(SALT_LENGTH);
       }
 
       if (!iv) {
-        iv = saltReadStream.read(IV_LENGTH);
+        iv = reader.read(IV_LENGTH);
       }
 
       if (salt && iv) {
-        saltReadStream.close();
-        let key = generateKey(password, salt.toString("ascii"));
+        reader.close();
 
-        let isCorrect = compareSync(password, key);
+        let key = deriveKey(password, salt.toString("ascii"));
+        let decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
 
-        if (!isCorrect) {
-          res(false);
-          return;
-        }
+        decipher.on("error", rej).on("finish", () => res(true));
 
-        let decipher = createDecipheriv(process.env.ALGORITHM!, key, iv);
-
-        decipher.on("error", err => {
-          res(false);
-          console.error(err);
-        });
-
-        let readStream = createReadStream(path, {
+        reader = fs.createReadStream(path, {
           start: SALT_LENGTH + IV_LENGTH
         });
-        let writeStream = createWriteStream(path + ".tmp");
 
-        readStream.pipe(decipher).pipe(writeStream);
+        let piped = reader.pipe(decipher).on("err", rej);
 
-        writeStream.on("finish", () => {
-          unlinkSync(path);
-          renameSync(path + ".tmp", path);
-          res(true);
-          writeStream.close();
-        });
+        if (!check) {
+          let writer = fs.createWriteStream(tmpPath);
+          piped.pipe(writer);
+
+          writer.on("finish", async () => {
+            await deleteFile(path);
+            await renameFile(path + ".tmp", path);
+            res(true);
+            writer.close();
+          });
+        }
       }
     });
   });
 }
 
-export { encrypt, decrypt };
+async function decrypt(path: string, password: string, check: boolean = false) {
+  let tmpPath = path + ".tmp";
+  let res: boolean;
+
+  try {
+    res = await decryptLogic(path, password, check);
+  } catch (err) {
+    console.error("There was a problem decrypting", path, err);
+
+    if (fs.existsSync(tmpPath)) {
+      await deleteFile(tmpPath);
+    }
+    return false;
+  }
+
+  return res;
+}
+export { encrypt, decrypt, checkPassword };

@@ -1,23 +1,27 @@
-import React from "react";
 import { DeleteSafeActions } from "./delete-safe-actions";
 import { DeleteSafeDescription } from "./delete-safe-description";
-import { useInput } from "@renderer/hooks";
+import { useBoolean, useInput } from "@renderer/hooks";
+import { AnimateSafeManager } from "../animate-safe-manager";
+import { DeleteSafePasswordCheck } from "./delete-safe-password-check";
+import { useLocation } from "react-router-dom";
 
-interface DeleteSafeProps {
-  /**
-   * The name of the safe to delete.
-   */
-  name: string;
-}
-
-const DeleteSafe: React.FC<DeleteSafeProps> = ({ name }) => {
+const DeleteSafe = () => {
   const [password, onPasswordChange] = useInput();
+  const [wrongPassword, { toggle }] = useBoolean();
+
+  const { pathname } = useLocation();
+  const name = pathname.split("/").at(-1)!;
 
   return (
-    <>
-      <DeleteSafeDescription />
-      <DeleteSafeActions name={name} password={password} />
-    </>
+    <AnimateSafeManager>
+      <DeleteSafeDescription wrongPassword={wrongPassword} />
+      <DeleteSafePasswordCheck
+        password={password}
+        onPasswordChange={onPasswordChange}
+        wrongPassword={wrongPassword}
+      />
+      <DeleteSafeActions name={name} password={password} toggleWrongPassword={toggle} />
+    </AnimateSafeManager>
   );
 };
 

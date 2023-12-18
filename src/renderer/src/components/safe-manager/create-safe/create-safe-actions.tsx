@@ -7,7 +7,10 @@ const CreateSafeActions = () => {
 
   const onCreate = () => {
     on();
-    api.createSafe(name.get(), password.get()).then(off);
+    api.createSafe(name.get(), password.get()).then(() => {
+      off();
+      switchToBank();
+    });
   };
 
   return (
