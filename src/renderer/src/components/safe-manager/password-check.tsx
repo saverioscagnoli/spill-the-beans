@@ -3,13 +3,28 @@ import { Button, Input, Tooltip } from "tredici";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import React, { useEffect, useRef } from "react";
 
-interface DeleteSafePasswordCheckProps {
+interface PasswordCheckProps {
+  /**
+   * The password of the safe (delete / open).
+   */
   password: string;
+  /**
+   * The function to call when the password changes.
+   */
   onPasswordChange: InputChangeFunction;
+  /**
+   * Flag that indicates if the user input the wrong password. (delete / open)
+   */
   wrongPassword: boolean;
+
+  /**
+   * The label of the input.
+   */
+  label: string;
 }
 
-const DeleteSafePasswordCheck: React.FC<DeleteSafePasswordCheckProps> = ({
+const PasswordCheck: React.FC<PasswordCheckProps> = ({
+  label,
   password,
   onPasswordChange,
   wrongPassword
@@ -25,7 +40,7 @@ const DeleteSafePasswordCheck: React.FC<DeleteSafePasswordCheckProps> = ({
   return (
     <div className="flex flex-col mt-2">
       <label htmlFor="password" className="text-sm">
-        Please input the password of the safe to confirm.
+        {label}
       </label>
       <div className="w-full flex gap-2 mt-1">
         <Input
@@ -50,4 +65,4 @@ const DeleteSafePasswordCheck: React.FC<DeleteSafePasswordCheckProps> = ({
   );
 };
 
-export { DeleteSafePasswordCheck };
+export { PasswordCheck };

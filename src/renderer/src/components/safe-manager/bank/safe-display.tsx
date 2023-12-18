@@ -14,7 +14,7 @@ interface Safe {
  * This component is a container for the safes.
  */
 const SafeDisplay = () => {
-  const { switchToDeleteSafe } = useSafeManager();
+  const { switchToDeleteSafe, switchToOpenSafe } = useSafeManager();
   const [safes, setSafes] = useState<Safe[]>([]);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ const SafeDisplay = () => {
   }, []);
 
   const onDelete = (name: string) => () => switchToDeleteSafe(name);
+  const onOpen = (name: string) => () => switchToOpenSafe(name);
 
   return (
     <div className="w-full h-72 flex flex-col mt-4 gap-2 p-2 bg-gray-300/50 dark:bg-gray-600/30 rounded-lg overflow-auto">
@@ -43,7 +44,7 @@ const SafeDisplay = () => {
               />
             </Tooltip>
             <Tooltip content="Open" disableHoverableContent>
-              <Button.Icon icon={<LuDoorOpen size={20} />} />
+              <Button.Icon icon={<LuDoorOpen size={20} />} onClick={onOpen(safe.name)} />
             </Tooltip>
           </div>
         </div>

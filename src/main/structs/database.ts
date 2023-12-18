@@ -30,9 +30,9 @@ class Database<T extends string> {
           this.db.close();
           rej(err);
         }
-        this.db.close();
         res(rows);
       });
+      this.db.close();
     });
   }
 

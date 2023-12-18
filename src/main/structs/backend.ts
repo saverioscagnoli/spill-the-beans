@@ -4,7 +4,7 @@ import { Database } from "./database";
 import os from "os";
 import { join } from "path";
 import { existsSync, mkdirSync, readdirSync } from "fs";
-import { checkPassword, encrypt } from "./crypter";
+import { checkPassword, decrypt, encrypt } from "./crypter";
 import { deleteFile } from "../lib";
 
 class Backend {
@@ -53,6 +53,8 @@ class Backend {
     ipcMain.handle("get-safes", this.getSafes.bind(this));
     ipcMain.handle("create-safe", this.createSafe.bind(this));
     ipcMain.handle("delete-safe", this.deleteSafe.bind(this));
+    ipcMain.handle("open-safe", this.openSafe.bind(this));
+    ipcMain.handle("get-entries", this.getEntries.bind(this));
   }
 
   /**
@@ -124,15 +126,45 @@ class Backend {
   ): Promise<boolean> {
     let safePath = join(app.getPath("userData"), "Safes", args.name);
 
+    if (!existsSync(safePath)) return false;
+
     let isCorrect = await checkPassword(safePath, args.password);
 
-    if (!isCorrect) {
-      return false;
-    }
+    if (!isCorrect) return false;
 
     await deleteFile(safePath);
 
     return true;
+  }
+
+  private async openSafe(_, args: { name: string; password: string }) {
+    let safePath = join(app.getPath("userData"), "Safes", args.name);
+
+    if (!existsSync(safePath)) return false;
+
+    let isCorrect = await checkPassword(safePath, args.password);
+    if (!isCorrect) return false;
+
+    return true;
+  }
+
+  private async getEntries(_, args: { name: string; password: string }) {
+    let safePath = join(app.getPath("userData"), "Safes", args.name);
+
+    if (!existsSync(safePath)) return false;
+
+    await decrypt(safePath, args.password);
+
+    let db = new Database({
+      path: safePath,
+      fields: ["name", "username", "password"]
+    });
+
+
+    //let entries = await db.getEntries();
+
+    await encrypt(safePath, args.password);
+
   }
 }
 
