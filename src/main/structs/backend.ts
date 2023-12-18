@@ -1,118 +1,70 @@
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
+import { generate } from "generate-password";
 import { Database } from "./database";
 import os from "os";
-import bcrypt from "bcrypt";
 import { join } from "path";
-import { existsSync, readdirSync, statSync, unlinkSync } from "fs";
-import { generate } from "generate-password";
-import { decrypt, encrypt } from "../crypt";
-
-interface BackendOpts {
-  catalogPath: string;
-  safesPath: string;
-}
+import { existsSync, mkdirSync, readdirSync } from "fs";
+import { checkPassword, encrypt } from "./crypter";
+import { deleteFile } from "../lib";
 
 class Backend {
   private static instance: Backend;
-  private catalog: Database<"name" | "path" | "password">;
-  private safesPath: string;
 
-  private constructor({ catalogPath, safesPath }: BackendOpts) {
+  private catalog: Database<"name" | "path" | "created">;
+
+  private constructor() {
     this.catalog = new Database({
-      path: catalogPath,
-      fields: ["name", "path", "password"]
+      path: join(app.getPath("userData"), "Catalog"),
+      fields: ["name", "created", "path"]
     });
-
-    this.safesPath = safesPath;
   }
 
-  public static build(opts?: BackendOpts) {
+  /**
+   * @returns The singleton instance of the Backend class.
+   * @see https://en.wikipedia.org/wiki/Singleton_pattern
+   */
+  public static build() {
     if (!Backend.instance) {
-      if (!opts) throw new Error("No opts provided");
-      Backend.instance = new Backend(opts);
+      Backend.instance = new Backend();
     }
 
     return Backend.instance;
   }
 
-  public listen() {
-    ipcMain.handle("get-username", this.getUsername.bind(this));
-    ipcMain.handle("create-safe", this.createSafe.bind(this));
-    ipcMain.handle("open-safe", this.openSafe.bind(this));
-    ipcMain.handle("get-safes", this.getSafes.bind(this));
-    ipcMain.handle("delete-safe", this.deleteSafe.bind(this));
-    ipcMain.handle("gen-password", this.generatePassword.bind(this));
-    ipcMain.handle("get-entries", this.getEntries.bind(this));
-    ipcMain.handle("create-entry", this.createEntry.bind(this));
+  /**
+   * Initializes the Backend class.
+   * Must be called only once.
+   */
+  public init() {
+    let safeFolderPath = join(app.getPath("userData"), "Safes");
+
+    if (!existsSync(safeFolderPath)) {
+      mkdirSync(safeFolderPath);
+    }
   }
 
+  /**
+   * Listens to IPC events.
+   * Must be called only once.
+   */
+  public listen() {
+    ipcMain.handle("get-username", this.getUsername.bind(this));
+    ipcMain.handle("generate-password", this.generatePassword.bind(this));
+    ipcMain.handle("get-safes", this.getSafes.bind(this));
+    ipcMain.handle("create-safe", this.createSafe.bind(this));
+    ipcMain.handle("delete-safe", this.deleteSafe.bind(this));
+  }
+
+  /**
+   * @returns The username of the current machine user.
+   */
   private getUsername(): string {
     return os.userInfo().username;
   }
 
-  private async createSafe(_, args: { name: string; password: string }) {
-    let salt = await bcrypt.genSalt(16);
-    let hash = await bcrypt.hash(args.password, salt);
-
-    this.catalog.addEntry({
-      name: args.name,
-      path: join(this.safesPath, `${args.name}.safe`),
-      password: hash
-    });
-
-    new Database({
-      path: join(
-        this.safesPath,
-        args.name.endsWith(".safe") ? args.name : `${args.name}.safe`
-      ),
-      fields: ["name", "password", "iv"]
-    });
-
-    return true;
-  }
-
-  private async openSafe(_, args: { name: string; password: string }) {
-    let entries = await this.catalog.getEntries();
-    let safe = entries.find(e => e.name === args.name.replace(/.safe/g, ""));
-
-    if (!safe) return;
-
-    return await bcrypt.compare(args.password, safe.password);
-  }
-
-  private async getSafes() {
-    if (!existsSync(this.safesPath)) {
-      return [];
-    }
-
-    let safes = readdirSync(this.safesPath).filter(s => s.endsWith(".safe"));
-
-    return safes.map(name => {
-      let path = join(this.safesPath, name);
-      let date = statSync(path).birthtime;
-      return {
-        name,
-        created:
-          date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
-        path
-      };
-    });
-  }
-
-  private async deleteSafe(_, args: { name: string }) {
-    if (!existsSync(this.safesPath)) {
-      return;
-    }
-
-    let safePath = join(this.safesPath, args.name);
-
-    if (!existsSync(safePath)) {
-      return;
-    }
-
-    unlinkSync(safePath);
-  }
-
+  /**
+   * @returns A randomly generated password.
+   */
   private generatePassword(
     _,
     args: {
@@ -123,44 +75,64 @@ class Backend {
       uppercase: boolean;
       exclude: string;
     }
-  ) {
-    return generate({
-      length: args.length,
-      numbers: args.numbers,
-      symbols: args.symbols,
-      lowercase: args.lowercase,
-      uppercase: args.uppercase,
-      exclude: args.exclude
-    });
+  ): string {
+    return generate({ ...args });
   }
 
-  private async getEntries(_, args: { path: string }) {
-    let safe = new Database({
-      path: args.path,
-      fields: ["name", "password", "iv"]
-    });
-    let entries = await safe.getEntries();
-    return Promise.all(
-      entries.map(async e => {
+  /**
+   * @returns The list of safes.
+   */
+  private async getSafes() {
+    let safes = readdirSync(join(app.getPath("userData"), "Safes"));
+
+    return safes
+      .map(safe => {
         return {
-          name: e.name,
-          password: await decrypt({ iv: e.iv, password: e.password })
+          name: safe,
+          created: new Date().toISOString(),
+          path: join(app.getPath("userData"), "Safes", safe)
         };
       })
-    );
+      .filter(safe => !safe.name.endsWith(".tmp"));
   }
 
-  private async createEntry(
-    _,
-    args: { path: string; name: string; password: string }
-  ) {
-    let safe = new Database({
-      path: args.path,
-      fields: ["name", "password", "iv"]
+  private async createSafe(_, args: { name: string; password: string }): Promise<void> {
+    let safePath = join(app.getPath("userData"), "Safes", args.name);
+    new Database({
+      path: safePath,
+      fields: ["name", "username", "password"]
     });
-    let data = (await encrypt(args.password)) || { iv: "", password: "" };
 
-    safe.addEntry({ name: args.name, password: data.password, iv: data.iv });
+    return new Promise((res, rej) => {
+      this.catalog
+        .addEntry({
+          name: args.name,
+          created: new Date().toISOString(),
+          path: safePath
+        })
+        .then(() => {
+          encrypt(safePath, args.password);
+          res();
+        })
+        .catch(rej);
+    });
+  }
+
+  private async deleteSafe(
+    _,
+    args: { name: string; password: string }
+  ): Promise<boolean> {
+    let safePath = join(app.getPath("userData"), "Safes", args.name);
+
+    let isCorrect = await checkPassword(safePath, args.password);
+
+    if (!isCorrect) {
+      return false;
+    }
+
+    await deleteFile(safePath);
+
+    return true;
   }
 }
 
