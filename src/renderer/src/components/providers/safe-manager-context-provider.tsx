@@ -49,12 +49,21 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
     });
   };
 
+  const switchToOpenSafe = (name: string) => {
+    navigate(`manage/open/${name}`, { replace: true });
+    setAnimations({
+      initial: { x: 400 },
+      exit: { x: -400 }
+    });
+  };
+
   return (
     <SafeManagerContext.Provider
       value={{
         switchToBank,
         switchToCreateSafe,
         switchToDeleteSafe,
+        switchToOpenSafe,
 
         name: { get: () => name, set: setName },
         password: { get: () => password, set: setPassword },

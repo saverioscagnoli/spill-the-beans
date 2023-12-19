@@ -2,8 +2,8 @@ import { DeleteSafeActions } from "./delete-safe-actions";
 import { DeleteSafeDescription } from "./delete-safe-description";
 import { useBoolean, useInput } from "@renderer/hooks";
 import { AnimateSafeManager } from "../animate-safe-manager";
-import { DeleteSafePasswordCheck } from "./delete-safe-password-check";
 import { useLocation } from "react-router-dom";
+import { PasswordCheck } from "../password-check";
 
 const DeleteSafe = () => {
   const [password, onPasswordChange] = useInput();
@@ -15,7 +15,8 @@ const DeleteSafe = () => {
   return (
     <AnimateSafeManager>
       <DeleteSafeDescription wrongPassword={wrongPassword} />
-      <DeleteSafePasswordCheck
+      <PasswordCheck
+        label="Please enter the password of the safe to confirm."
         password={password}
         onPasswordChange={onPasswordChange}
         wrongPassword={wrongPassword}
