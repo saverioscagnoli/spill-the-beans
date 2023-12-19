@@ -16,7 +16,7 @@ const api: Api = {
       exclude
     }),
   deleteSafe: (name, password) => ipcRenderer.invoke("delete-safe", { name, password }),
-  getEntries: path => ipcRenderer.invoke("get-entries", { path }),
+  getEntries: (name, password) => ipcRenderer.invoke("get-entries", { name, password }),
   createEntry: (name, password, path) =>
     ipcRenderer.invoke("create-entry", { name, password, path })
 };

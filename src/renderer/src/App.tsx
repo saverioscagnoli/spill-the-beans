@@ -1,8 +1,8 @@
 import { useTheme } from "tredici";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import { HomePage } from "./pages";
+import { HomePage, SafePage } from "./pages";
 import { Navbar } from "./components";
-import { Bank, CreateSafe, DeleteSafe } from "./components/safe-manager";
+import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
 
 const App = () => {
   const { theme } = useTheme();
@@ -22,8 +22,10 @@ const App = () => {
             <Route path="/" element={<HomePage />}>
               <Route index element={<Bank />} />
               <Route path="/manage/create" element={<CreateSafe />} />
-              <Route path="/manage/delete/:name" element={<DeleteSafe  />} />
+              <Route path="/manage/delete/:name" element={<DeleteSafe />} />
+              <Route path="/manage/open/:name" element={<OpenSafe />} />
             </Route>
+            <Route path="/:name" element={<SafePage />} />
           </Routes>
         </Router>
       </div>
