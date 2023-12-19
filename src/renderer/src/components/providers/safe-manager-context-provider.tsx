@@ -1,7 +1,7 @@
 import { SafeManagerContext } from "@renderer/contexts";
 import { useBoolean } from "@renderer/hooks";
 import { Variants } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface SafeManagerContextProviderProps {
@@ -19,6 +19,15 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
     exit: { x: -400 }
   });
   const [isAnimating, { set, toggle }] = useBoolean();
+
+  useEffect(() => {
+    if (!isAnimating) {
+      setAnimations({
+        initial: { x: 0 },
+        exit: { x: 0 }
+      });
+    }
+  }, [isAnimating]);
 
   const switchToBank = () => {
     navigate("/", { replace: true });

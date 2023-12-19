@@ -16,7 +16,7 @@ const App = () => {
       }}
     >
       <Navbar />
-      <div className="w-full h-[calc(100%-4rem)] flex flex-col justify-center items-center">
+      <div className="w-full h-[calc(100%-4rem)]">
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />}>

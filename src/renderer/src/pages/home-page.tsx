@@ -7,7 +7,7 @@ const HomePage = () => {
   const { settings } = useSettings();
 
   return (
-    <>
+    <div className="w-full h-full flex flex-col justify-center items-center">
       <h1 className="text-5xl font-bold">Welcome back, {settings.username}!</h1>
       <h3 className="text-xl font-semibold">What do you want to do?</h3>
       <div className="flex gap-4 mt-4">
@@ -33,7 +33,7 @@ const HomePage = () => {
           </SafeManager>
         </SafeManagerContextProvider>
       </div>
-    </>
+    </div>
   );
 };
 

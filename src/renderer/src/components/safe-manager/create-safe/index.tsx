@@ -5,11 +5,11 @@ import { AnimateSafeManager } from "../animate-safe-manager";
 
 const CreateSafe = () => {
   return (
-    <AnimateSafeManager>
+    <>
       <CreateSafeDescription />
       <CreateSafeForm />
       <CreateSafeActions />
-    </AnimateSafeManager>
+    </>
   );
 };
 

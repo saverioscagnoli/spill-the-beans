@@ -90,10 +90,10 @@ class Backend {
   }
 
   private async createSafe(_, args: { name: string; password: string }): Promise<void> {
-    let safePath = this.getSafePath(args.name);
     let { name, password } = args;
+    let safePath = this.getSafePath(name);
 
-    let csv = new CSV({ path: safePath, headers: ["index", "name", "password"] });
+    new CSV({ path: safePath, headers: ["index", "name", "password"] });
 
     await encrypt(safePath, password);
   }

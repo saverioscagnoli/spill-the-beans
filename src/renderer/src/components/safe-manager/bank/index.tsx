@@ -5,11 +5,11 @@ import { AnimateSafeManager } from "../animate-safe-manager";
 
 const Bank = () => {
   return (
-    <AnimateSafeManager>
+    <>
       <BankDescription />
       <SafeDisplay />
       <BankActions />
-    </AnimateSafeManager>
+    </>
   );
 };
 

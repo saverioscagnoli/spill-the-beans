@@ -16,8 +16,6 @@ const SafeDisplay = () => {
   const { switchToDeleteSafe, switchToOpenSafe } = useSafeManager();
   const [safes, setSafes] = useState<Safe[]>([]);
 
-  console.log(safes);
-
   useEffect(() => {
     api.getSafes().then(setSafes);
   }, []);

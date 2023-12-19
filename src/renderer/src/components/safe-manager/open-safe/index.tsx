@@ -1,5 +1,4 @@
 import { useLocation } from "react-router-dom";
-import { AnimateSafeManager } from "../animate-safe-manager";
 import { OpenSafeDescription } from "./open-safe-description";
 import { PasswordCheck } from "../password-check";
 import { useBoolean, useInput } from "@renderer/hooks";
@@ -13,7 +12,7 @@ const OpenSafe = () => {
   const [password, onPasswordChange] = useInput();
 
   return (
-    <AnimateSafeManager>
+    <>
       <OpenSafeDescription wrongPassword={wrongPassword} />
       <PasswordCheck
         label="Password"
@@ -22,7 +21,7 @@ const OpenSafe = () => {
         wrongPassword={wrongPassword}
       />
       <OpenSafeActions name={name} password={password} toggleWrongPassword={toggle} />
-    </AnimateSafeManager>
+    </>
   );
 };
 
