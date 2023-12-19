@@ -11,8 +11,6 @@ interface SafeManagerProps {
 const SafeManager: React.FC<SafeManagerProps> = ({ children }) => {
   const { isAnimating } = useSafeManager();
 
-  console.log(isAnimating.get());
-
   return (
     <Dialog>
       <Dialog.Trigger>{children}</Dialog.Trigger>
