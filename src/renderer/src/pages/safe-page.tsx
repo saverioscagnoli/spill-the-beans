@@ -1,18 +1,38 @@
+import { useBoolean } from "@renderer/hooks";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Spinner } from "tredici";
 
 const SafePage = () => {
   const location = useLocation();
-  const [entries, setEntries] = useState([]);
+  const [entries, setEntries] = useState<any[]>([]);
+  const [loading, { on, off }] = useBoolean();
 
   useEffect(() => {
     let { name, password } = location.state;
     console.log(name, password);
 
-    api.getEntries(name, password).then(setEntries);
+    on();
+    api.getEntries(name, password).then(e => {
+      setEntries(e);
+      off();
+    }).catch((err) => {
+      off();
+      console.log(err);
+    })
   }, []);
 
-  return <>{entries.length > 0 ? entries.map(() => <h1>zioper</h1>) : <h1> empty</h1>}</>;
+  return (
+    <>
+      {loading ? (
+        <Spinner size="xl" />
+      ) : entries.length > 0 ? (
+        entries.map(e => <p>{e.name}</p>)
+      ) : (
+        <p>empty</p>
+      )}
+    </>
+  );
 };
 
 export { SafePage };
