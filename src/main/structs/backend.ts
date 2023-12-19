@@ -1,16 +1,19 @@
 import { app, ipcMain } from "electron";
-import { generate } from "generate-password";
+import pwgen from "generate-password";
 import os from "os";
-import { join } from "path";
-import { existsSync, mkdirSync, readdirSync } from "fs";
-import { checkPassword, decrypt, encrypt } from "./crypter";
-import { deleteFile } from "../lib";
+import path from "path";
+import fs from "fs";
+import { checkPassword, decrypt, deleteFile, encrypt, readDir } from "../lib";
 import { CSV } from "csv-rw";
 
 class Backend {
   private static instance: Backend;
 
-  private constructor() {}
+  private safesPath: string;
+
+  private constructor() {
+    this.safesPath = path.join(app.getPath("userData"), "Safes");
+  }
 
   /**
    * @returns The singleton instance of the Backend class.
@@ -29,11 +32,7 @@ class Backend {
    * Must be called only once.
    */
   public init() {
-    let safeFolderPath = join(app.getPath("userData"), "Safes");
-
-    if (!existsSync(safeFolderPath)) {
-      mkdirSync(safeFolderPath);
-    }
+    if (!fs.existsSync(this.safesPath)) fs.mkdirSync(this.safesPath);
   }
 
   /**
@@ -48,6 +47,10 @@ class Backend {
     ipcMain.handle("delete-safe", this.deleteSafe.bind(this));
     ipcMain.handle("open-safe", this.openSafe.bind(this));
     ipcMain.handle("get-entries", this.getEntries.bind(this));
+  }
+
+  private getSafePath(name: string): string {
+    return path.join(this.safesPath, name);
   }
 
   /**
@@ -71,33 +74,27 @@ class Backend {
       exclude: string;
     }
   ): string {
-    return generate({ ...args });
+    return pwgen.generate({ ...args });
   }
 
   /**
    * @returns The list of safes.
    */
   private async getSafes() {
-    let safes = readdirSync(join(app.getPath("userData"), "Safes"));
+    let safes = await readDir(this.safesPath);
 
-    return safes
-      .map(safe => {
-        return {
-          name: safe,
-          created: new Date().toISOString(),
-          path: join(app.getPath("userData"), "Safes", safe)
-        };
-      })
-      .filter(safe => !safe.name.endsWith(".tmp"));
+    return safes.map(safe => ({
+      name: safe,
+      path: this.getSafePath(safe)
+    }));
   }
 
   private async createSafe(_, args: { name: string; password: string }): Promise<void> {
-    let safePath = join(app.getPath("userData"), "Safes", args.name);
+    let safePath = this.getSafePath(args.name);
     let { name, password } = args;
 
     let csv = new CSV({ path: safePath, headers: ["index", "name", "password"] });
 
-    await csv.write({ index: 0, name, password });
     await encrypt(safePath, password);
   }
 
@@ -105,12 +102,11 @@ class Backend {
     _,
     args: { name: string; password: string }
   ): Promise<boolean> {
-    let safePath = join(app.getPath("userData"), "Safes", args.name);
+    let safePath = this.getSafePath(args.name);
 
-    if (!existsSync(safePath)) return false;
+    if (!fs.existsSync(safePath)) return false;
 
     let isCorrect = await checkPassword(safePath, args.password);
-
     if (!isCorrect) return false;
 
     await deleteFile(safePath);
@@ -119,20 +115,16 @@ class Backend {
   }
 
   private async openSafe(_, args: { name: string; password: string }) {
-    let safePath = join(app.getPath("userData"), "Safes", args.name);
+    let safePath = this.getSafePath(args.name);
 
-    if (!existsSync(safePath)) return false;
-
-    let isCorrect = await checkPassword(safePath, args.password);
-    if (!isCorrect) return false;
-
-    return true;
+    if (!fs.existsSync(safePath)) return false;
+    return await checkPassword(safePath, args.password);
   }
 
   private async getEntries(_, args: { name: string; password: string }) {
-    let safePath = join(app.getPath("userData"), "Safes", args.name);
+    let safePath = this.getSafePath(args.name);
 
-    if (!existsSync(safePath)) return false;
+    if (!fs.existsSync(safePath)) return false;
 
     await decrypt(safePath, args.password);
 

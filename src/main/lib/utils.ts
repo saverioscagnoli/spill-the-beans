@@ -1,15 +1,39 @@
-import { rename, unlink } from "fs";
+import fs from "fs";
 
-function deleteFile(path: string) {
+async function readFile(path: string): Promise<Buffer> {
   return new Promise((res, rej) => {
-    unlink(path, err => void (err ? rej(err) : res(true)));
+    fs.readFile(path, (err, data) => {
+      if (err) rej(err);
+      else res(data);
+    });
   });
 }
 
-function renameFile(oldPath: string, newPath: string) {
+async function writeFile(path: string, data: Buffer): Promise<void> {
   return new Promise((res, rej) => {
-    rename(oldPath, newPath, err => void (err ? rej(err) : res(true)));
+    fs.writeFile(path, data, err => {
+      if (err) rej(err);
+      else res();
+    });
   });
 }
 
-export { deleteFile, renameFile };
+async function deleteFile(path: string): Promise<void> {
+  return new Promise((res, rej) => {
+    fs.unlink(path, err => {
+      if (err) rej(err);
+      else res();
+    });
+  });
+}
+
+async function readDir(path: string): Promise<string[]> {
+  return new Promise((res, rej) => {
+    fs.readdir(path, (err, files) => {
+      if (err) rej(err);
+      else res(files);
+    });
+  });
+}
+
+export { readFile, writeFile, deleteFile, readDir };

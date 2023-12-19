@@ -6,7 +6,6 @@ import { useSafeManager } from "@renderer/hooks";
 
 interface Safe {
   name: string;
-  created: string;
   path: string;
 }
 
@@ -16,6 +15,8 @@ interface Safe {
 const SafeDisplay = () => {
   const { switchToDeleteSafe, switchToOpenSafe } = useSafeManager();
   const [safes, setSafes] = useState<Safe[]>([]);
+
+  console.log(safes);
 
   useEffect(() => {
     api.getSafes().then(setSafes);

@@ -23,7 +23,6 @@
     "@electron-toolkit/utils": "^2.0.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
-    "cryptify": "^4.1.2",
     "csv-rw": "^2.0.1",
     "dotenv": "^16.3.1",
     "electron-updater": "^6.1.1",
