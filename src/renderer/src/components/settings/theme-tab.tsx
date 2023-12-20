@@ -1,7 +1,10 @@
-import { Checkbox, Select, Tabs, Tooltip, useTheme } from "tredici";
+import { useSettings } from "@renderer/hooks";
+import { capitalize } from "@renderer/lib";
+import { Checkbox, ColorScheme, Select, Tabs, Tooltip, useTheme } from "tredici";
 
 const ThemeTab = () => {
   const { theme, setTheme } = useTheme();
+  const { colorScheme } = useSettings();
 
   const onCheck = (which: "dark" | "light") => () => {
     setTheme(which);
@@ -34,13 +37,21 @@ const ThemeTab = () => {
             <p>Color scheme</p>
           </Tooltip>
 
-          <Select>
-            <Select.Trigger>Choose an option</Select.Trigger>
+          <Select onValueChange={v => colorScheme.set(v as ColorScheme)} defaultValue="amethyst">
+            <Select.Trigger>
+              {colorScheme.get() === "b/w"
+                ? "Black and white"
+                : capitalize(colorScheme.get())}
+            </Select.Trigger>
             <Select.Content>
               <Select.Item value="amethyst">Amethyst</Select.Item>
               <Select.Item value="teal">Teal</Select.Item>
               <Select.Item value="green">Green</Select.Item>
               <Select.Item value="crimson">Crimson</Select.Item>
+              <Select.Item value="yellow">Yellow</Select.Item>
+              <Select.Item value="blue">Blue</Select.Item>
+              <Select.Item value="pink">Pink</Select.Item>
+              <Select.Item value="b/w">Black and white</Select.Item>
             </Select.Content>
           </Select>
         </div>

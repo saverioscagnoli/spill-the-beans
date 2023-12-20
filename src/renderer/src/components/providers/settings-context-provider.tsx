@@ -1,5 +1,6 @@
 import { SettingsContext } from "@renderer/contexts";
 import { ReactNode, useEffect, useState } from "react";
+import { ColorScheme } from "tredici";
 
 interface SettingsContextProviderProps {
   children: ReactNode;
@@ -14,6 +15,7 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
 }) => {
   const [username, setUsername] = useState<string>("");
   const [propic, setPropic] = useState<string>("");
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("amethyst");
 
   useEffect(() => {
     api.getUsername().then(setUsername);
@@ -30,6 +32,10 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
         propic: {
           get: () => propic,
           set: setPropic
+        },
+        colorScheme: {
+          get: () => colorScheme,
+          set: setColorScheme
         }
       }}
     >

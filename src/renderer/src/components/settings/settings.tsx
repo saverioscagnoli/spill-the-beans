@@ -15,7 +15,7 @@ const Settings: React.FC<SettingsProps> = ({ children }) => {
   return (
     <Dialog>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
-      <Dialog.Content className="w-full">
+      <Dialog.Content className="w-full h-5/6">
         <Dialog.Title>Settings</Dialog.Title>
         <Tabs defaultValue="profile">
           <div className="flex gap-4">
@@ -29,7 +29,7 @@ const Settings: React.FC<SettingsProps> = ({ children }) => {
           </div>
         </Tabs>
 
-        <div className="w-full flex justify-end">
+        <div className="w-full flex justify-end absolute bottom-2 right-4">
           <Dialog.Close asChild>
             <Button>Close</Button>
           </Dialog.Close>
