@@ -1,6 +1,5 @@
 import { SettingsContext } from "@renderer/contexts";
-import { Settings } from "@renderer/contexts";
-import React, { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface SettingsContextProviderProps {
   children: ReactNode;
@@ -13,20 +12,27 @@ interface SettingsContextProviderProps {
 const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
   children
 }) => {
-  const [settings, setSettings] = useState<Settings>({ username: "", propic: "" });
+  const [username, setUsername] = useState<string>("");
+  const [propic, setPropic] = useState<string>("");
 
   useEffect(() => {
-    setDefaultSettings();
+    api.getUsername().then(setUsername);
+    api.getDefaultPropic().then(res => void (typeof res !== "boolean" && setPropic(res)));
   }, []);
 
-  const setDefaultSettings = async () => {
-    let username = await api.getUsername();
-
-    setSettings({ username });
-  };
-
   return (
-    <SettingsContext.Provider value={{ settings, setSettings }}>
+    <SettingsContext.Provider
+      value={{
+        username: {
+          get: () => username,
+          set: setUsername
+        },
+        propic: {
+          get: () => propic,
+          set: setPropic
+        }
+      }}
+    >
       {children}
     </SettingsContext.Provider>
   );

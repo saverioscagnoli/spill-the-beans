@@ -1,15 +1,20 @@
-import { useSettings } from "@renderer/hooks";
 import { Avatar, Button } from "tredici";
 import { LuSettings } from "react-icons/lu";
 import { Settings } from "../settings";
+import { useSettings } from "@renderer/hooks";
 
 const Navbar = () => {
-  const { settings } = useSettings();
+  const { username, propic } = useSettings();
 
   return (
     <div className="w-full h-16 flex justify-between">
       <div className="h-full flex items-center">
-        <Avatar className="ml-3" colorScheme="b/w" fallback={settings.username[0]} />
+        <Avatar
+          className="ml-3"
+          colorScheme="b/w"
+          imageSrc={propic.get()}
+          fallback={username.get()[0]}
+        />
       </div>
 
       <div className="h-full flex items-center">

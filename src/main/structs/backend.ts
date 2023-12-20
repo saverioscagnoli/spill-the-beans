@@ -1,18 +1,29 @@
-import { app, ipcMain } from "electron";
+import { app, dialog, ipcMain, nativeImage } from "electron";
 import pwgen from "generate-password";
 import os from "os";
 import path from "path";
 import fs from "fs";
-import { checkPassword, decrypt, deleteFile, encrypt, readDir } from "../lib";
+import {
+  readFile,
+  checkPassword,
+  copyFile,
+  decrypt,
+  deleteFile,
+  encrypt,
+  readDir,
+  renameFile
+} from "../lib";
 import { CSV } from "csv-rw";
 
 class Backend {
   private static instance: Backend;
 
   private safesPath: string;
+  private propicPath: string;
 
   private constructor() {
     this.safesPath = path.join(app.getPath("userData"), "Safes");
+    this.propicPath = path.join(app.getPath("userData"), "propic.png");
   }
 
   /**
@@ -47,6 +58,9 @@ class Backend {
     ipcMain.handle("delete-safe", this.deleteSafe.bind(this));
     ipcMain.handle("open-safe", this.openSafe.bind(this));
     ipcMain.handle("get-entries", this.getEntries.bind(this));
+    ipcMain.handle("edit-propic", this.editPropic.bind(this));
+    ipcMain.handle("get-default-propic", this.getDefaultPropic.bind(this));
+    ipcMain.handle("reset-propic", this.resetPropic.bind(this));
   }
 
   private getSafePath(name: string): string {
@@ -134,6 +148,46 @@ class Backend {
     await encrypt(safePath, args.password);
 
     return entries;
+  }
+
+  private async editPropic() {
+    let res = await dialog.showOpenDialog({
+      properties: ["openFile", "showHiddenFiles"],
+      filters: [{ name: "Images", extensions: ["jpg", "png", "gif"] }]
+    });
+
+    if (res.canceled) return;
+
+    let propicPath = res.filePaths[0];
+    let name = path.basename(propicPath);
+    let dest = path.join(app.getPath("userData"), name);
+
+    try {
+      await copyFile(propicPath, dest);
+      await renameFile(dest, this.propicPath);
+    } catch (err) {
+      console.error(err);
+    }
+
+    let raw = await readFile(this.propicPath);
+
+    let img = nativeImage.createFromBuffer(raw);
+    return img.toDataURL();
+  }
+
+  private async getDefaultPropic(): Promise<boolean | string> {
+    if (!fs.existsSync(this.propicPath)) return false;
+
+    let raw = await readFile(this.propicPath);
+
+    let img = nativeImage.createFromBuffer(raw);
+    return img.toDataURL();
+  }
+
+  private async resetPropic() {
+    if (!fs.existsSync(this.propicPath)) return;
+
+    await deleteFile(this.propicPath);
   }
 }
 
