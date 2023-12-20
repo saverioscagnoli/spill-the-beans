@@ -16,6 +16,9 @@ interface Api {
   deleteSafe: (name: string, password: string) => Promise<boolean>;
   getEntries: (name: string, password: string) => Promise<any>;
   createEntry: (name: string, password: string, path: string) => Promise<void>;
+  editPropic: () => Promise<string>;
+  getDefaultPropic: () => Promise<boolean | string>;
+  resetPropic: () => Promise<void>;
 }
 
 export { type Api };

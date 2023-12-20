@@ -36,4 +36,22 @@ async function readDir(path: string): Promise<string[]> {
   });
 }
 
-export { readFile, writeFile, deleteFile, readDir };
+async function copyFile(file: string, dest: string) {
+  return new Promise((res, rej) => {
+    fs.copyFile(file, dest, err => {
+      if (err) rej(err);
+      else res(true);
+    });
+  });
+}
+
+async function renameFile(oldPath: string, newPath: string) {
+  return new Promise((res, rej) => {
+    fs.rename(oldPath, newPath, err => {
+      if (err) rej(err);
+      else res(true);
+    });
+  });
+}
+
+export { readFile, writeFile, deleteFile, readDir, copyFile, renameFile };

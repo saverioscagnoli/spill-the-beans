@@ -18,7 +18,10 @@ const api: Api = {
   deleteSafe: (name, password) => ipcRenderer.invoke("delete-safe", { name, password }),
   getEntries: (name, password) => ipcRenderer.invoke("get-entries", { name, password }),
   createEntry: (name, password, path) =>
-    ipcRenderer.invoke("create-entry", { name, password, path })
+    ipcRenderer.invoke("create-entry", { name, password, path }),
+  editPropic: () => ipcRenderer.invoke("edit-propic"),
+  getDefaultPropic: () => ipcRenderer.invoke("get-default-propic"),
+  resetPropic: () => ipcRenderer.invoke("reset-propic")
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

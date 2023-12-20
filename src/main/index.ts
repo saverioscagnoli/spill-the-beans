@@ -13,9 +13,10 @@ async function createWindow(): Promise<void> {
     minWidth: 800,
     minHeight: 600,
     ...(process.platform === "linux" ? { icon } : {}),
+
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
-      sandbox: false,
+      sandbox: false
     }
   });
 
