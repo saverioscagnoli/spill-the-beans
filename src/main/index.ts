@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { Backend } from "./structs";
+import { SafeManager } from "./structs";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.
@@ -13,15 +13,15 @@ async function createWindow(): Promise<void> {
     minWidth: 800,
     minHeight: 600,
     ...(process.platform === "linux" ? { icon } : {}),
+
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
-      sandbox: false,
+      sandbox: false
     }
   });
 
-  const backend = Backend.build();
-  backend.init();
-  backend.listen();
+  const safeManager = SafeManager.build();
+  safeManager.listen();
 
   win.on("ready-to-show", () => {
     win.show();

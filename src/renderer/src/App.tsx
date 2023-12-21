@@ -1,8 +1,9 @@
-import { useTheme } from "tredici";
+import { Tredici, useTheme } from "tredici";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { HomePage, SafePage } from "./pages";
 import { Navbar } from "./components";
 import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
+import { useSettings } from "./hooks";
 
 const App = () => {
   const { theme } = useTheme();
@@ -33,4 +34,14 @@ const App = () => {
   );
 };
 
-export { App };
+const AppWrapper = () => {
+  const { colorScheme } = useSettings();
+
+  return (
+    <Tredici defaultColorScheme={colorScheme.get()}>
+      <App />
+    </Tredici>
+  );
+};
+
+export { AppWrapper as App };

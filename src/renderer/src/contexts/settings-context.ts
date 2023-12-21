@@ -1,21 +1,23 @@
-import { Dispatch, SetStateAction, createContext } from "react";
+import { createContext } from "react";
+import { Attribute } from "./types";
+import { ColorScheme } from "tredici";
 
-export interface Settings {
+export interface SettingsContextProps {
   /**
    * The username of the user.
    * The default username is the name of the User's OS account.
    */
-  username: string;
+  username: Attribute<string>;
 
   /**
    * The path to the user's profile picture.
    */
-  propic?: string;
-}
+  propic: Attribute<string>;
 
-export interface SettingsContextProps {
-  settings: Settings;
-  setSettings: Dispatch<SetStateAction<Settings>>;
+  /**
+   * Color shceme of the components which are not black and white.
+   */
+  colorScheme: Attribute<ColorScheme>;
 }
 
 const SettingsContext = createContext<SettingsContextProps | null>(null);
