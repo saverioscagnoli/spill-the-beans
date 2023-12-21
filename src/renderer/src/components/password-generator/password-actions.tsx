@@ -5,17 +5,17 @@ const PasswordActions = () => {
   const { password, length, numbers, symbols, lowercase, uppercase, exclude } =
     usePasswordGenerator();
 
-  const onGenerate = () => {
-    api
-      .generatePassword(
-        length.get(),
-        numbers.get(),
-        symbols.get(),
-        lowercase.get(),
-        uppercase.get(),
-        exclude.get()
-      )
-      .then(password.set);
+  const onGenerate = async () => {
+    let pw = await api.generatePassword({
+      length: length.get(),
+      numbers: numbers.get(),
+      symbols: symbols.get(),
+      lowercase: lowercase.get(),
+      uppercase: uppercase.get(),
+      exclude: exclude.get()
+    });
+
+    password.set(pw);
   };
 
   return (

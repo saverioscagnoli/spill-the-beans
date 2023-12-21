@@ -1,5 +1,5 @@
 import { CSV } from "csv-rw";
-import { SAFE_HEADERS, SALT_LENGTH, deriveKey } from "../lib";
+import { SAFE_HEADERS } from "../lib";
 import path from "path";
 import { app } from "electron";
 import encryptWorker from "../workers/encrypt?nodeWorker";

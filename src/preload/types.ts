@@ -1,19 +1,19 @@
-type CheckboxValue = boolean | "indeterminate";
+import { ColorScheme } from "tredici";
+
+interface PasswordFlags {
+  length: number;
+  numbers: boolean;
+  symbols: boolean;
+  uppercase: boolean;
+  lowercase: boolean;
+  exclude: string;
+}
 
 interface Api {
   getUsername: () => Promise<string>;
   setUsername: (username: string) => Promise<void>;
-  openSafe: (name: string, password: stirng) => Promise<Electron.OpenDialogReturnValue>;
-  createSafe: (name: string, password: string) => Promise<Electron.SaveDialogReturnValue>;
   getSafes: () => Promise<{ name: string; created: string; path: string }[]>;
-  generatePassword: (
-    length: number,
-    numbers: CheckboxValue,
-    symbols: CheckboxValue,
-    lowercase: CheckboxValue,
-    uppercase: CheckboxValue,
-    exclude: string
-  ) => Promise<string>;
+  generatePassword: (flags: PasswordFlags) => Promise<string>;
   deleteSafe: (name: string, password: string) => Promise<boolean>;
   getEntries: (name: string, password: string) => Promise<any>;
   createEntry: (
@@ -34,6 +34,9 @@ interface Api {
 
   getDefaultTheme: () => Promise<"light" | "dark">;
   setDefaultTheme: (theme: "light" | "dark") => Promise<void>;
+
+  getColorScheme: () => Promise<ColorScheme>;
+  setColorScheme: (scheme: ColorScheme) => Promise<void>;
 }
 
 export { type Api };

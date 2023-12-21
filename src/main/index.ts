@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { SafeManager, SettingsManager } from "./structs";
+import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.
@@ -25,6 +25,9 @@ async function createWindow(): Promise<void> {
 
   const settingsManager = SettingsManager.build();
   settingsManager.listen();
+
+  const miscFunctions = MiscFunctions.build();
+  miscFunctions.listen();
 
   win.on("ready-to-show", () => {
     win.show();
@@ -66,6 +69,10 @@ app.whenReady().then(async () => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+});
+
+app.on("before-quit", async () => {
+  await SettingsManager.build().saveSettings();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

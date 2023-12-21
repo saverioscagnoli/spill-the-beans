@@ -4,18 +4,8 @@ import { Api } from "./types";
 const api: Api = {
   getUsername: () => ipcRenderer.invoke("get-username"),
   setUsername: username => ipcRenderer.invoke("set-username", username),
-  openSafe: (name, password) => ipcRenderer.invoke("open-safe", { name, password }),
-  createSafe: (name, password) => ipcRenderer.invoke("create-safe", { name, password }),
   getSafes: () => ipcRenderer.invoke("get-safes"),
-  generatePassword: (length, numbers, symbols, lowercase, uppercase, exclude) =>
-    ipcRenderer.invoke("generate-password", {
-      length,
-      numbers,
-      symbols,
-      lowercase,
-      uppercase,
-      exclude
-    }),
+  generatePassword: flags => ipcRenderer.invoke("generate-password", flags),
   deleteSafe: (name, password) => ipcRenderer.invoke("delete-safe", { name, password }),
   getEntries: (name, password) => ipcRenderer.invoke("get-entries", { name, password }),
   createEntry: (safeName, safePassword, name, password, email, notes) =>
@@ -33,10 +23,13 @@ const api: Api = {
   getSafeNames: () => ipcRenderer.invoke("get-safe-names"),
 
   getPropic: () => ipcRenderer.invoke("get-propic"),
-  setPropic: reset => ipcRenderer.invoke("set-propic", { reset }),
+  setPropic: () => ipcRenderer.invoke("set-propic"),
 
   getDefaultTheme: () => ipcRenderer.invoke("get-default-theme"),
-  setDefaultTheme: theme => ipcRenderer.invoke("set-default-theme", theme)
+  setDefaultTheme: theme => ipcRenderer.invoke("set-default-theme", theme),
+
+  getColorScheme: () => ipcRenderer.invoke("get-color-scheme"),
+  setColorScheme: scheme => ipcRenderer.invoke("set-color-scheme", scheme)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

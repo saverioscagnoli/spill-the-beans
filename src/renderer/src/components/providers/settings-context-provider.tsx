@@ -22,6 +22,7 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
     api.getUsername().then(setUsername);
     api.getPropic().then(setPropic);
     api.getDefaultTheme().then(setDefaultTheme);
+    api.getColorScheme().then(setColorScheme);
   }, []);
 
   return (
