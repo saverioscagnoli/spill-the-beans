@@ -1,57 +1,15 @@
-import fs from "fs";
 import crypto from "crypto";
 import { PBKDF2_ITERATIONS } from "./consts";
+import readFileWorker from "../workers/read-file?nodeWorker";
 
-async function readFile(path: string): Promise<Buffer> {
+async function readFileWithWorker(path: string): Promise<Buffer> {
   return new Promise((res, rej) => {
-    fs.readFile(path, (err, data) => {
-      if (err) rej(err);
-      else res(data);
-    });
-  });
-}
+    let worker = readFileWorker({ workerData: { path } });
 
-async function writeFile(path: string, data: Buffer): Promise<void> {
-  return new Promise((res, rej) => {
-    fs.writeFile(path, data, err => {
-      if (err) rej(err);
-      else res();
-    });
-  });
-}
+    worker.on("error", rej);
 
-async function deleteFile(path: string): Promise<void> {
-  return new Promise((res, rej) => {
-    fs.unlink(path, err => {
-      if (err) rej(err);
-      else res();
-    });
-  });
-}
-
-async function readDir(path: string): Promise<string[]> {
-  return new Promise((res, rej) => {
-    fs.readdir(path, (err, files) => {
-      if (err) rej(err);
-      else res(files);
-    });
-  });
-}
-
-async function copyFile(file: string, dest: string) {
-  return new Promise((res, rej) => {
-    fs.copyFile(file, dest, err => {
-      if (err) rej(err);
-      else res(true);
-    });
-  });
-}
-
-async function renameFile(oldPath: string, newPath: string) {
-  return new Promise((res, rej) => {
-    fs.rename(oldPath, newPath, err => {
-      if (err) rej(err);
-      else res(true);
+    worker.on("message", (data: Buffer) => {
+      res(data);
     });
   });
 }
@@ -65,4 +23,4 @@ async function deriveKey(password: string, salt: string): Promise<Buffer> {
   });
 }
 
-export { readFile, writeFile, deleteFile, readDir, copyFile, renameFile, deriveKey };
+export { readFileWithWorker, deriveKey };

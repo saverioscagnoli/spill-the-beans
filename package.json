@@ -33,7 +33,7 @@
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.20.1",
     "tailwind-merge": "^2.1.0",
-    "tredici": "^1.0.1"
+    "tredici": "^1.0.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",

@@ -1,20 +1,13 @@
-import { Avatar, Button } from "tredici";
+import { Button } from "tredici";
 import { LuSettings } from "react-icons/lu";
 import { Settings } from "../settings";
-import { useSettings } from "@renderer/hooks";
+import { UserAvatar } from "../user-avatar";
 
 const Navbar = () => {
-  const { username, propic } = useSettings();
-
   return (
     <div className="w-full h-16 flex justify-between">
       <div className="h-full flex items-center">
-        <Avatar
-          className="ml-3"
-          colorScheme="b/w"
-          imageSrc={propic.get()}
-          fallback={username.get()[0]}
-        />
+        <UserAvatar className="ml-3" colorScheme="b/w" />
       </div>
 
       <div className="h-full flex items-center">

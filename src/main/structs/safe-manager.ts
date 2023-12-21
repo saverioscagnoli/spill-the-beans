@@ -39,6 +39,7 @@ class SafeManager {
       async (_, args) => await this.createSafe(args.name, args.password)
     );
     ipcMain.handle("delete-safe", async (_, args) => await this.deleteSafe(args.name));
+    ipcMain.handle("get-safe-names", () => this.getSafeNames());
   }
 
   /**
@@ -61,6 +62,7 @@ class SafeManager {
       await safe.encrypt(password);
     } catch (err) {
       console.error(err);
+      console.log("Failed to encrypt safe.");
       return false;
     }
 
@@ -77,6 +79,14 @@ class SafeManager {
     if (index === -1) return;
     this.safes.splice(index, 1);
     await fsp.unlink(path.join(Safe.folder, name));
+  }
+
+  /**
+   * Function to display the safes in the renderer process.
+   * @returns The names of the safes.
+   */
+  private getSafeNames() {
+    return this.safes.map(safe => safe.name);
   }
 }
 

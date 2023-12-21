@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import { SafeManager } from "./structs";
+import { SafeManager, SettingsManager } from "./structs";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.
@@ -22,6 +22,9 @@ async function createWindow(): Promise<void> {
 
   const safeManager = SafeManager.build();
   safeManager.listen();
+
+  const settingsManager = SettingsManager.build();
+  settingsManager.listen();
 
   win.on("ready-to-show", () => {
     win.show();

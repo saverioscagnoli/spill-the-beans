@@ -3,6 +3,7 @@ import { Api } from "./types";
 
 const api: Api = {
   getUsername: () => ipcRenderer.invoke("get-username"),
+  setUsername: username => ipcRenderer.invoke("set-username", username),
   openSafe: (name, password) => ipcRenderer.invoke("open-safe", { name, password }),
   createSafe: (name, password) => ipcRenderer.invoke("create-safe", { name, password }),
   getSafes: () => ipcRenderer.invoke("get-safes"),
@@ -28,7 +29,14 @@ const api: Api = {
     }),
   editPropic: () => ipcRenderer.invoke("edit-propic"),
   getDefaultPropic: () => ipcRenderer.invoke("get-default-propic"),
-  resetPropic: () => ipcRenderer.invoke("reset-propic")
+  resetPropic: () => ipcRenderer.invoke("reset-propic"),
+  getSafeNames: () => ipcRenderer.invoke("get-safe-names"),
+
+  getPropic: () => ipcRenderer.invoke("get-propic"),
+  setPropic: reset => ipcRenderer.invoke("set-propic", { reset }),
+
+  getDefaultTheme: () => ipcRenderer.invoke("get-default-theme"),
+  setDefaultTheme: theme => ipcRenderer.invoke("set-default-theme", theme)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

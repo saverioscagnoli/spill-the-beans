@@ -1,28 +1,33 @@
 import { useSettings } from "@renderer/hooks";
 import { ChangeEvent } from "react";
-import { Avatar, Input, Tabs, Tooltip } from "tredici";
+import { Input, Tabs, Tooltip } from "tredici";
+import { UserAvatar } from "../user-avatar";
 
 const ProfileTab = () => {
   const { username, propic } = useSettings();
 
   const onUsernameChange = (evt: ChangeEvent<HTMLInputElement>) => {
     username.set(evt.target.value);
+    api.setUsername(evt.target.value);
   };
 
   const onPropicChange = async () => {
-    let res = await api.editPropic();
-    if (!res) await api.resetPropic();
-    propic.set(res);
+    let res = await api.setPropic();
+    if (!res) {
+      await api.resetPropic();
+      propic.set("");
+    } else {
+      propic.set(res);
+    }
   };
 
   return (
     <Tabs.Content value="profile">
       <div className="flex gap-4 items-center">
         <Tooltip content="Click to edit!">
-          <Avatar
+          <UserAvatar
             className="w-20 h-20 cursor-pointer"
             colorScheme="b/w"
-            imageSrc={propic.get()}
             // @ts-ignore
             fallback={<p className="text-3xl">{username.get()[0]}</p>}
             onClick={onPropicChange}
