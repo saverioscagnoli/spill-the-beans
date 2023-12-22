@@ -34,7 +34,8 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
     let res = await api.openSafe(name, password);
     off();
 
-    if (res) navigate(`/${name}`, { replace: true, state: { name, password } });
+    if (res)
+      navigate(`/${name}`, { replace: true, state: { name, password, entries: res } });
     else toggleWrongPassword();
   };
 

@@ -17,29 +17,21 @@ export interface Entry {
 const SafePage = () => {
   const location = useLocation();
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [loading, { on, off }] = useBoolean();
 
   useEffect(() => {
-    let { name, password } = location.state;
+    let { entries } = location.state;
 
-    on();
-    api
-      .getEntries(name, password)
-      .then(e => {
-        setEntries(e);
-        off();
-      })
-      .catch(err => {
-        off();
-        console.log(err);
-      });
+    setEntries(entries);
   }, []);
+
+  const onClose = async () => {
+    let { name, password } = location.state;
+    await api.closeSafe(name, password);
+  };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center relative">
-      {loading ? (
-        <Spinner style={{ width: "3rem", height: "3rem", animationDuration: "400ms" }} />
-      ) : entries.length > 0 ? (
+      {entries.length > 0 ? (
         entries.map(e => <SafeEntry key={e.name} {...e} />)
       ) : (
         <div className="flex flex-col gap-1 justify-center items-center">
@@ -50,7 +42,7 @@ const SafePage = () => {
           </AddEntry>
         </div>
       )}
-      <BackButton />
+      <BackButton action={onClose} />
     </div>
   );
 };

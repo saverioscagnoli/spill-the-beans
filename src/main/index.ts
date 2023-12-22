@@ -71,8 +71,20 @@ app.whenReady().then(async () => {
   });
 });
 
-app.on("before-quit", async () => {
-  await SettingsManager.build().saveSettings();
+app.on("before-quit", async evt => {
+  evt.preventDefault();
+
+  const settingsManager = SettingsManager.build();
+  await settingsManager.saveSettings();
+
+  const safeManager = SafeManager.build();
+
+  if (safeManager.open !== null) {
+    let { safe, password } = safeManager.open;
+    await safe.encrypt(password);
+  }
+
+  app.exit();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

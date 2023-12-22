@@ -4,9 +4,7 @@ import { Api } from "./types";
 const api: Api = {
   getUsername: () => ipcRenderer.invoke("get-username"),
   setUsername: username => ipcRenderer.invoke("set-username", username),
-  getSafes: () => ipcRenderer.invoke("get-safes"),
   generatePassword: flags => ipcRenderer.invoke("generate-password", flags),
-  deleteSafe: (name, password) => ipcRenderer.invoke("delete-safe", { name, password }),
   getEntries: (name, password) => ipcRenderer.invoke("get-entries", { name, password }),
   createEntry: (safeName, safePassword, name, password, email, notes) =>
     ipcRenderer.invoke("create-entry", {
@@ -19,6 +17,9 @@ const api: Api = {
     }),
 
   createSafe: (name, password) => ipcRenderer.invoke("create-safe", { name, password }),
+  deleteSafe: (name, password) => ipcRenderer.invoke("delete-safe", { name, password }),
+  openSafe: (name, password) => ipcRenderer.invoke("open-safe", { name, password }),
+  closeSafe: (name, password) => ipcRenderer.invoke("close-safe", { name, password }),
 
   editPropic: () => ipcRenderer.invoke("edit-propic"),
   getDefaultPropic: () => ipcRenderer.invoke("get-default-propic"),

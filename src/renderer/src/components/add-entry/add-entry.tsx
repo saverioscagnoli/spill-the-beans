@@ -1,5 +1,5 @@
 import { useBoolean, useInput } from "@renderer/hooks";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import { Button, Dialog, Input, Spinner } from "tredici";
 import { IconContainer } from "./icon-container";
 
@@ -25,12 +25,11 @@ const AddEntry: React.FC<AddEntryProps> = ({ children, safeName, safePassword })
   const [name, onNameChange] = useInput();
   const [password, onPasswordChange] = useInput();
   const [email, onEmailChange] = useInput();
-  const [notes, onNotesChange] = useInput();
   const [loading, { on, off }] = useBoolean();
 
   const onCreate = async () => {
     on();
-    await api.createEntry(safeName, safePassword, name, password, email, notes);
+    await api.createEntry(safeName, safePassword, name, password, email);
     off();
   };
 
@@ -90,20 +89,6 @@ const AddEntry: React.FC<AddEntryProps> = ({ children, safeName, safePassword })
               placeholder="jimmy.mcgill@gmail.com"
               value={email}
               onChange={onEmailChange}
-            />
-          </div>
-        </div>
-
-        <div className="w-full flex flex-col mt-2">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm">Notes</p>
-            <textarea
-              className="border rounded-lg p-2"
-              draggable={false}
-              spellCheck={false}
-              value={notes}
-              // @ts-ignore
-              onChange={onNotesChange}
             />
           </div>
         </div>

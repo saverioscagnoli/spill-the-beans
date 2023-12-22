@@ -12,9 +12,7 @@ interface PasswordFlags {
 interface Api {
   getUsername: () => Promise<string>;
   setUsername: (username: string) => Promise<void>;
-  getSafes: () => Promise<{ name: string; created: string; path: string }[]>;
   generatePassword: (flags: PasswordFlags) => Promise<string>;
-  deleteSafe: (name: string, password: string) => Promise<boolean>;
   getEntries: (name: string, password: string) => Promise<any>;
   createEntry: (
     safeName: string,
@@ -26,6 +24,9 @@ interface Api {
   ) => Promise<void>;
 
   createSafe: (name: string, password: string) => Promise<void>;
+  deleteSafe: (name: string, password: string) => Promise<boolean>;
+  openSafe: (name: string, password: string) => Promise<boolean>;
+  closeSafe: (name: string, password: string) => Promise<void>;
 
   editPropic: () => Promise<string>;
   getDefaultPropic: () => Promise<boolean | string>;

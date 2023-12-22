@@ -1,11 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Tooltip } from "tredici";
 import { RxArrowLeft } from "react-icons/rx";
+import React from "react";
 
-const BackButton = () => {
+interface BackButtonProps {
+  action?: Function;
+}
+
+const BackButton: React.FC<BackButtonProps> = ({ action }) => {
   const navigate = useNavigate();
 
-  const onBack = () => navigate("/");
+  const onBack = () => {
+    action?.();
+    navigate("/");
+  };
 
   return (
     <Tooltip content="Back">

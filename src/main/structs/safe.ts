@@ -46,6 +46,7 @@ class Safe extends CSV<(typeof SAFE_HEADERS)[number]> {
 
       worker.on("message", async (data: Buffer) => {
         await fsp.writeFile(this.path, data);
+        worker.terminate();
         res(true);
       });
     });

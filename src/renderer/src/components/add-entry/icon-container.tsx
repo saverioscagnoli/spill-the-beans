@@ -23,7 +23,7 @@ const IconContainer = () => {
     <div className="w-full flex flex-col mt-2">
       <div className="flex flex-col gap-1">
         <p className="text-sm">Icon</p>
-        <div className="w-full flex justify-between items-center gap-2 h-12 border px-1 rounded-lg">
+        <div className="w-full flex justify-between items-center gap-2 h-12 px-1 rounded-lg">
           <ButtonIcon icon={<BsGoogle />} label="google" selectedIcon={attribute} />
           <ButtonIcon icon={<BsAmazon />} label="amazon" selectedIcon={attribute} />
           <ButtonIcon icon={<BsInstagram />} label="instagram" selectedIcon={attribute} />
