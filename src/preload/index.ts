@@ -17,6 +17,9 @@ const api: Api = {
       email,
       notes
     }),
+
+  createSafe: (name, password) => ipcRenderer.invoke("create-safe", { name, password }),
+
   editPropic: () => ipcRenderer.invoke("edit-propic"),
   getDefaultPropic: () => ipcRenderer.invoke("get-default-propic"),
   resetPropic: () => ipcRenderer.invoke("reset-propic"),

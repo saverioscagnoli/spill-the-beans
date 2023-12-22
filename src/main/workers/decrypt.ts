@@ -4,7 +4,7 @@ import { ENCRYPTION_ALGORITHM, IV_LENGTH, SALT_LENGTH, deriveKey } from "../lib"
 
 async function main() {
   let { buffer, password } = workerData as { buffer: Buffer; password: string };
-  let salt = buffer.subarray(0, SALT_LENGTH).toString("ascii");
+  let salt = Buffer.from(buffer.subarray(0, SALT_LENGTH)).toString("ascii");
   let iv = buffer.subarray(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
   let encrypted = buffer.subarray(SALT_LENGTH + IV_LENGTH);
 

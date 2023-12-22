@@ -24,6 +24,9 @@ interface Api {
     email?: string,
     notes?: string
   ) => Promise<void>;
+
+  createSafe: (name: string, password: string) => Promise<void>;
+
   editPropic: () => Promise<string>;
   getDefaultPropic: () => Promise<boolean | string>;
 

@@ -38,7 +38,10 @@ class SafeManager {
       "create-safe",
       async (_, args) => await this.createSafe(args.name, args.password)
     );
-    ipcMain.handle("delete-safe", async (_, args) => await this.deleteSafe(args.name));
+    ipcMain.handle(
+      "delete-safe",
+      async (_, args) => await this.deleteSafe(args.name, args.password)
+    );
     ipcMain.handle("get-safe-names", () => this.getSafeNames());
   }
 
@@ -74,11 +77,22 @@ class SafeManager {
    * Deletes a safe from the safe manager.
    * @param name The name of the safe to delete.
    */
-  private async deleteSafe(name: string) {
+  private async deleteSafe(name: string, password: string) {
     let index = this.safes.findIndex(safe => safe.name === name);
     if (index === -1) return;
+    let safe = this.safes[index];
+
+    try {
+      await safe.decrypt(password);
+    } catch (err) {
+      console.error(err);
+      console.log("Failed to decrypt safe.");
+      return false;
+    }
+
     this.safes.splice(index, 1);
     await fsp.unlink(path.join(Safe.folder, name));
+    return true;
   }
 
   /**

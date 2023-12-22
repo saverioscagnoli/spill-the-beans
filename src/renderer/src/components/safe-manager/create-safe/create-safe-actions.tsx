@@ -5,12 +5,11 @@ const CreateSafeActions = () => {
   const { name, password, switchToBank } = useSafeManager();
   const [loading, { on, off }] = useBoolean(false);
 
-  const onCreate = () => {
+  const onCreate = async () => {
     on();
-    api.createSafe(name.get(), password.get()).then(() => {
-      off();
-      switchToBank();
-    });
+    await api.createSafe(name.get(), password.get());
+    off();
+    switchToBank();
   };
 
   return (

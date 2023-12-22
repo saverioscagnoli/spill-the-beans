@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 const SAFE_HEADERS = ["index", "name", "password", "email", "notes", "icon"] as const;
 const SALT_ROUNDS = 14;
 const PBKDF2_ITERATIONS = 100000;
