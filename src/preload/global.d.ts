@@ -1,7 +1,8 @@
 import { Api } from "./types";
+import { IpcRenderer } from "electron";
 
 declare global {
-  const ipcRenderer: Electron.IpcRenderer;
+  const ipcRenderer: IpcRenderer;
   const api: Api;
 
   interface Window {

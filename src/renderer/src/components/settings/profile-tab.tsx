@@ -1,6 +1,7 @@
 import { useSettings } from "@renderer/hooks";
 import { ChangeEvent } from "react";
-import { Avatar, Input, Tabs, Tooltip } from "tredici";
+import { Input, Tabs, Tooltip } from "tredici";
+import { UserAvatar } from "../user-avatar";
 
 const ProfileTab = () => {
   const { username, propic } = useSettings();
@@ -19,10 +20,9 @@ const ProfileTab = () => {
     <Tabs.Content value="profile">
       <div className="flex gap-4 items-center">
         <Tooltip content="Click to edit!">
-          <Avatar
+          <UserAvatar
             className="w-20 h-20 cursor-pointer"
             colorScheme="b/w"
-            imageSrc={propic.get()}
             // @ts-ignore
             fallback={<p className="text-3xl">{username.get()[0]}</p>}
             onClick={onPropicChange}

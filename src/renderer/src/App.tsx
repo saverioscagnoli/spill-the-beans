@@ -4,10 +4,19 @@ import { HomePage, SafePage } from "./pages";
 import { Navbar } from "./components";
 import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
 import { useSettings } from "./hooks";
+import { useEffect } from "react";
 
 const App = () => {
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
+
+  useEffect(() => {
+    api.getDefaultTheme().then(setTheme);
+  }, []);
+
+  useEffect(() => {
+    api.setDefaultTheme(theme);
+  }, [theme]);
 
   return (
     <div

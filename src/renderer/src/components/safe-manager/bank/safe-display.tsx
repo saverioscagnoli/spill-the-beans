@@ -4,20 +4,15 @@ import { LuDoorOpen, LuTrash2 } from "react-icons/lu";
 import { cn } from "@renderer/lib";
 import { useSafeManager } from "@renderer/hooks";
 
-interface Safe {
-  name: string;
-  path: string;
-}
-
 /**
  * This component is a container for the safes.
  */
 const SafeDisplay = () => {
   const { switchToDeleteSafe, switchToOpenSafe } = useSafeManager();
-  const [safes, setSafes] = useState<Safe[]>([]);
+  const [safeNames, setSafeNames] = useState<string[]>([]);
 
   useEffect(() => {
-    api.getSafes().then(setSafes);
+    api.getSafeNames().then(setSafeNames);
   }, []);
 
   const onDelete = (name: string) => () => switchToDeleteSafe(name);
@@ -25,25 +20,25 @@ const SafeDisplay = () => {
 
   return (
     <div className="w-full h-72 flex flex-col mt-4 gap-2 p-2 bg-gray-300/50 dark:bg-gray-600/30 rounded-lg overflow-auto">
-      {safes.map(safe => (
+      {safeNames.map(name => (
         <div
-          key={safe.path}
+          key={name}
           className={cn(
             "w-full h-12 flex justify-between items-center p-2",
             "safe-display"
           )}
         >
-          <p>{safe.name}</p>
+          <p>{name}</p>
           <div className="flex gap-2">
             <Tooltip content="Delete" disableHoverableContent>
               <Button.Icon
                 colorScheme="crimson"
                 icon={<LuTrash2 size={20} />}
-                onClick={onDelete(safe.name)}
+                onClick={onDelete(name)}
               />
             </Tooltip>
             <Tooltip content="Open" disableHoverableContent>
-              <Button.Icon icon={<LuDoorOpen size={20} />} onClick={onOpen(safe.name)} />
+              <Button.Icon icon={<LuDoorOpen size={20} />} onClick={onOpen(name)} />
             </Tooltip>
           </div>
         </div>

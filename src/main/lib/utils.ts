@@ -1,57 +1,155 @@
+import crypto from "crypto";
+import bcrypt from "bcrypt";
+import { PBKDF2_ITERATIONS } from "./consts";
+import readFileWorker from "../workers/read-file?nodeWorker";
+import readline from "readline";
 import fs from "fs";
 
-async function readFile(path: string): Promise<Buffer> {
+async function readFileWithWorker(path: string): Promise<Buffer> {
   return new Promise((res, rej) => {
-    fs.readFile(path, (err, data) => {
-      if (err) rej(err);
-      else res(data);
+    let worker = readFileWorker({ workerData: { path } });
+
+    worker.on("error", rej);
+
+    worker.on("message", (data: Buffer) => {
+      res(data);
     });
   });
 }
 
-async function writeFile(path: string, data: Buffer): Promise<void> {
-  return new Promise((res, rej) => {
-    fs.writeFile(path, data, err => {
+async function deriveKey(password: string, salt: string): Promise<string> {
+  return new Promise(async (res, rej) => {
+    let hashed = await bcrypt.hash(password, salt);
+    crypto.pbkdf2(hashed, salt, PBKDF2_ITERATIONS, 16, "sha512", (err, derivedKey) => {
       if (err) rej(err);
-      else res();
+      else res(derivedKey.toString("hex"));
     });
   });
 }
 
-async function deleteFile(path: string): Promise<void> {
+/**
+ * Returns the url of the image to use in the src attribute of an img tag.
+ * @param ext the extension of the image
+ * @param base64 the base64 string of the image
+ * @returns the url of the image to use in the src attribute of an img tag
+ */
+function getImageUrl(ext: string, base64: string): string {
+  return `data:image/${ext};base64,${base64}`;
+}
+
+interface RngOptions {
+  /**
+   * The range minimum
+   */
+  min: number;
+
+  /**
+   * The range maximum
+   */
+  max: number;
+}
+
+function rng({ min, max }: RngOptions): number {
+  return crypto.randomInt(min, max + 1);
+}
+
+/**
+ * Picks a random element from an array.
+ * @param arr The array to pick from.
+ * @returns The random element.
+ */
+function pick<T>(arr: T[]): T {
+  return arr[rng({ min: 0, max: arr.length - 1 })];
+}
+
+interface PasswordFlags {
+  /**
+   * The length of the password.
+   */
+  length: number;
+
+  /**
+   * Whether to include numbers
+   */
+  numbers?: boolean;
+
+  /**
+   * Whether to include symbols
+   */
+  symbols?: boolean;
+
+  /**
+   * Whether to include uppercase letters
+   */
+  uppercase?: boolean;
+
+  /**
+   * Whether to include lowercase letters
+   */
+  lowercase?: boolean;
+
+  /**
+   * The characters to exclude
+   */
+  exclude?: string;
+}
+
+function generatePassword({
+  length,
+  numbers = true,
+  symbols = true,
+  uppercase = true,
+  lowercase = true,
+  exclude = ""
+}: PasswordFlags) {
+  const pool = [
+    ...(numbers ? "0123456789" : ""),
+    ...(symbols ? "!@#$%^&*()_+-=[]{};:,./<>?" : ""),
+    ...(uppercase ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : ""),
+    ...(lowercase ? "abcdefghijklmnopqrstuvwxyz" : "")
+  ].filter(c => !exclude.includes(c));
+
+  if (pool.length === 0) return "404";
+
+  return Array.from({ length }, () => pick(pool)).join("");
+}
+
+function readByLine(
+  path: string,
+  cb: (line: string, i: number) => void,
+  opts: { limit?: number } = {}
+): Promise<void> {
+  let rl = readline.createInterface({
+    input: fs.createReadStream(path),
+    crlfDelay: Infinity
+  });
+
+  let i = 0;
+
   return new Promise((res, rej) => {
-    fs.unlink(path, err => {
-      if (err) rej(err);
-      else res();
+    rl.on("line", async line => {
+      try {
+        cb(line, i);
+        i++;
+        if (opts.limit && i >= opts.limit) rl.close();
+      } catch (err) {
+        rej(err);
+      }
     });
+
+    rl.on("close", () => res());
+    rl.on("error", rej);
   });
 }
 
-async function readDir(path: string): Promise<string[]> {
-  return new Promise((res, rej) => {
-    fs.readdir(path, (err, files) => {
-      if (err) rej(err);
-      else res(files);
-    });
-  });
-}
+export {
+  readFileWithWorker,
+  deriveKey,
+  getImageUrl,
+  generatePassword,
+  rng,
+  pick,
+  readByLine
+};
 
-async function copyFile(file: string, dest: string) {
-  return new Promise((res, rej) => {
-    fs.copyFile(file, dest, err => {
-      if (err) rej(err);
-      else res(true);
-    });
-  });
-}
-
-async function renameFile(oldPath: string, newPath: string) {
-  return new Promise((res, rej) => {
-    fs.rename(oldPath, newPath, err => {
-      if (err) rej(err);
-      else res(true);
-    });
-  });
-}
-
-export { readFile, writeFile, deleteFile, readDir, copyFile, renameFile };
+export { type PasswordFlags };

@@ -8,7 +8,7 @@ const PasswordDisplay = () => {
     <div className="w-full h-20 flex items-center justify-center bg-gray-300/50 dark:bg-gray-600/30 rounded-lg mt-4 relative">
       <p className="font-semibold">
         {password.get().length > 0 ? (
-          password.get().startsWith("undefined") ? (
+          password.get() === "404" ? (
             "There's no characters available!"
           ) : (
             password.get()
