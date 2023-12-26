@@ -1,18 +1,17 @@
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 import { Safe } from "./safe";
 import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 
 class SafeManager {
+  public static readonly SafesFolder = path.join(app.getPath("userData"), "Safes");
   private static instance: SafeManager;
 
   public safes: Safe[];
-  public open: { safe: Safe; password: string } | null;
 
   private constructor() {
     this.safes = [];
-    this.open = null;
     this.init();
   }
 
@@ -26,7 +25,7 @@ class SafeManager {
    * Reads the safes from disk.
    */
   private init() {
-    let safes = fs.readdirSync(Safe.folder);
+    let safes = fs.readdirSync(SafeManager.SafesFolder);
 
     for (let name of safes) {
       this.safes.push(new Safe({ name }));
@@ -51,8 +50,16 @@ class SafeManager {
       async (_, args) => await this.openSafe(args.name, args.password)
     );
     ipcMain.handle(
-      "close-safe",
-      async (_, args) => await this.closeSafe(args.name, args.password)
+      "create-entry",
+      async (_, args) =>
+        await this.createEntry(
+          args.safeName,
+          args.safePassword,
+          args.name,
+          args.password,
+          args.email,
+          args.icon
+        )
     );
   }
 
@@ -94,7 +101,7 @@ class SafeManager {
     let safe = this.safes[index];
 
     try {
-      await safe.decrypt(password, false);
+      await safe.read(password);
     } catch (err) {
       console.error(err);
       console.log("Failed to decrypt safe.");
@@ -102,7 +109,7 @@ class SafeManager {
     }
 
     this.safes.splice(index, 1);
-    await fsp.unlink(path.join(Safe.folder, name));
+    await fsp.unlink(path.join(SafeManager.SafesFolder, name));
     return true;
   }
 
@@ -124,40 +131,41 @@ class SafeManager {
    */
   private async openSafe(name: string, password: string) {
     let safe = this.safes.find(safe => safe.name === name);
+    let entries: any[] = [];
     if (!safe) return;
 
     try {
-      await safe.decrypt(password);
+      entries = await safe.read(password);
     } catch (err) {
       console.error(err);
       console.log("Failed to decrypt safe.");
       return false;
     }
 
-    this.open = { safe, password };
-    return await safe.read();
+    return entries;
   }
 
-  /**
-   * Close a safe and encrypts it.
-   * @param name The name of the safe to close.
-   * @param password The password of the safe to close.
-   * @returns A boolean indicating whether the safe was closed successfully.
-   */
-  private async closeSafe(name: string, password: string) {
-    let safe = this.safes.find(safe => safe.name === name);
+  private async createEntry(
+    safeName: string,
+    safePassword: string,
+    name: string,
+    password: string,
+    email?: string,
+    icon?: string
+  ) {
+    console.log(safeName, safePassword);
+    let safe = this.safes.find(safe => safe.name === safeName);
     if (!safe) return;
 
-    try {
-      await safe.encrypt(password);
-    } catch (err) {
-      console.error(err);
-      console.log("Failed to encrypt safe.");
-      return false;
-    }
+    let entries = await safe.read(safePassword);
 
-    this.open = null;
-    return true;
+    entries.push({ index: entries.length, name, password, email, icon });
+
+    let csv = entries.map(e => Object.values(e).join(safe!.getDelimiter())).join("\n");
+
+    await safe.encrypt(safePassword, Buffer.from("\n" + csv));
+
+    return entries;
   }
 }
 

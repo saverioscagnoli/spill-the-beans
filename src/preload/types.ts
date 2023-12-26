@@ -20,8 +20,8 @@ interface Api {
     name: string,
     password: string,
     email?: string,
-    notes?: string
-  ) => Promise<void>;
+    icon?: string
+  ) => Promise<any>;
 
   createSafe: (name: string, password: string) => Promise<void>;
   deleteSafe: (name: string, password: string) => Promise<boolean>;

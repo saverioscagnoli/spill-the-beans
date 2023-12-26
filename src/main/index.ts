@@ -77,13 +77,6 @@ app.on("before-quit", async evt => {
   const settingsManager = SettingsManager.build();
   await settingsManager.saveSettings();
 
-  const safeManager = SafeManager.build();
-
-  if (safeManager.open !== null) {
-    let { safe, password } = safeManager.open;
-    await safe.encrypt(password);
-  }
-
   app.exit();
 });
 

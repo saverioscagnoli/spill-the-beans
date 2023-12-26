@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-const SAFE_HEADERS = ["index", "name", "password", "email", "notes", "icon"] as const;
+const SAFE_HEADERS = ["n:index", "s:name", "s:password", "s:email?", "s:icon?"] as const;
 const SALT_ROUNDS = 14;
 const PBKDF2_ITERATIONS = 100000;
 const ENCRYPTION_ALGORITHM = process.env.ALGORITHM ?? "aes-256-gcm";

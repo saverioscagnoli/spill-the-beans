@@ -1,7 +1,8 @@
 import { useBoolean, useInput } from "@renderer/hooks";
-import React, { ReactNode } from "react";
+import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import { Button, Dialog, Input, Spinner } from "tredici";
 import { IconContainer } from "./icon-container";
+import { Entry } from "@renderer/pages";
 
 interface AddEntryProps {
   /**
@@ -19,9 +20,16 @@ interface AddEntryProps {
    * The password of the safe.
    */
   safePassword: string;
+
+  setEntries: Dispatch<SetStateAction<Entry[]>>;
 }
 
-const AddEntry: React.FC<AddEntryProps> = ({ children, safeName, safePassword }) => {
+const AddEntry: React.FC<AddEntryProps> = ({
+  children,
+  safeName,
+  safePassword,
+  setEntries
+}) => {
   const [name, onNameChange] = useInput();
   const [password, onPasswordChange] = useInput();
   const [email, onEmailChange] = useInput();
@@ -29,7 +37,8 @@ const AddEntry: React.FC<AddEntryProps> = ({ children, safeName, safePassword })
 
   const onCreate = async () => {
     on();
-    await api.createEntry(safeName, safePassword, name, password, email);
+    let entries = await api.createEntry(safeName, safePassword, name, password, email);
+    setEntries(entries as Entry[]);
     off();
   };
 
