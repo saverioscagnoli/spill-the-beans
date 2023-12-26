@@ -16,13 +16,10 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
   const [username, setUsername] = useState<string>("");
   const [propic, setPropic] = useState<string>("");
   const [colorScheme, setColorScheme] = useState<ColorScheme>("amethyst");
-  const [defaultTheme, setDefaultTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     api.getUsername().then(setUsername);
-    api.getPropic().then(setPropic);
-    api.getDefaultTheme().then(setDefaultTheme);
-    api.getColorScheme().then(setColorScheme);
+    api.getDefaultPropic().then(res => void (typeof res !== "boolean" && setPropic(res)));
   }, []);
 
   return (
@@ -39,10 +36,7 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
         colorScheme: {
           get: () => colorScheme,
           set: setColorScheme
-        },
-
-        //@ts-ignore
-        defaultTheme
+        }
       }}
     >
       {children}

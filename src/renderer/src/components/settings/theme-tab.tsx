@@ -37,13 +37,7 @@ const ThemeTab = () => {
             <p>Color scheme</p>
           </Tooltip>
 
-          <Select
-            onValueChange={v => {
-              colorScheme.set(v as ColorScheme);
-              api.setColorScheme(v as ColorScheme);
-            }}
-            defaultValue={colorScheme.get()}
-          >
+          <Select onValueChange={v => colorScheme.set(v as ColorScheme)} defaultValue="amethyst">
             <Select.Trigger>
               {colorScheme.get() === "b/w"
                 ? "Black and white"

@@ -18,11 +18,6 @@ export interface SettingsContextProps {
    * Color shceme of the components which are not black and white.
    */
   colorScheme: Attribute<ColorScheme>;
-
-  /**
-   * The default theme of the app.
-   */
-  defaultTheme: "light" | "dark";
 }
 
 const SettingsContext = createContext<SettingsContextProps | null>(null);

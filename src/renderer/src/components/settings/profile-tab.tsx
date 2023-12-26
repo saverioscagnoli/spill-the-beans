@@ -8,17 +8,12 @@ const ProfileTab = () => {
 
   const onUsernameChange = (evt: ChangeEvent<HTMLInputElement>) => {
     username.set(evt.target.value);
-    api.setUsername(evt.target.value);
   };
 
   const onPropicChange = async () => {
-    let res = await api.setPropic();
-    if (!res) {
-      await api.resetPropic();
-      propic.set("");
-    } else {
-      propic.set(res);
-    }
+    let res = await api.editPropic();
+    if (!res) await api.resetPropic();
+    propic.set(res);
   };
 
   return (
