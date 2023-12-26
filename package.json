@@ -17,14 +17,15 @@
     "postinstall": "electron-builder install-app-deps",
     "build:win": "npm run build && electron-builder --win --config",
     "build:mac": "electron-vite build && electron-builder --mac --config",
-    "build:linux": "electron-vite build && electron-builder --linux --config"
+    "build:linux": "electron-vite build && electron-builder --linux --config",
+    "test": "vitest"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^2.0.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
     "cors": "^2.8.5",
-    "csv-rw": "^2.1.1",
+    "csv-rw": "^3.0.1",
     "dotenv": "^16.3.1",
     "electron-updater": "^6.1.1",
     "express": "^4.18.2",
@@ -34,6 +35,7 @@
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.20.1",
     "sharp": "^0.33.1",
+    "split2": "^4.2.0",
     "tailwind-merge": "^2.1.0",
     "tredici": "^1.0.2"
   },
@@ -48,6 +50,7 @@
     "@types/node": "^18.17.5",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "@types/split2": "^4.2.3",
     "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.16",
     "electron": "^25.6.0",
@@ -61,6 +64,7 @@
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.1.6",
-    "vite": "^4.4.9"
+    "vite": "^4.4.9",
+    "vitest": "^1.1.0"
   }
 }

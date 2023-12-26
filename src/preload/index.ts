@@ -6,14 +6,14 @@ const api: Api = {
   setUsername: username => ipcRenderer.invoke("set-username", username),
   generatePassword: flags => ipcRenderer.invoke("generate-password", flags),
   getEntries: (name, password) => ipcRenderer.invoke("get-entries", { name, password }),
-  createEntry: (safeName, safePassword, name, password, email, notes) =>
+  createEntry: (safeName, safePassword, name, password, email, icon) =>
     ipcRenderer.invoke("create-entry", {
       safeName,
       safePassword,
       name,
       password,
       email,
-      notes
+      icon
     }),
 
   createSafe: (name, password) => ipcRenderer.invoke("create-safe", { name, password }),

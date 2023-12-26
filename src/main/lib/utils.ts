@@ -2,6 +2,8 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { PBKDF2_ITERATIONS } from "./consts";
 import readFileWorker from "../workers/read-file?nodeWorker";
+import readline from "readline";
+import fs from "fs";
 
 async function readFileWithWorker(path: string): Promise<Buffer> {
   return new Promise((res, rej) => {
@@ -112,5 +114,41 @@ function generatePassword({
   return Array.from({ length }, () => pick(pool)).join("");
 }
 
-export { readFileWithWorker, deriveKey, getImageUrl, generatePassword, rng, pick };
+function readByLine(
+  path: string,
+  cb: (line: string, i: number) => void,
+  opts: { limit?: number } = {}
+): Promise<void> {
+  let rl = readline.createInterface({
+    input: fs.createReadStream(path),
+    crlfDelay: Infinity
+  });
+
+  let i = 0;
+
+  return new Promise((res, rej) => {
+    rl.on("line", async line => {
+      try {
+        cb(line, i);
+        i++;
+        if (opts.limit && i >= opts.limit) rl.close();
+      } catch (err) {
+        rej(err);
+      }
+    });
+
+    rl.on("close", () => res());
+    rl.on("error", rej);
+  });
+}
+
+export {
+  readFileWithWorker,
+  deriveKey,
+  getImageUrl,
+  generatePassword,
+  rng,
+  pick,
+  readByLine
+};
 export { type PasswordFlags };
