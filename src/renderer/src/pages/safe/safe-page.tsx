@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "tredici";
 import { FooterButton } from "./footer-buttons";

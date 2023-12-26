@@ -1,5 +1,5 @@
 import { useBoolean, useInput, useSafe } from "@renderer/hooks";
-import React, { Dispatch, ReactNode, SetStateAction } from "react";
+import React, { ReactNode } from "react";
 import { Button, Dialog, Input, Spinner } from "tredici";
 import { IconContainer } from "./icon-container";
 import { Entry } from "@renderer/pages";

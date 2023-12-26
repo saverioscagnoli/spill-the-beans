@@ -1,5 +1,5 @@
 import { Entry, SafeContext } from "@renderer/contexts";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 
 interface SafeContextProviderProps {
   children: ReactNode;
