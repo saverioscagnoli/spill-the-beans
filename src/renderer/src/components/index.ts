@@ -5,4 +5,4 @@ export * from "./copy-button";
 export * from "./password-generator";
 export * from "./settings";
 export * from "./safe-manager";
-export * from "./add-entry";
+export * from "../pages/safe/add-entry";

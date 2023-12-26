@@ -32,7 +32,6 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
   const onOpen = async () => {
     on();
     let res = await api.openSafe(name, password);
-    console.log(res);
     off();
 
     if (res)
