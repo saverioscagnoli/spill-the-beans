@@ -1,4 +1,4 @@
-import { useSafeManager } from "@renderer/hooks";
+/* import { useSafeManager } from "@renderer/hooks";
 import { motion } from "framer-motion";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 
@@ -45,3 +45,4 @@ const AnimateSafeManager: React.FC<AnimateSafeManagerProps> = ({ children }) => 
 };
 
 export { AnimateSafeManager };
+ */

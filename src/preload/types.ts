@@ -9,11 +9,18 @@ interface PasswordFlags {
   exclude: string;
 }
 
+interface Entry {
+  name: string;
+  password: string;
+  email?: string;
+  icon?: string;
+}
+
 interface Api {
   getUsername: () => Promise<string>;
   setUsername: (username: string) => Promise<void>;
   generatePassword: (flags: PasswordFlags) => Promise<string>;
-  getEntries: (name: string, password: string) => Promise<any>;
+  getEntries: (name: string, password: string) => Promise<Entry[]>;
   createEntry: (
     safeName: string,
     safePassword: string,
@@ -22,14 +29,17 @@ interface Api {
     email?: string,
     icon?: string
   ) => Promise<any>;
+  deleteEntry: (
+    safeName: string,
+    safePassword: string,
+    entryName: string,
+    currentEntries: Entry[]
+  ) => Promise<Entry[]>;
 
   createSafe: (name: string, password: string) => Promise<void>;
   deleteSafe: (name: string, password: string) => Promise<boolean>;
   openSafe: (name: string, password: string) => Promise<boolean>;
   closeSafe: (name: string, password: string) => Promise<void>;
-
-  editPropic: () => Promise<string>;
-  getDefaultPropic: () => Promise<boolean | string>;
 
   getSafeNames: () => Promise<string[]>;
   getPropic: () => Promise<string>;

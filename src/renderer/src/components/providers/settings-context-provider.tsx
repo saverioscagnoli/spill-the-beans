@@ -19,8 +19,17 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
 
   useEffect(() => {
     api.getUsername().then(setUsername);
-    api.getDefaultPropic().then(res => void (typeof res !== "boolean" && setPropic(res)));
+    api.getPropic().then(res => void (typeof res !== "boolean" && setPropic(res)));
+    api.getColorScheme().then(setColorScheme);
   }, []);
+
+  useEffect(() => {
+    api.setColorScheme(colorScheme);
+  }, [colorScheme]);
+
+  useEffect(() => {
+    api.setUsername(username);
+  }, [username]);
 
   return (
     <SettingsContext.Provider

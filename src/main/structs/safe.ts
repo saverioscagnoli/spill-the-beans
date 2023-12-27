@@ -7,7 +7,7 @@ import { SafeManager } from "./safe-manager";
 
 type Value = string | number | boolean | null;
 
-interface Entry {
+export interface Entry {
   index: Value;
   name: Value;
   password: Value;

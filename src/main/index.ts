@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow } from "electron";
-import { join } from "path";
+import path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
@@ -12,10 +12,10 @@ async function createWindow(): Promise<void> {
     maxHeight: 600,
     minWidth: 800,
     minHeight: 600,
-    ...(process.platform === "linux" ? { icon } : {}),
+    ...(process.platform !== "darwin" ? { icon } : {}),
 
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
+      preload: path.join(__dirname, "../preload/index.js"),
       sandbox: false
     }
   });
@@ -44,7 +44,7 @@ async function createWindow(): Promise<void> {
     win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
     win.webContents.openDevTools();
   } else {
-    win.loadFile(join(__dirname, "../renderer/index.html"));
+    win.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 }
 

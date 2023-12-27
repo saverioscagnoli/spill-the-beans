@@ -1,5 +1,5 @@
 import { InputChangeFunction, useBoolean } from "@renderer/hooks";
-import { Button, Input, Tooltip } from "tredici";
+import { Button, Input, Tooltip, useTheme } from "tredici";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import React, { useEffect, useRef } from "react";
 
@@ -46,7 +46,7 @@ const PasswordCheck: React.FC<PasswordCheckProps> = ({
         <Input
           id="password"
           ref={inputRef}
-          colorScheme={wrongPassword ? "crimson" : "amethyst"}
+          colorScheme={wrongPassword ? "crimson" : useTheme().defaultColorScheme}
           style={{ width: "calc(100% - 2.25rem)" }}
           type={type ? "password" : "text"}
           value={password}

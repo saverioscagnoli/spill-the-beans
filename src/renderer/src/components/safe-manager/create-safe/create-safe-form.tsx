@@ -15,7 +15,16 @@ const CreateSafeForm = () => {
     password.set(evt.target.value);
 
   const onGeneratePassword = () => {
-    api.generatePassword(19, true, true, true, true, "").then(password.set);
+    api
+      .generatePassword({
+        length: 19,
+        numbers: true,
+        symbols: true,
+        lowercase: true,
+        uppercase: true,
+        exclude: ""
+      })
+      .then(password.set);
   };
 
   return (

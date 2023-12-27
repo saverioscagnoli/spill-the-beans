@@ -1,5 +1,5 @@
 import { app, ipcMain } from "electron";
-import { Safe } from "./safe";
+import { Entry, Safe } from "./safe";
 import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
@@ -59,6 +59,16 @@ class SafeManager {
           args.password,
           args.email,
           args.icon
+        )
+    );
+    ipcMain.handle(
+      "delete-entry",
+      async (_, args) =>
+        await this.deleteEntry(
+          args.safeName,
+          args.safePassword,
+          args.entryName,
+          args.currentEntries
         )
     );
   }
@@ -153,7 +163,6 @@ class SafeManager {
     email?: string,
     icon?: string
   ) {
-    console.log(safeName, safePassword);
     let safe = this.safes.find(safe => safe.name === safeName);
     if (!safe) return;
 
@@ -166,6 +175,26 @@ class SafeManager {
     await safe.encrypt(safePassword, Buffer.from("\n" + csv));
 
     return entries;
+  }
+
+  private async deleteEntry(
+    safeName: string,
+    safePassword: string,
+    entryName: string,
+    currentEntries: Entry[]
+  ) {
+    let safe = this.safes.find(safe => safe.name === safeName);
+    let entry = currentEntries.findIndex(entry => entry.name === entryName);
+    if (!safe || entry === -1) return;
+
+    currentEntries.splice(entry, 1);
+
+    let csv = currentEntries
+      .map(e => Object.values(e).join(safe!.getDelimiter()))
+      .join("\n");
+
+    await safe.encrypt(safePassword, Buffer.from("\n" + csv));
+    return currentEntries;
   }
 }
 

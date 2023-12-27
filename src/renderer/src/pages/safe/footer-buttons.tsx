@@ -6,13 +6,15 @@ import { LuPlus } from "react-icons/lu";
 import { useSafe } from "@renderer/hooks";
 import { AddEntry } from "@renderer/components";
 
-interface FooterButtonProps {
+interface FooterButtonsProps {
   action?: Function;
 }
 
-const FooterButton: React.FC<FooterButtonProps> = ({ action }) => {
+const FooterButtons: React.FC<FooterButtonsProps> = ({ action }) => {
   const navigate = useNavigate();
   const { entries } = useSafe();
+
+  const isMaxEntries = entries.get().length >= 12;
 
   const onBack = () => {
     action?.();
@@ -25,13 +27,21 @@ const FooterButton: React.FC<FooterButtonProps> = ({ action }) => {
         <Button.Icon colorScheme="b/w" icon={<RxArrowLeft />} onClick={onBack} />
       </Tooltip>
 
-      {entries.get().length > 0 && (
-        <AddEntry>
-          <Button.Icon icon={<LuPlus size={20} />} />
-        </AddEntry>
-      )}
+      {entries.get().length > 0 &&
+        (isMaxEntries ? (
+          <Tooltip content="Max number of entries reached for this safe.">
+            <Button.Icon icon={<LuPlus size={20} />} disabled />
+          </Tooltip>
+        ) : (
+          <AddEntry>
+            <Button.Icon
+              icon={<LuPlus size={20} />}
+              disabled={entries.get().length >= 12}
+            />
+          </AddEntry>
+        ))}
     </div>
   );
 };
 
-export { FooterButton };
+export { FooterButtons };

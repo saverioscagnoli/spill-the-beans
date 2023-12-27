@@ -33,11 +33,17 @@ const ThemeTab = () => {
         </div>
 
         <div className="flex gap-2 items-center">
-          <Tooltip content="determines the color of each non black and white component.">
+          <Tooltip
+            content="determines the color of each non black and white component."
+            disableHoverableContent
+          >
             <p>Color scheme</p>
           </Tooltip>
 
-          <Select onValueChange={v => colorScheme.set(v as ColorScheme)} defaultValue="amethyst">
+          <Select
+            onValueChange={v => colorScheme.set(v as ColorScheme)}
+            defaultValue={colorScheme.get()}
+          >
             <Select.Trigger>
               {colorScheme.get() === "b/w"
                 ? "Black and white"

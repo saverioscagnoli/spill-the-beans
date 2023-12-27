@@ -11,9 +11,9 @@ const ProfileTab = () => {
   };
 
   const onPropicChange = async () => {
-    let res = await api.editPropic();
+    let res = await api.setPropic();
     if (!res) await api.resetPropic();
-    propic.set(res);
+    propic.set(res as string);
   };
 
   return (

@@ -1,8 +1,10 @@
 import { useBoolean, useInput, useSafe } from "@renderer/hooks";
 import React, { ReactNode } from "react";
-import { Button, Dialog, Input, Spinner } from "tredici";
+import { Button, Dialog, Input, Spinner, Tooltip } from "tredici";
 import { IconContainer } from "./icon-container";
 import { Entry } from "@renderer/pages";
+import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
+import { LuDices } from "react-icons/lu";
 
 interface AddEntryProps {
   /**
@@ -19,6 +21,11 @@ const AddEntry: React.FC<AddEntryProps> = ({ children }) => {
   const [email, onEmailChange] = useInput();
   const [loading, { on, off }] = useBoolean();
 
+  const [dialogOpen, { off: closeDialog, toggle: toggleDialogOpen }] = useBoolean();
+
+  const [type, { toggle }] = useBoolean(true);
+  const [tooltipOpen, { on: onTooltip, off: offTooltip }] = useBoolean();
+
   const onCreate = async () => {
     on();
     let newEntries = await api.createEntry(
@@ -30,10 +37,24 @@ const AddEntry: React.FC<AddEntryProps> = ({ children }) => {
     );
     entries.set(newEntries as Entry[]);
     off();
+    closeDialog();
+  };
+
+  const onGeneratePassword = () => {
+    api
+      .generatePassword({
+        length: 19,
+        numbers: true,
+        symbols: true,
+        lowercase: true,
+        uppercase: true,
+        exclude: ""
+      })
+      .then(onPasswordChange);
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={toggleDialogOpen}>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
       <Dialog.Content>
         <Dialog.Title>Create entry</Dialog.Title>
@@ -66,12 +87,25 @@ const AddEntry: React.FC<AddEntryProps> = ({ children }) => {
             <div className="w-full flex gap-2">
               <Input
                 spellCheck={false}
-                className="w-full"
+                style={{ width: "calc(100% - 4.5rem)" }}
+                type={type ? "password" : "text"}
                 id="password"
                 placeholder="********"
                 value={password}
                 onChange={onPasswordChange}
               />
+
+              <Tooltip content={type ? "show" : "hide"} open={tooltipOpen}>
+                <Button.Icon
+                  onClick={toggle}
+                  icon={type ? <RxEyeOpen /> : <RxEyeClosed />}
+                  onMouseEnter={onTooltip}
+                  onMouseLeave={offTooltip}
+                />
+              </Tooltip>
+              <Tooltip content="Generate password">
+                <Button.Icon icon={<LuDices />} onClick={onGeneratePassword} />
+              </Tooltip>
             </div>
           </div>
         </div>
