@@ -1,12 +1,13 @@
 import { workerData, parentPort } from "worker_threads";
 import crypto from "crypto";
-import { ENCRYPTION_ALGORITHM, IV_LENGTH, SALT_LENGTH, deriveKey } from "../lib";
+import { ENCRYPTION_ALGORITHM, deriveKey } from "../lib";
 
 async function main() {
-  let { buffer, password } = workerData as { buffer: Buffer; password: string };
-  let salt = Buffer.from(buffer.subarray(0, SALT_LENGTH)).toString("ascii");
-  let iv = buffer.subarray(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
-  let encrypted = buffer.subarray(SALT_LENGTH + IV_LENGTH);
+  let { lines, password } = workerData as { lines: string[]; password: string };
+
+  let salt = lines.shift()!;
+  let iv = Buffer.from(lines.shift()!, "hex");
+  let encrypted = Buffer.from(lines.join("\n"), "base64");
 
   let key = await deriveKey(password, salt);
 

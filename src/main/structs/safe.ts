@@ -4,6 +4,7 @@ import decryptWorker from "../workers/decrypt?nodeWorker";
 import fs from "fs";
 import fsp from "fs/promises";
 import { SafeManager } from "./safe-manager";
+import { readByLine } from "../lib";
 
 type Value = string | number | boolean | null;
 
@@ -125,18 +126,32 @@ class Safe {
 
       worker.on("error", rej);
 
-      worker.on("message", async (data: Buffer) => {
-        await fsp.writeFile(this.path, data);
+      worker.on("message", async data => {
+        let { encrypted, salt, iv } = data;
+        let writer = fs.createWriteStream(this.getPath());
+
+        writer.write(salt + "\n");
+        writer.write(iv + "\n");
+        writer.write(encrypted);
+
         worker.terminate();
-        res(true);
+
+        writer.end();
+
+        writer.on("error", err => rej(err));
+        writer.on("finish", () => res(true));
       });
     });
   }
 
   public async decrypt(password: string): Promise<Buffer> {
     return new Promise(async (res, rej) => {
-      let buffer = await fsp.readFile(this.getPath());
-      let worker = decryptWorker({ workerData: { buffer, password } });
+      console.log(this.getPath());
+      let lines: string[] = [];
+
+      await readByLine(this.getPath(), line => lines.push(line));
+
+      let worker = decryptWorker({ workerData: { lines, password } });
 
       worker.on("error", rej);
 
