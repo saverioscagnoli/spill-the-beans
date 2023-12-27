@@ -13,7 +13,6 @@ asarUnpack:
   - resources/**
 win:
   executableName: spill-the-beans
-  requestedExecutionLevel: requireAdministrator
 nsis:
   oneClick: false
   artifactName: ${name}-${version}-setup.${ext}
