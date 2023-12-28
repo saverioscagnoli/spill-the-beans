@@ -1,7 +1,7 @@
 import { Tredici, useTheme } from "tredici";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { HomePage, SafePage } from "./pages";
-import { Navbar } from "./components";
+import { IconSelector, InfoForm, Navbar } from "./components";
 import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
 import { useSettings } from "./hooks";
 
@@ -26,7 +26,10 @@ const App = () => {
               <Route path="/manage/delete/:name" element={<DeleteSafe />} />
               <Route path="/manage/open/:name" element={<OpenSafe />} />
             </Route>
-            <Route path="/:name" element={<SafePage />} />
+            <Route path="/:name" element={<SafePage />} >
+              <Route index element={<InfoForm />} />
+              <Route path="/:name/icons" element={<IconSelector />} />
+            </Route>
           </Routes>
         </Router>
       </div>

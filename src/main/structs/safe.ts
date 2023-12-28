@@ -146,7 +146,6 @@ class Safe {
 
   public async decrypt(password: string): Promise<Buffer> {
     return new Promise(async (res, rej) => {
-      console.log(this.getPath());
       let lines: string[] = [];
 
       await readByLine(this.getPath(), line => lines.push(line));

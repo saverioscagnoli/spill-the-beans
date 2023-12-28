@@ -49,6 +49,7 @@ const SafePageWrapper = () => {
   const location = useLocation();
   const { name, password, entries: entries } = location.state;
 
+
   return (
     <SafeContextProvider safe={{ name, password }} initialEntries={entries}>
       <SafePage />

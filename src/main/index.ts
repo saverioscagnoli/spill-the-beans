@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from "electron";
+import { app, shell, BrowserWindow, globalShortcut } from "electron";
 import path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -16,7 +16,8 @@ async function createWindow(): Promise<void> {
 
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
-      sandbox: false
+      sandbox: false,
+      devTools: is.dev
     }
   });
 
@@ -87,6 +88,18 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
+});
+
+app.on("browser-window-focus", () => {
+  globalShortcut.register("CommandOrControl+Shift+R", () => null);
+  globalShortcut.register("CommandOrControl+R", () => null);
+  globalShortcut.register("F5", () => null);
+});
+
+app.on("browser-window-blur", () => {
+  globalShortcut.unregister("CommandOrControl+Shift+R");
+  globalShortcut.unregister("CommandOrControl+R");
+  globalShortcut.unregister("F5");
 });
 
 // In this file you can include the rest of your app"s specific main process

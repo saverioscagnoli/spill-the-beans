@@ -25,6 +25,9 @@ class SafeManager {
    * Reads the safes from disk.
    */
   private init() {
+    if (!fs.existsSync(SafeManager.SafesFolder)) {
+      fs.mkdirSync(SafeManager.SafesFolder);
+    }
     let safes = fs.readdirSync(SafeManager.SafesFolder);
 
     for (let name of safes) {

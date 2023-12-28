@@ -1,6 +1,6 @@
 import { Attribute } from "@renderer/contexts/types";
 import React, { ReactNode, useState } from "react";
-import { Button } from "tredici";
+import { Button, Tooltip } from "tredici";
 import {
   BsGithub,
   BsSpotify,
@@ -13,11 +13,17 @@ import {
   BsDiscord
 } from "react-icons/bs";
 import { LuPiggyBank } from "react-icons/lu";
-import { TbPlanet } from "react-icons/tb";
+import { RxDotsHorizontal } from "react-icons/rx";
+import { useSafe } from "@renderer/hooks";
+import { useNavigate } from "react-router-dom";
 
 const IconContainer = () => {
+  const { safe } = useSafe();
+  const navigate = useNavigate();
   const [selectedIcon, setSelectedIcon] = useState<string>("");
   const attribute = { get: () => selectedIcon, set: setSelectedIcon };
+
+  const switchToIcons = () => navigate(`/${safe.name}/icons`);
 
   return (
     <div className="w-full flex flex-col mt-2">
@@ -38,7 +44,15 @@ const IconContainer = () => {
             selectedIcon={attribute}
           />
           <ButtonIcon icon={<BsGithub />} label="github" selectedIcon={attribute} />
-          <ButtonIcon icon={<TbPlanet />} label="planet" selectedIcon={attribute} />
+
+          <Tooltip content="Other icons...">
+            <Button.Icon
+              variant="ghost"
+              colorScheme="gray"
+              icon={<RxDotsHorizontal size={20} />}
+              onClick={switchToIcons}
+            />
+          </Tooltip>
         </div>
       </div>
     </div>
