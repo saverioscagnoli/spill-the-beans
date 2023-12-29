@@ -79,33 +79,29 @@ const columnCount = 9;
 
 const IconSelector = () => {
   const [searchTerm, onSearchTermChange] = useInput("", true);
-  const [filtered, setFiltered] = useState<any[]>(names);
-  const workerRef = useRef<Worker>();
-  const filteredDataRef = useRef<any[]>([]);
+  const [filtered, setFiltered] = useState<string[]>(names);
 
-  const handleFilterChange = useCallback((f: string[]) => {
-    setFiltered(f);
-  }, []);
+  const worker = useMemo(() => new filterWorker(), []);
 
-  useEffect(() => {
-    workerRef.current = new filterWorker();
+  const filter = async (): Promise<string[]> => {
+    return new Promise((res, rej) => {
+      worker.postMessage([searchTerm, names]);
 
-    workerRef.current.onmessage = e => {
-      const filtered = e.data;
-      if (JSON.stringify(filtered) === JSON.stringify(filteredDataRef.current)) return;
+      worker.onmessage = e => {
+        res(e.data);
+      };
 
-      handleFilterChange(filtered);
-      filteredDataRef.current = filtered;
-    };
-
-    return () => {
-      workerRef.current?.terminate();
-    };
-  }, [handleFilterChange]);
+      worker.onerror = rej;
+    });
+  };
 
   useEffect(() => {
-    workerRef.current?.postMessage([searchTerm, names]);
-  }, [searchTerm, names]);
+    if (searchTerm === "") {
+      setFiltered(names);
+    }
+
+    filter().then(setFiltered);
+  }, [searchTerm]);
 
   return (
     <div className="w-full flex flex-col gap-2">
