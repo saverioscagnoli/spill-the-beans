@@ -1,4 +1,4 @@
-import { SafeManagerContext } from "@renderer/contexts";
+import {  SafeInfo, SafeManagerContext } from "@renderer/contexts";
 import { useBoolean } from "@renderer/hooks";
 import { Variants } from "framer-motion";
 import React, { useEffect, useState } from "react";
@@ -18,7 +18,10 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
     initial: { x: 400 },
     exit: { x: -400 }
   });
+
   const [isAnimating, { set, toggle }] = useBoolean();
+
+  const [openedSafe, setOpenedSafe] = useState<SafeInfo | null>(null);
 
   useEffect(() => {
     if (!isAnimating) {
@@ -66,6 +69,8 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
     });
   };
 
+  const switchToIcons = (name: string) => navigate(`/${name}/icons`);
+
   return (
     <SafeManagerContext.Provider
       value={{
@@ -73,6 +78,10 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
         switchToCreateSafe,
         switchToDeleteSafe,
         switchToOpenSafe,
+
+        switchToIcons,
+
+        openedSafe: { get: () => openedSafe, set: setOpenedSafe },
 
         name: { get: () => name, set: setName },
         password: { get: () => password, set: setPassword },

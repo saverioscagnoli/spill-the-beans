@@ -2,11 +2,11 @@ import { Button, Dialog, Input, Spinner, Tooltip } from "tredici";
 import { IconContainer } from "./icon-container";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { LuDices } from "react-icons/lu";
-import { Entry } from "../safe-page";
-import { useBoolean, useInput, useSafe } from "@renderer/hooks";
+import { useBoolean, useInput, useSafeManager } from "@renderer/hooks";
 
 const InfoForm = () => {
-  const { safe, entries } = useSafe();
+  const { openedSafe } = useSafeManager();
+
   const [name, onNameChange] = useInput();
   const [password, onPasswordChange] = useInput();
   const [email, onEmailChange] = useInput();
@@ -18,13 +18,14 @@ const InfoForm = () => {
   const onCreate = async () => {
     on();
     let newEntries = await api.createEntry(
-      safe.name,
-      safe.password,
+      openedSafe.get()!.name,
+      openedSafe.get()!.password,
       name,
       password,
       email
     );
-    entries.set(newEntries as Entry[]);
+
+    openedSafe.set({ ...openedSafe.get()!, entries: newEntries });
     off();
   };
 
@@ -40,7 +41,6 @@ const InfoForm = () => {
       })
       .then(onPasswordChange);
   };
-
 
   return (
     <>

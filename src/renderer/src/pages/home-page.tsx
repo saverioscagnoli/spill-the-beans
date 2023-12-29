@@ -1,5 +1,4 @@
 import { Card, PasswordGenerator, SafeManager } from "@renderer/components";
-import { SafeManagerContextProvider } from "@renderer/components/providers/safe-manager-context-provider";
 import { useSettings } from "@renderer/hooks";
 import { LuKey, LuLock } from "react-icons/lu";
 
@@ -21,7 +20,6 @@ const HomePage = () => {
           </Card>
         </PasswordGenerator>
 
-        <SafeManagerContextProvider>
           <SafeManager>
             <Card>
               <LuLock size={24} />
@@ -31,7 +29,6 @@ const HomePage = () => {
               </p>
             </Card>
           </SafeManager>
-        </SafeManagerContextProvider>
       </div>
     </div>
   );
