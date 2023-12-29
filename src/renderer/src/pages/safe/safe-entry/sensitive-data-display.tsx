@@ -1,10 +1,7 @@
 import { CopyButton } from "@renderer/components";
-import { useSafe } from "@renderer/hooks";
+import { useSafeManager } from "@renderer/hooks";
 import React, { ReactNode } from "react";
 import { Button, Dialog } from "tredici";
-
-
-
 
 interface SensitiveDataDisplayProps {
   /**
@@ -23,8 +20,10 @@ const SensitiveDataDisplay: React.FC<SensitiveDataDisplayProps> = ({
   children,
   entryName
 }) => {
-  const { entries } = useSafe();
-  const entry = entries.get().find(e => e.name === entryName);
+  const { openedSafe } = useSafeManager();
+  const { entries } = openedSafe.get()!;
+  
+  const entry = entries.find(e => e.name === entryName);
 
   if (!entry) return null;
 

@@ -1,4 +1,4 @@
-import { useBoolean, useInput, useSafe } from "@renderer/hooks";
+import { useBoolean, useInput } from "@renderer/hooks";
 import React, { ReactNode } from "react";
 import { Dialog } from "tredici";
 import { IconContainer } from "./icon-container";

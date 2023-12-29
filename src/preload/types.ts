@@ -38,7 +38,7 @@ interface Api {
 
   createSafe: (name: string, password: string) => Promise<void>;
   deleteSafe: (name: string, password: string) => Promise<boolean>;
-  openSafe: (name: string, password: string) => Promise<boolean>;
+  openSafe: (name: string, password: string) => Promise<Entry[] | false>;
   closeSafe: (name: string, password: string) => Promise<void>;
 
   getSafeNames: () => Promise<string[]>;
@@ -51,6 +51,8 @@ interface Api {
 
   getColorScheme: () => Promise<ColorScheme>;
   setColorScheme: (scheme: ColorScheme) => Promise<void>;
+
+  getFilteredIcons: (searchTerm: string, icons: string[]) => Promise<string[]>;
 }
 
 export { type Api };

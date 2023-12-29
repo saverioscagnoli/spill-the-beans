@@ -3,8 +3,8 @@ import { Button, Tooltip } from "tredici";
 import { RxArrowLeft } from "react-icons/rx";
 import React from "react";
 import { LuPlus } from "react-icons/lu";
-import { useSafe } from "@renderer/hooks";
 import { AddEntry } from "@renderer/components";
+import { useSafeManager } from "@renderer/hooks";
 
 interface FooterButtonsProps {
   action?: Function;
@@ -12,9 +12,10 @@ interface FooterButtonsProps {
 
 const FooterButtons: React.FC<FooterButtonsProps> = ({ action }) => {
   const navigate = useNavigate();
-  const { entries } = useSafe();
+  const { openedSafe } = useSafeManager();
+  const { entries } = openedSafe.get()!;
 
-  const isMaxEntries = entries.get().length >= 12;
+  const isMaxEntries = entries.length >= 12;
 
   const onBack = () => {
     action?.();
@@ -27,7 +28,7 @@ const FooterButtons: React.FC<FooterButtonsProps> = ({ action }) => {
         <Button.Icon colorScheme="b/w" icon={<RxArrowLeft />} onClick={onBack} />
       </Tooltip>
 
-      {entries.get().length > 0 &&
+      {entries.length > 0 &&
         (isMaxEntries ? (
           <Tooltip content="Max number of entries reached for this safe.">
             <Button.Icon icon={<LuPlus size={20} />} disabled />
@@ -36,7 +37,7 @@ const FooterButtons: React.FC<FooterButtonsProps> = ({ action }) => {
           <AddEntry>
             <Button.Icon
               icon={<LuPlus size={20} />}
-              disabled={entries.get().length >= 12}
+              disabled={entries.length >= 12}
             />
           </AddEntry>
         ))}

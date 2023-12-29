@@ -1,3 +1,4 @@
+import { Entry } from "@renderer/contexts";
 import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,7 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
   toggleWrongPassword
 }) => {
   const navigate = useNavigate();
-  const { switchToBank } = useSafeManager();
+  const { switchToBank, openedSafe } = useSafeManager();
   const [loading, { on, off }] = useBoolean();
 
   const onOpen = async () => {
@@ -34,9 +35,10 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
     let res = await api.openSafe(name, password);
     off();
 
-    if (res)
-      navigate(`/${name}`, { replace: true, state: { name, password, entries: res } });
-    else toggleWrongPassword();
+    if (res) {
+      openedSafe.set({ name, password, entries: res });
+      navigate(`/${name}`, { replace: true });
+    } else toggleWrongPassword();
   };
 
   return (

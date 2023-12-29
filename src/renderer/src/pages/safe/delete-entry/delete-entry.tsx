@@ -1,4 +1,4 @@
-import { useBoolean, useSafe } from "@renderer/hooks";
+import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React, { ReactNode } from "react";
 import { AlertDialog, Button, Spinner } from "tredici";
 
@@ -16,18 +16,15 @@ interface DeleteEntryProps {
 }
 
 const DeleteEntry: React.FC<DeleteEntryProps> = ({ children, entryName }) => {
-  const { safe, entries } = useSafe();
+  const { openedSafe } = useSafeManager();
+  const { name, password, entries } = openedSafe.get()!;
   const [loading, { on, off }] = useBoolean();
 
   const onDelete = async () => {
     on();
-    let newEntries = await api.deleteEntry(
-      safe.name,
-      safe.password,
-      entryName,
-      entries.get()
-    );
-    entries.set(newEntries);
+    let newEntries = await api.deleteEntry(name, password, entryName, entries);
+
+    openedSafe.set({ ...openedSafe.get()!, entries: newEntries });
     off();
   };
 

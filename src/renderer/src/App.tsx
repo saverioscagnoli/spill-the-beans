@@ -1,7 +1,7 @@
 import { Tredici, useTheme } from "tredici";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { HomePage, SafePage } from "./pages";
-import { IconSelector, InfoForm, Navbar } from "./components";
+import { IconSelector, InfoForm, Navbar, SafeManagerContextProvider } from "./components";
 import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
 import { useSettings } from "./hooks";
 
@@ -19,18 +19,20 @@ const App = () => {
       <Navbar />
       <div className="w-full h-[calc(100%-4rem)]">
         <Router>
-          <Routes>
-            <Route path="/" element={<HomePage />}>
-              <Route index element={<Bank />} />
-              <Route path="/manage/create" element={<CreateSafe />} />
-              <Route path="/manage/delete/:name" element={<DeleteSafe />} />
-              <Route path="/manage/open/:name" element={<OpenSafe />} />
-            </Route>
-            <Route path="/:name" element={<SafePage />} >
-              <Route index element={<InfoForm />} />
-              <Route path="/:name/icons" element={<IconSelector />} />
-            </Route>
-          </Routes>
+          <SafeManagerContextProvider>
+            <Routes>
+              <Route path="/" element={<HomePage />}>
+                <Route index element={<Bank />} />
+                <Route path="/manage/create" element={<CreateSafe />} />
+                <Route path="/manage/delete/:name" element={<DeleteSafe />} />
+                <Route path="/manage/open/:name" element={<OpenSafe />} />
+              </Route>
+              <Route path="/:name" element={<SafePage />}>
+                <Route index element={<InfoForm />} />
+                <Route path="/:name/icons" element={<IconSelector />} />
+              </Route>
+            </Routes>
+          </SafeManagerContextProvider>
         </Router>
       </div>
     </div>

@@ -14,16 +14,16 @@ import {
 } from "react-icons/bs";
 import { LuPiggyBank } from "react-icons/lu";
 import { RxDotsHorizontal } from "react-icons/rx";
-import { useSafe } from "@renderer/hooks";
 import { useNavigate } from "react-router-dom";
+import { useSafeManager } from "@renderer/hooks";
 
 const IconContainer = () => {
-  const { safe } = useSafe();
+  const { openedSafe } = useSafeManager();
   const navigate = useNavigate();
   const [selectedIcon, setSelectedIcon] = useState<string>("");
   const attribute = { get: () => selectedIcon, set: setSelectedIcon };
 
-  const switchToIcons = () => navigate(`/${safe.name}/icons`);
+  const switchToIcons = () => navigate(`/${openedSafe.get()!.name}/icons`);
 
   return (
     <div className="w-full flex flex-col mt-2">
