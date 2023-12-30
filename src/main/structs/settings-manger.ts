@@ -95,7 +95,6 @@ class SettingsManager {
    * @param key The key to set.
    * @param value The value to set.
    * @returns The cached value of the key.
-   * @private
    */
   private setCached<K extends keyof Settings>(key: K, value: Settings[K]) {
     this.cached[key] = value;

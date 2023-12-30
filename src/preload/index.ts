@@ -39,9 +39,7 @@ const api: Api = {
   setDefaultTheme: theme => ipcRenderer.invoke("set-default-theme", theme),
 
   getColorScheme: () => ipcRenderer.invoke("get-color-scheme"),
-  setColorScheme: scheme => ipcRenderer.invoke("set-color-scheme", scheme),
-
-  getFilteredIcons: (searchTerm, icons) => ipcRenderer.invoke("filter-icons", { searchTerm, icons })
+  setColorScheme: scheme => ipcRenderer.invoke("set-color-scheme", scheme)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -171,7 +171,7 @@ class SafeManager {
 
     let entries = await safe.read(safePassword);
 
-    entries.push({ index: entries.length, name, password, email, icon });
+    entries.push({ name, password, email, icon });
 
     let csv = entries.map(e => Object.values(e).join(safe!.getDelimiter())).join("\n");
 

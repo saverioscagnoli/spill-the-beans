@@ -51,8 +51,6 @@ interface Api {
 
   getColorScheme: () => Promise<ColorScheme>;
   setColorScheme: (scheme: ColorScheme) => Promise<void>;
-
-  getFilteredIcons: (searchTerm: string, icons: string[]) => Promise<string[]>;
 }
 
 export { type Api };

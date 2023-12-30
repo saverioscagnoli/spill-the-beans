@@ -9,7 +9,6 @@ import { readByLine } from "../lib";
 type Value = string | number | boolean | null;
 
 export interface Entry {
-  index: Value;
   name: Value;
   password: Value;
   email?: Value;
@@ -35,7 +34,7 @@ interface SafeOptions {
 
 class Safe {
   public static readonly delimiter = ",";
-  private readonly headers = ["index", "name", "password", "email", "icon"] as const;
+  private readonly headers = ["name", "password", "email", "icon"] as const;
   public name: string;
   private path: string;
 
