@@ -17,12 +17,14 @@
     "postinstall": "electron-builder install-app-deps",
     "build:win": "npm run build && electron-builder --win --config",
     "build:mac": "electron-vite build && electron-builder --mac --config",
-    "build:linux": "electron-vite build && electron-builder --linux --config"
+    "build:linux": "electron-vite build && electron-builder --linux --config",
+    "test": "vitest"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^2.0.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
+    "csv-rw": "^3.0.2",
     "dotenv": "^16.3.1",
     "electron-updater": "^6.1.1",
     "file-type": "^18.7.0",
@@ -38,6 +40,7 @@
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",
     "@electron-toolkit/eslint-config-ts": "^1.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@faker-js/faker": "^8.3.1",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^18.17.5",
     "@types/react": "^18.2.20",
@@ -55,6 +58,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vitest": "^1.1.0"
   }
 }

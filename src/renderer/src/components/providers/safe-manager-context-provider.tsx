@@ -1,6 +1,5 @@
 import {  SafeInfo, SafeManagerContext } from "@renderer/contexts";
 import { useBoolean } from "@renderer/hooks";
-import { Variants } from "framer-motion";
 import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,40 +13,23 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [animations, setAnimations] = useState<Variants>({
-    initial: { x: 400 },
-    exit: { x: -400 }
-  });
 
   const [isAnimating, { set, toggle }] = useBoolean();
 
   const [openedSafe, setOpenedSafe] = useState<SafeInfo | null>(null);
 
-  useEffect(() => {
-    if (!isAnimating) {
-      setAnimations({
-        initial: { x: 0 },
-        exit: { x: 0 }
-      });
-    }
-  }, [isAnimating]);
+
 
   const switchToBank = () => {
     navigate("/", { replace: true });
     setName("");
     setPassword("");
-    setAnimations({
-      initial: { x: -400, width: "100%", height: "100%" },
-      exit: { x: 400, width: "100%", height: "100%" }
-    });
+
   };
 
   const switchToCreateSafe = () => {
     navigate("manage/create", { replace: true });
-    setAnimations({
-      initial: { x: 400 },
-      exit: { x: -400 }
-    });
+
   };
 
   /**
@@ -55,18 +37,12 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
    */
   const switchToDeleteSafe = (name: string) => {
     navigate(`manage/delete/${name}`, { replace: true });
-    setAnimations({
-      initial: { x: 400 },
-      exit: { x: -400 }
-    });
+
   };
 
   const switchToOpenSafe = (name: string) => {
     navigate(`manage/open/${name}`, { replace: true });
-    setAnimations({
-      initial: { x: 400 },
-      exit: { x: -400 }
-    });
+
   };
 
   const switchToIcons = (name: string) => navigate(`/${name}/icons`);
@@ -85,7 +61,6 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
 
         name: { get: () => name, set: setName },
         password: { get: () => password, set: setPassword },
-        animations,
         isAnimating: { get: () => isAnimating, set, toggle }
       }}
     >

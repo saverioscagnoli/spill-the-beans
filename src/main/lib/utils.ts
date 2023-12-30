@@ -1,9 +1,10 @@
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import { PBKDF2_ITERATIONS } from "./consts";
+import { CSV_DELIMITER, PBKDF2_ITERATIONS, SAFE_HEADERS } from "./consts";
 import readFileWorker from "../workers/read-file?nodeWorker";
 import readline from "readline";
 import fs from "fs";
+import { Entry, Safe } from "../structs";
 
 async function readFileWithWorker(path: string): Promise<Buffer> {
   return new Promise((res, rej) => {
@@ -114,32 +115,43 @@ function generatePassword({
   return Array.from({ length }, () => pick(pool)).join("");
 }
 
-function readByLine(
-  path: string,
-  cb: (line: string, i: number) => void,
-  opts: { limit?: number } = {}
-): Promise<void> {
-  let rl = readline.createInterface({
-    input: fs.createReadStream(path),
-    crlfDelay: Infinity
+function readBuffer(buffer: Buffer, cb: (line: string, i: number) => void) {
+  let lines = buffer.toString("utf-8").split("\n");
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    cb(line, i);
+  }
+}
+
+function parseCSV(buffer: Buffer) {
+  let rows = [] as Entry[];
+
+  readBuffer(buffer, (line, i) => {
+    if (i === 0) return;
+    let parsed = line.split(CSV_DELIMITER);
+    let row = {} as Entry;
+
+    for (let i = 0; i < parsed.length; i++) {
+      let [h, v] = [SAFE_HEADERS[i], parsed[i]];
+
+      // @ts-ignore
+      if (!v) row[h] = null;
+      else row[h] = v;
+    }
+
+    rows.push(row);
   });
 
-  let i = 0;
+  return rows;
+}
 
-  return new Promise((res, rej) => {
-    rl.on("line", async line => {
-      try {
-        cb(line, i);
-        i++;
-        if (opts.limit && i >= opts.limit) rl.close();
-      } catch (err) {
-        rej(err);
-      }
-    });
+function bufferFromCSV(entries: Entry[]) {
+  let csv = entries
+    .map(entry => SAFE_HEADERS.map(h => entry[h]).join(CSV_DELIMITER))
+    .join("\n");
 
-    rl.on("close", () => res());
-    rl.on("error", rej);
-  });
+  return Buffer.from(SAFE_HEADERS.join(CSV_DELIMITER) + "\n" + csv);
 }
 
 export {
@@ -149,7 +161,9 @@ export {
   generatePassword,
   rng,
   pick,
-  readByLine
+  readBuffer,
+  parseCSV,
+  bufferFromCSV
 };
 
 export { type PasswordFlags };

@@ -23,7 +23,6 @@ const AddEntryActions = () => {
 
     openedSafe.set({ ...openedSafe.get()!, entries: newEntries });
     off();
-    console.log(openedSafe.get()!);
     navigate(`/${openedSafe.get()!.name}`);
   };
 

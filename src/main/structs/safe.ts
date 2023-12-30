@@ -4,15 +4,14 @@ import decryptWorker from "../workers/decrypt?nodeWorker";
 import fs from "fs";
 import fsp from "fs/promises";
 import { SafeManager } from "./safe-manager";
-import { readByLine } from "../lib";
-
-type Value = string | number | boolean | null;
+import { bufferFromCSV, parseCSV } from "../lib";
+import { app } from "electron";
 
 export interface Entry {
-  name: Value;
-  password: Value;
-  email?: Value;
-  icon?: Value;
+  name: string;
+  password: string;
+  email?: string;
+  icon?: string;
 }
 
 interface SafeOptions {
@@ -33,16 +32,12 @@ interface SafeOptions {
  */
 
 class Safe {
-  public static readonly delimiter = ",";
-  private readonly headers = ["name", "password", "email", "icon"] as const;
   public name: string;
   private path: string;
 
   public constructor(opts: SafeOptions) {
     this.name = opts.name;
-    this.path = path.join(SafeManager.SafesFolder, this.name);
-
-    this.init();
+    this.path = path.join(app.getPath("userData"), "Safes", this.name);
   }
 
   public getPath() {
@@ -53,107 +48,59 @@ class Safe {
     return this.name;
   }
 
-  public getHeaders() {
-    return this.headers;
-  }
-
-  public getDelimiter() {
-    return Safe.delimiter;
-  }
-
-  private init() {
-    if (!fs.existsSync(this.getPath())) {
-      fs.writeFileSync(this.getPath(), this.getHeaders().join(this.getDelimiter()));
-    }
-  }
-
   public async read(password: string) {
-    let buffer = await this.decrypt(password);
-
-    let decrypted = Buffer.from(buffer).toString("utf-8").split("\n");
-    let rows: Entry[] = [];
-
-    for (let i = 1; i < decrypted.length; i++) {
-      let line = decrypted[i];
-      let parsed = line.split(this.getDelimiter());
-      let row: Entry = {} as Entry;
-
-      for (let j = 0; j < this.getHeaders().length; j++) {
-        let [h, v] = [this.getHeaders()[j], parsed[j]];
-
-        if (!v) {
-          row[h] = null;
-        } else if (typeof v === "number") {
-          row[h] = +v;
-        } else {
-          row[h] = v;
-        }
-      }
-
-      rows.push(row);
-    }
-
-    return rows;
+    let bytes = await this.decrypt(password);
+    return parseCSV(Buffer.from(bytes));
   }
 
-  public async write(entries: Entry | Entry[]) {
+  public async write(password: string, entries: Entry | Entry[]) {
     if (!Array.isArray(entries)) entries = [entries];
 
-    let writer = fs.createWriteStream(this.getPath(), { flags: "a" });
+    let buffer = bufferFromCSV(entries);
+    let [salt, iv, encrypted] = await this.encrypt(password, buffer);
 
-    for (let i = 0; i < entries.length; i++) {
-      let entry = entries[i];
-      let line = this.getHeaders()
-        .map(h => entry[h])
-        .join(this.getDelimiter());
+    console.log(this.getPath());
 
-      writer.write("\n" + line);
-    }
-
-    writer.end();
+    let writer = fs.createWriteStream(this.getPath(), "utf-8");
 
     return new Promise((res, rej) => {
       writer.on("error", rej);
       writer.on("finish", res);
+
+      writer.write(salt + "\n");
+      writer.write(iv + "\n");
+      writer.write(encrypted);
+      writer.end();
     });
   }
 
-  public async encrypt(password: string, buffer?: Buffer): Promise<boolean> {
-    return new Promise(async (res, rej) => {
-      buffer = buffer ?? (await fsp.readFile(this.getPath()));
-      let worker = encryptWorker({ workerData: { buffer, password } });
+  public async encrypt(
+    password: string,
+    buffer: Buffer
+  ): Promise<[string, Buffer, Buffer]> {
+    let worker = encryptWorker({ workerData: { buffer, password } });
 
+    return new Promise((res, rej) => {
       worker.on("error", rej);
 
       worker.on("message", async data => {
-        let { encrypted, salt, iv } = data;
-        let writer = fs.createWriteStream(this.getPath());
-
-        writer.write(salt + "\n");
-        writer.write(iv + "\n");
-        writer.write(encrypted);
-
         worker.terminate();
-
-        writer.end();
-
-        writer.on("error", err => rej(err));
-        writer.on("finish", () => res(true));
+        res(data);
       });
     });
   }
 
   public async decrypt(password: string): Promise<Buffer> {
-    return new Promise(async (res, rej) => {
-      let lines: string[] = [];
+    let buffer = await fsp.readFile(this.getPath());
+    let lines = buffer.toString().split("\n");
+    let [salt, iv] = lines.slice(0, 2);
+    let enc = lines.slice(2).join("\n");
+    let worker = decryptWorker({ workerData: { enc: [salt, iv, enc], password } });
 
-      await readByLine(this.getPath(), line => lines.push(line));
-
-      let worker = decryptWorker({ workerData: { lines, password } });
-
+    return new Promise((res, rej) => {
       worker.on("error", rej);
 
-      worker.on("message", data => {
+      worker.on("message", async data => {
         worker.terminate();
         res(data);
       });

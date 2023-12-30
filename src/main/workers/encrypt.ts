@@ -8,17 +8,12 @@ async function main() {
 
   let salt = await bcrypt.genSalt(SALT_ROUNDS);
   let iv = crypto.randomBytes(IV_LENGTH);
-
   let key = await deriveKey(password, salt);
 
-  let cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, key, iv);
+  let cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, key, iv).setAutoPadding(true);
   let encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
 
-  parentPort?.postMessage({
-    encrypted: encrypted.toString("base64"),
-    iv: iv.toString("hex"),
-    salt
-  });
+  parentPort?.postMessage([salt, iv.toString("hex"), encrypted.toString("hex")]);
 }
 
 main();
