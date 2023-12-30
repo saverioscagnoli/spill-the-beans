@@ -1,33 +1,12 @@
-import { Button, Dialog, Input, Spinner, Tooltip } from "tredici";
-import { IconContainer } from "./icon-container";
-import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
+import { useBoolean, useEntryCreation } from "@renderer/hooks";
 import { LuDices } from "react-icons/lu";
-import { useBoolean, useInput, useSafeManager } from "@renderer/hooks";
+import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
+import { Button, Input, Tooltip } from "tredici";
 
-const InfoForm = () => {
-  const { openedSafe } = useSafeManager();
-
-  const [name, onNameChange] = useInput();
-  const [password, onPasswordChange] = useInput();
-  const [email, onEmailChange] = useInput();
-  const [loading, { on, off }] = useBoolean();
-
+const AddEntryForm = () => {
+  const { name, password, email } = useEntryCreation();
   const [type, { toggle }] = useBoolean(true);
   const [tooltipOpen, { on: onTooltip, off: offTooltip }] = useBoolean();
-
-  const onCreate = async () => {
-    on();
-    let newEntries = await api.createEntry(
-      openedSafe.get()!.name,
-      openedSafe.get()!.password,
-      name,
-      password,
-      email
-    );
-
-    openedSafe.set({ ...openedSafe.get()!, entries: newEntries });
-    off();
-  };
 
   const onGeneratePassword = () => {
     api
@@ -39,17 +18,10 @@ const InfoForm = () => {
         uppercase: true,
         exclude: ""
       })
-      .then(onPasswordChange);
+      .then(password.set);
   };
-
   return (
     <>
-      <Dialog.Title>Create entry</Dialog.Title>
-      <Dialog.Description>
-        Here you can create a new entry. <br />
-        You can personalize it by adding any information you want.
-      </Dialog.Description>
-
       <div className="w-full flex flex-col mt-2">
         <div className="flex flex-col gap-1">
           <label className="text-sm" htmlFor="name">
@@ -60,8 +32,8 @@ const InfoForm = () => {
             className="w-full"
             id="name"
             placeholder="Instagram"
-            value={name}
-            onChange={onNameChange}
+            value={name.get()}
+            onChange={name.set as any}
           />
         </div>
       </div>
@@ -78,8 +50,8 @@ const InfoForm = () => {
               type={type ? "password" : "text"}
               id="password"
               placeholder="********"
-              value={password}
-              onChange={onPasswordChange}
+              value={password.get()}
+              onChange={password.set as any}
             />
 
             <Tooltip content={type ? "show" : "hide"} open={tooltipOpen}>
@@ -107,35 +79,13 @@ const InfoForm = () => {
             className="w-full"
             id="email"
             placeholder="jimmy.mcgill@gmail.com"
-            value={email}
-            onChange={onEmailChange}
+            value={email.get()}
+            onChange={email.set as any}
           />
         </div>
-      </div>
-
-      <IconContainer />
-
-      <div className="w-full flex justify-end gap-2 mt-4">
-        <Dialog.Close asChild>
-          <Button colorScheme="gray">Close</Button>
-        </Dialog.Close>
-        <Button
-          colorScheme="green"
-          disabled={password.length === 0 || name.length === 0 || loading}
-          onClick={onCreate}
-        >
-          {loading && (
-            <Spinner
-              className="mr-2"
-              colorScheme="green"
-              style={{ animationDuration: "400ms" }}
-            />
-          )}
-          Create
-        </Button>
       </div>
     </>
   );
 };
 
-export { InfoForm };
+export { AddEntryForm };

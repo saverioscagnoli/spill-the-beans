@@ -1,5 +1,5 @@
 import { Attribute } from "@renderer/contexts/types";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, createElement, useState } from "react";
 import { Button, Tooltip } from "tredici";
 import {
   BsGithub,
@@ -15,69 +15,77 @@ import {
 import { LuPiggyBank } from "react-icons/lu";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
-import { useSafeManager } from "@renderer/hooks";
+import { useEntryCreation, useSafeManager } from "@renderer/hooks";
+import { iconMap } from "@renderer/lib";
+import { create } from "domain";
+
+const basicIcons = [
+  "BsGoogle",
+  "BsAmazon",
+  "BsInstagram",
+  "BsFacebook",
+  "BsTwitterX",
+  "BsSpotify",
+  "BsSteam",
+  "BsDiscord",
+  "LuPiggyBank",
+  "BsGithub"
+];
 
 const IconContainer = () => {
   const { openedSafe } = useSafeManager();
+  const { iconName } = useEntryCreation();
   const navigate = useNavigate();
-  const [selectedIcon, setSelectedIcon] = useState<string>("");
-  const attribute = { get: () => selectedIcon, set: setSelectedIcon };
 
   const switchToIcons = () => navigate(`/${openedSafe.get()!.name}/icons`);
+
+  const onClick = (name: string) => () => {
+    if (iconName.get() === name) iconName.set("");
+    else iconName.set(name);
+  };
+
+  const renderer = () => {
+    if (iconName.get() === "" || basicIcons.includes(iconName.get()))
+      return (
+        <Tooltip content="Other icons...">
+          <Button.Icon
+            variant="ghost"
+            colorScheme="gray"
+            icon={<RxDotsHorizontal size={20} />}
+            onClick={switchToIcons}
+          />
+        </Tooltip>
+      );
+    else
+      return (
+        <Tooltip content="Other icons...">
+          <Button.Icon
+            colorScheme="green"
+            icon={createElement(iconMap.get(iconName.get()))}
+            onClick={switchToIcons}
+          />
+        </Tooltip>
+      );
+  };
 
   return (
     <div className="w-full flex flex-col mt-2">
       <div className="flex flex-col gap-1">
         <p className="text-sm">Icon</p>
         <div className="w-full flex justify-between items-center gap-2 h-12 px-1 rounded-lg">
-          <ButtonIcon icon={<BsGoogle />} label="google" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsAmazon />} label="amazon" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsInstagram />} label="instagram" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsFacebook />} label="facebook" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsTwitterX />} label="x" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsSpotify />} label="spotify" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsSteam />} label="steam" selectedIcon={attribute} />
-          <ButtonIcon icon={<BsDiscord />} label="discord" selectedIcon={attribute} />
-          <ButtonIcon
-            icon={<LuPiggyBank />}
-            label="piggy-bank"
-            selectedIcon={attribute}
-          />
-          <ButtonIcon icon={<BsGithub />} label="github" selectedIcon={attribute} />
-
-          <Tooltip content="Other icons...">
+          {basicIcons.map(icon => (
             <Button.Icon
-              variant="ghost"
-              colorScheme="gray"
-              icon={<RxDotsHorizontal size={20} />}
-              onClick={switchToIcons}
+              key={icon}
+              colorScheme={iconName.get() === icon ? "green" : "gray"}
+              icon={createElement(iconMap.get(icon))}
+              onClick={onClick(icon)}
             />
-          </Tooltip>
+          ))}
+
+          {renderer()}
         </div>
       </div>
     </div>
-  );
-};
-
-interface ButtonIconProps {
-  icon: ReactNode;
-  label: string;
-  selectedIcon: Attribute<string>;
-}
-
-const ButtonIcon: React.FC<ButtonIconProps> = ({ icon, label, selectedIcon }) => {
-  const selected = label === selectedIcon.get();
-  const onClick = (label: string) => () => {
-    if (selected) selectedIcon.set("");
-    else selectedIcon.set(label);
-  };
-
-  return (
-    <Button.Icon
-      icon={icon}
-      colorScheme={selected ? "green" : "gray"}
-      onClick={onClick(label)}
-    />
   );
 };
 
