@@ -32,10 +32,10 @@ const SafeEntry: React.FC<SafeEntryProps> = ({ name }) => {
         )}
       </div>
 
-      <div className="w-5/6 flex justify-between items-center px-2 border-l border-l-gray-400/25">
+      <div className="w-5/6 flex justify-between items-center pl-2 border-l border-l-gray-400/25">
         <p className="font-semibold">{name}</p>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pr-1">
           <DeleteEntry entryName={name}>
             <Button.Icon colorScheme="crimson" icon={<LuTrash2 size={20} />} />
           </DeleteEntry>

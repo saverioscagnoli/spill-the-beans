@@ -1,4 +1,3 @@
-import { resolve } from "path";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import { type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
@@ -10,7 +9,10 @@ export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin({ exclude: ["file-type"] })],
     build: {
-      minify: true
+      minify: true,
+      rollupOptions: {
+        external: ["test/*"]
+      }
     }
   },
 
@@ -20,7 +22,7 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        "@renderer": resolve("src/renderer/src")
+        "@renderer": path.resolve("src/renderer/src")
       }
     },
     plugins: [react(), reactVirtualized()]

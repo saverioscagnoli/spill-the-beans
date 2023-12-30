@@ -17,7 +17,6 @@ import { RxDotsHorizontal } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { useEntryCreation, useSafeManager } from "@renderer/hooks";
 import { iconMap } from "@renderer/lib";
-import { create } from "domain";
 
 const basicIcons = [
   "BsGoogle",

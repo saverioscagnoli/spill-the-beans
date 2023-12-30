@@ -5,13 +5,15 @@ import fsp from "fs/promises";
 import path from "path";
 
 class SafeManager {
-  public static readonly SafesFolder = path.join(app.getPath("userData"), "Safes");
   private static instance: SafeManager;
+  private path: string;
 
   public safes: Safe[];
 
   private constructor() {
     this.safes = [];
+    this.path = path.join(app.getPath("userData"), "Safes");
+
     this.init();
   }
 
@@ -25,10 +27,10 @@ class SafeManager {
    * Reads the safes from disk.
    */
   private init() {
-    if (!fs.existsSync(SafeManager.SafesFolder)) {
-      fs.mkdirSync(SafeManager.SafesFolder);
+    if (!fs.existsSync(this.path)) {
+      fs.mkdirSync(this.path);
     }
-    let safes = fs.readdirSync(SafeManager.SafesFolder);
+    let safes = fs.readdirSync(this.path);
 
     for (let name of safes) {
       this.safes.push(new Safe({ name }));
@@ -93,7 +95,7 @@ class SafeManager {
     let safe = new Safe({ name });
 
     try {
-      await safe.encrypt(password);
+      await safe.write(password, []);
     } catch (err) {
       console.error(err);
       console.log("Failed to encrypt safe.");
@@ -122,7 +124,7 @@ class SafeManager {
     }
 
     this.safes.splice(index, 1);
-    await fsp.unlink(path.join(SafeManager.SafesFolder, name));
+    await fsp.unlink(path.join(this.path, name));
     return true;
   }
 
@@ -144,7 +146,7 @@ class SafeManager {
    */
   private async openSafe(name: string, password: string) {
     let safe = this.safes.find(safe => safe.name === name);
-    let entries: any[] = [];
+    let entries: Entry[] = [];
     if (!safe) return;
 
     try {
@@ -173,9 +175,7 @@ class SafeManager {
 
     entries.push({ name, password, email, icon });
 
-    let csv = entries.map(e => Object.values(e).join(safe!.getDelimiter())).join("\n");
-
-    await safe.encrypt(safePassword, Buffer.from("\n" + csv));
+    await safe.write(safePassword, entries);
 
     return entries;
   }
@@ -190,13 +190,9 @@ class SafeManager {
     let entry = currentEntries.findIndex(entry => entry.name === entryName);
     if (!safe || entry === -1) return;
 
-    currentEntries.splice(entry, 1);
+    let newEntries = currentEntries.filter(entry => entry.name !== entryName);
 
-    let csv = currentEntries
-      .map(e => Object.values(e).join(safe!.getDelimiter()))
-      .join("\n");
-
-    await safe.encrypt(safePassword, Buffer.from("\n" + csv));
+    await safe.write(safePassword, newEntries);
     return currentEntries;
   }
 }

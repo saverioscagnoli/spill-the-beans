@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import { Attribute } from "./types";
-import { Variants } from "framer-motion";
 
 export type Entry = {
   name: string;
@@ -28,7 +27,6 @@ interface SafeManagerContextProps {
   name: Attribute<string>;
   password: Attribute<string>;
 
-  animations: Variants;
   isAnimating: Attribute<boolean>;
 }
 

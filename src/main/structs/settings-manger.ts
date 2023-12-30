@@ -26,16 +26,18 @@ interface Settings {
 }
 
 class SettingsManager {
-  public static readonly file = path.join(app.getPath("userData"), "Settings.json");
   public static readonly propicPath = path.join(app.getPath("userData"), "propic");
 
   private static instance: SettingsManager;
 
   private cached: Settings;
+  private path: string;
 
   private constructor() {
-    this.init();
     this.cached = { theme: "light", username: "", colorScheme: "amethyst" };
+    this.path = path.join(app.getPath("userData"), "Settings.json");
+
+    this.init();
   }
 
   public static build() {
@@ -48,11 +50,8 @@ class SettingsManager {
    * Creates the json file if it doesn't exist.
    */
   private async init() {
-    if (!fs.existsSync(SettingsManager.file)) {
-      await fsp.writeFile(
-        SettingsManager.file,
-        JSON.stringify(this.getDefaultSettings(), null, 2)
-      );
+    if (!fs.existsSync(this.path)) {
+      await fsp.writeFile(this.path, JSON.stringify(this.getDefaultSettings(), null, 2));
     }
 
     this.cached = await this.readSettings();
@@ -105,13 +104,10 @@ class SettingsManager {
    * @returns {Settings} The settings
    */
   private async readSettings(): Promise<Settings> {
-    if (!fs.existsSync(SettingsManager.file)) {
-      await fsp.writeFile(
-        SettingsManager.file,
-        JSON.stringify(this.getDefaultSettings(), null, 2)
-      );
+    if (!fs.existsSync(this.path)) {
+      await fsp.writeFile(this.path, JSON.stringify(this.getDefaultSettings(), null, 2));
     }
-    let json = await fsp.readFile(SettingsManager.file, "utf-8");
+    let json = await fsp.readFile(this.path, "utf-8");
     return JSON.parse(json);
   }
 
@@ -120,7 +116,7 @@ class SettingsManager {
    * @param settings The settings to write.
    */
   public async saveSettings() {
-    await fsp.writeFile(SettingsManager.file, JSON.stringify(this.cached, null, 2));
+    await fsp.writeFile(this.path, JSON.stringify(this.cached, null, 2));
   }
 
   /**
