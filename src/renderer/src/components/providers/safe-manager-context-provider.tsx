@@ -1,11 +1,11 @@
 import {  SafeInfo, SafeManagerContext } from "@renderer/contexts";
 import { useBoolean } from "@renderer/hooks";
 import { Variants } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface SafeManagerContextProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({

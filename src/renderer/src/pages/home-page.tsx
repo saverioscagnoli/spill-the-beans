@@ -20,15 +20,15 @@ const HomePage = () => {
           </Card>
         </PasswordGenerator>
 
-          <SafeManager>
-            <Card>
-              <LuLock size={24} />
-              <h2 className="text-lg font-semibold">Manage safes</h2>
-              <p className="text-center">
-                Safes are encrypted containers that contain your passwords.
-              </p>
-            </Card>
-          </SafeManager>
+        <SafeManager>
+          <Card>
+            <LuLock size={24} />
+            <h2 className="text-lg font-semibold">Manage safes</h2>
+            <p className="text-center">
+              Safes are encrypted containers that contain your passwords.
+            </p>
+          </Card>
+        </SafeManager>
       </div>
     </div>
   );

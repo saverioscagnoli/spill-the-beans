@@ -1,14 +1,6 @@
 import { SafeManagerContext } from "@renderer/contexts";
-import { useContext } from "react";
+import { createContextHook } from "./create-context-hook";
 
-const useSafeManager = () => {
-  const ctx = useContext(SafeManagerContext);
-
-  if (!ctx) {
-    throw new Error("useSafeManager must be used within a SafeManagerContextProvider");
-  }
-
-  return ctx;
-};
+const useSafeManager = createContextHook(SafeManagerContext);
 
 export { useSafeManager };

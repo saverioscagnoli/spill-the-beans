@@ -3,8 +3,9 @@ import { Button, Tooltip } from "tredici";
 import { RxArrowLeft } from "react-icons/rx";
 import React from "react";
 import { LuPlus } from "react-icons/lu";
-import { AddEntry } from "@renderer/components";
+import { AddEntry, AddEntryDialog } from "@renderer/components";
 import { useSafeManager } from "@renderer/hooks";
+import { EntryCreationContextProvider } from "@renderer/components/providers/entry-creation-context-provider";
 
 interface FooterButtonsProps {
   action?: Function;
@@ -34,12 +35,11 @@ const FooterButtons: React.FC<FooterButtonsProps> = ({ action }) => {
             <Button.Icon icon={<LuPlus size={20} />} disabled />
           </Tooltip>
         ) : (
-          <AddEntry>
-            <Button.Icon
-              icon={<LuPlus size={20} />}
-              disabled={entries.length >= 12}
-            />
-          </AddEntry>
+          <EntryCreationContextProvider>
+            <AddEntryDialog>
+              <Button.Icon icon={<LuPlus size={20} />} disabled={entries.length >= 12} />
+            </AddEntryDialog>
+          </EntryCreationContextProvider>
         ))}
     </div>
   );

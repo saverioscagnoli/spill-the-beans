@@ -1,16 +1,6 @@
 import { SettingsContext } from "@renderer/contexts";
-import { useContext } from "react";
+import { createContextHook } from "./create-context-hook";
 
-const useSettings = () => {
-  const ctx = useContext(SettingsContext);
-
-  if (!ctx) {
-    throw new Error(
-      "useSettingsContext must be used within a SettingsContextProvider"
-    );
-  }
-
-  return ctx;
-};
+const useSettings = createContextHook(SettingsContext);
 
 export { useSettings };

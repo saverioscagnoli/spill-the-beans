@@ -1,9 +1,10 @@
 import { Button } from "tredici";
 import { FooterButtons } from "./footer-buttons";
 import { LuPlus } from "react-icons/lu";
-import { AddEntry } from "@renderer/components";
+import { AddEntryDialog } from "@renderer/components";
 import { SafeEntry } from "@renderer/pages/safe/safe-entry/safe-entry";
 import { useSafeManager } from "@renderer/hooks";
+import { EntryCreationContextProvider } from "@renderer/components/providers/entry-creation-context-provider";
 
 export interface Entry {
   name: string;
@@ -34,9 +35,11 @@ const SafePage = () => {
         <div className="flex flex-col gap-1 justify-center items-center">
           <h1 className="text-5xl font-bold">This safe is empty!</h1>
           <h3 className="text-xl font-semibold">Click the + button to add an entry.</h3>
-          <AddEntry>
-            <Button.Icon icon={<LuPlus size={20} />} />
-          </AddEntry>
+          <EntryCreationContextProvider>
+            <AddEntryDialog>
+              <Button.Icon icon={<LuPlus size={20} />} />
+            </AddEntryDialog>
+          </EntryCreationContextProvider>
         </div>
       )}
       <FooterButtons />
