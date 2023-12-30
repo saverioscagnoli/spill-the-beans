@@ -18,7 +18,7 @@
     "build:win": "npm run build && electron-builder --win --config",
     "build:mac": "electron-vite build && electron-builder --mac --config",
     "build:linux": "electron-vite build && electron-builder --linux --config",
-    "test": "vitest"
+    "test": "vitest --silent"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^2.0.0",
@@ -47,6 +47,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/react-virtualized": "^9.21.29",
     "@vitejs/plugin-react": "^4.0.4",
+    "@vitest/web-worker": "^1.1.0",
     "autoprefixer": "^10.4.16",
     "electron": "^25.6.0",
     "electron-builder": "^24.6.3",
