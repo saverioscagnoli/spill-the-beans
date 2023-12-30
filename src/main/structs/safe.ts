@@ -59,8 +59,6 @@ class Safe {
     let buffer = bufferFromCSV(entries);
     let [salt, iv, encrypted] = await this.encrypt(password, buffer);
 
-    console.log(this.getPath());
-
     let writer = fs.createWriteStream(this.getPath(), "utf-8");
 
     return new Promise((res, rej) => {

@@ -128,7 +128,7 @@ function parseCSV(buffer: Buffer) {
   let rows = [] as Entry[];
 
   readBuffer(buffer, (line, i) => {
-    if (i === 0) return;
+    if (i === 0 || line.trim() === "") return; // Skip the headers and empty lines
     let parsed = line.split(CSV_DELIMITER);
     let row = {} as Entry;
 

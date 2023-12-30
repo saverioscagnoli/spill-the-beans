@@ -146,7 +146,7 @@ class SafeManager {
    */
   private async openSafe(name: string, password: string) {
     let safe = this.safes.find(safe => safe.name === name);
-    let entries: any[] = [];
+    let entries: Entry[] = [];
     if (!safe) return;
 
     try {
