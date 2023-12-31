@@ -129,11 +129,16 @@ function parseCSV(buffer: Buffer) {
 
   readBuffer(buffer, (line, i) => {
     if (i === 0 || line.trim() === "") return; // Skip the headers and empty lines
-    let parsed = line.split(CSV_DELIMITER);
+    let parsed = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g); // This regex will split the line correctly
     let row = {} as Entry;
 
     for (let i = 0; i < parsed.length; i++) {
       let [h, v] = [SAFE_HEADERS[i], parsed[i]];
+
+      // Remove quotes if they exist
+      if (v.startsWith('"') && v.endsWith('"')) {
+        v = v.substring(1, v.length - 1);
+      }
 
       // @ts-ignore
       if (!v) row[h] = null;
@@ -148,7 +153,15 @@ function parseCSV(buffer: Buffer) {
 
 function bufferFromCSV(entries: Entry[]) {
   let csv = entries
-    .map(entry => SAFE_HEADERS.map(h => entry[h]).join(CSV_DELIMITER))
+    .map(entry =>
+      SAFE_HEADERS.map(h => {
+        let value = entry[h];
+        if (value.includes(CSV_DELIMITER)) {
+          value = `"${value}"`;
+        }
+        return value;
+      }).join(CSV_DELIMITER)
+    )
     .join("\n");
 
   return Buffer.from(SAFE_HEADERS.join(CSV_DELIMITER) + "\n" + csv);

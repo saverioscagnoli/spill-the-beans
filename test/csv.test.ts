@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { generateRandomEnties } from "./utils";
 import { CSV_DELIMITER, bufferFromCSV, parseCSV } from "../src/main/lib";
+import { faker } from "@faker-js/faker";
 
 /**
  * This test file assures that the CSV parsing and reading
@@ -31,6 +32,28 @@ describe("csv parsing and reading for buffers", () => {
   });
 
   test("parse CSV buffer", () => {
+    let buffer = bufferFromCSV(entries);
+    let parsed = parseCSV(buffer);
+
+    expect(parsed).toEqual(entries);
+  });
+
+  test("correctly parse CSV buffer with commas", () => {
+    let entries = [
+      {
+        name: "John, Doe",
+        password: "password",
+        email: faker.internet.email(),
+        icon: faker.internet.avatar()
+      },
+      {
+        name: "Jane, Doe",
+        password: "password",
+        email: faker.internet.email(),
+        icon: faker.internet.avatar()
+      }
+    ];
+
     let buffer = bufferFromCSV(entries);
     let parsed = parseCSV(buffer);
 
