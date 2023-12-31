@@ -193,7 +193,8 @@ class SafeManager {
     let newEntries = currentEntries.filter(entry => entry.name !== entryName);
 
     await safe.write(safePassword, newEntries);
-    return currentEntries;
+    
+    return newEntries;
   }
 }
 

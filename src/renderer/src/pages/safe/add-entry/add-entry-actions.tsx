@@ -1,12 +1,12 @@
 import { useBoolean, useEntryCreation, useSafeManager } from "@renderer/hooks";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, Button, Spinner } from "tredici";
 
 const AddEntryActions = () => {
   const { openedSafe } = useSafeManager();
   const { name, password, email, iconName } = useEntryCreation();
-
-  const navigate = useNavigate();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const [loading, { on, off }] = useBoolean();
 
@@ -23,13 +23,16 @@ const AddEntryActions = () => {
 
     openedSafe.set({ ...openedSafe.get()!, entries: newEntries });
     off();
-    navigate(`/${openedSafe.get()!.name}`);
+
+    closeButtonRef.current?.click();
   };
 
   return (
     <div className="w-full flex justify-end gap-2 mt-4">
       <Dialog.Close asChild>
-        <Button colorScheme="gray">Close</Button>
+        <Button ref={closeButtonRef} colorScheme="gray">
+          Close
+        </Button>
       </Dialog.Close>
       <Button
         colorScheme="green"

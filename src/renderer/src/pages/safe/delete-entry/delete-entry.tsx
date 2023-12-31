@@ -1,5 +1,6 @@
 import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React, { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { AlertDialog, Button, Spinner } from "tredici";
 
 interface DeleteEntryProps {
@@ -18,6 +19,7 @@ interface DeleteEntryProps {
 const DeleteEntry: React.FC<DeleteEntryProps> = ({ children, entryName }) => {
   const { openedSafe } = useSafeManager();
   const { name, password, entries } = openedSafe.get()!;
+  const [dialogOpen, { toggle: toggleDialogOpen, off: closeDialog }] = useBoolean();
   const [loading, { on, off }] = useBoolean();
 
   const onDelete = async () => {
@@ -25,11 +27,15 @@ const DeleteEntry: React.FC<DeleteEntryProps> = ({ children, entryName }) => {
     let newEntries = await api.deleteEntry(name, password, entryName, entries);
 
     openedSafe.set({ ...openedSafe.get()!, entries: newEntries });
+
     off();
+    closeDialog();
   };
 
+  console.log("render")
+
   return (
-    <AlertDialog>
+    <AlertDialog open={dialogOpen} onOpenChange={toggleDialogOpen}>
       <AlertDialog.Trigger asChild>{children}</AlertDialog.Trigger>
 
       <AlertDialog.Content>
