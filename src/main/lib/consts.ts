@@ -1,10 +1,6 @@
-import "dotenv/config";
-import { app } from "electron";
-import path from "path";
-
 const SALT_ROUNDS = 14;
 const PBKDF2_ITERATIONS = 100000;
-const ENCRYPTION_ALGORITHM = process.env.ALGORITHM ?? "aes-256-gcm";
+const ENCRYPTION_ALGORITHM = "aes-256-cbc";
 const SALT_LENGTH = 29;
 const IV_LENGTH = 16;
 const RESIZED_DIMS = [128, 128];

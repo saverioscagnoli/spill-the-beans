@@ -15,11 +15,11 @@ win:
   executableName: spill-the-beans
 nsis:
   oneClick: false
+  perMachine: true
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-  allowElevation: true
   allowToChangeInstallationDirectory: true
 mac:
   entitlementsInherit: build/entitlements.mac.plist
