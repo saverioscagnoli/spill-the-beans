@@ -36,7 +36,7 @@ interface Api {
     currentEntries: Entry[]
   ) => Promise<Entry[]>;
 
-  createSafe: (name: string, password: string) => Promise<void>;
+  createSafe: (name: string, password: string) => Promise<-1 | 0 | 1>;
   deleteSafe: (name: string, password: string) => Promise<boolean>;
   openSafe: (name: string, password: string) => Promise<Entry[] | false>;
   closeSafe: (name: string, password: string) => Promise<void>;

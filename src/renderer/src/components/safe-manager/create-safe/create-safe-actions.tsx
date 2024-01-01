@@ -7,8 +7,16 @@ const CreateSafeActions = () => {
 
   const onCreate = async () => {
     on();
-    await api.createSafe(name.get(), password.get());
+
+    let res = await api.createSafe(name.get(), password.get());
+
     off();
+
+    if (res === -1) {
+      alert("Error creating safe: The safe already exists.");
+      return;
+    }
+
     switchToBank();
   };
 

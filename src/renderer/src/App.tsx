@@ -3,11 +3,26 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { HomePage, SafePage } from "./pages";
 import { IconSelector, AddEntry, Navbar, SafeManagerContextProvider } from "./components";
 import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
-import { useSettings } from "./hooks";
+import { useBoolean, useSettings } from "./hooks";
+import { useEffect, useState } from "react";
 
 const App = () => {
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
+  const [started, { on }] = useBoolean();
+
+  useEffect(() => {
+    if (started) {
+      api.setDefaultTheme(theme);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    api.getDefaultTheme().then(t => {
+      setTheme(t);
+      on();
+    });
+  }, []);
 
   return (
     <div

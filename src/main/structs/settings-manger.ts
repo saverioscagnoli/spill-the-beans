@@ -34,8 +34,8 @@ class SettingsManager {
   private path: string;
 
   private constructor() {
-    this.cached = { theme: "light", username: "", colorScheme: "amethyst" };
     this.path = path.join(app.getPath("userData"), "Settings.json");
+    this.cached = this.readSettings();
 
     this.init();
   }
@@ -49,12 +49,10 @@ class SettingsManager {
    * Initializes the settings manager.
    * Creates the json file if it doesn't exist.
    */
-  private async init() {
+  private init() {
     if (!fs.existsSync(this.path)) {
-      await fsp.writeFile(this.path, JSON.stringify(this.getDefaultSettings(), null, 2));
+      fs.writeFileSync(this.path, JSON.stringify(this.getDefaultSettings(), null, 2));
     }
-
-    this.cached = await this.readSettings();
   }
 
   private getDefaultSettings(): Settings {
@@ -103,11 +101,11 @@ class SettingsManager {
    * Reads the settings from the json file.
    * @returns {Settings} The settings
    */
-  private async readSettings(): Promise<Settings> {
+  private readSettings(): Settings {
     if (!fs.existsSync(this.path)) {
-      await fsp.writeFile(this.path, JSON.stringify(this.getDefaultSettings(), null, 2));
+      fs.writeFileSync(this.path, JSON.stringify(this.getDefaultSettings(), null, 2));
     }
-    let json = await fsp.readFile(this.path, "utf-8");
+    let json = fs.readFileSync(this.path, "utf-8");
     return JSON.parse(json);
   }
 

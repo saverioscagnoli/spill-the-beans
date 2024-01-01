@@ -23,12 +23,14 @@ describe("csv parsing and reading for buffers", () => {
   test("get buffer from CSV entries", () => {
     let buffer = bufferFromCSV(entries);
 
-    expect(buffer.toString("utf-8").split("\n")).toEqual(
-      expect.arrayContaining([
-        "name,password,email,icon",
-        ...entries.map(e => [e.name, e.password, e.email, e.icon].join(CSV_DELIMITER))
-      ])
-    );
+    expect(buffer.toString("utf-8").split("\n")).toEqual([
+      "name,password,email,icon",
+      ...entries.map(entry =>
+        Object.values(entry)
+          .map(v => (v ? (v.includes(CSV_DELIMITER) ? `"${v}"` : v) : "null"))
+          .join(CSV_DELIMITER)
+      )
+    ]);
   });
 
   test("parse CSV buffer", () => {

@@ -94,16 +94,18 @@ class SafeManager {
   private async createSafe(name: string, password: string) {
     let safe = new Safe({ name });
 
+    if (this.safes.find(safe => safe.name === name)) return -1;
+
     try {
       await safe.write(password, []);
     } catch (err) {
       console.error(err);
       console.log("Failed to encrypt safe.");
-      return false;
+      return 0;
     }
 
     this.addSafe(safe);
-    return true;
+    return 1;
   }
 
   /**
@@ -193,7 +195,7 @@ class SafeManager {
     let newEntries = currentEntries.filter(entry => entry.name !== entryName);
 
     await safe.write(safePassword, newEntries);
-    
+
     return newEntries;
   }
 }
