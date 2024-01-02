@@ -48,7 +48,7 @@ const ProfileTab = () => {
           />
         </div>
 
-        <div className="flex gap-4 items center">
+        <div className="flex gap-4 items-center">
           <p>Language</p>
           <Select onValueChange={onLanguageChange} defaultValue={i18next.language}>
             <Select.Trigger />

@@ -3,6 +3,8 @@ import path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
+import chokidar from "chokidar";
+import { fileTypeFromFile } from "file-type";
 //import { autoUpdater } from "electron-updater";
 
 async function createWindow(): Promise<void> {
@@ -34,6 +36,19 @@ async function createWindow(): Promise<void> {
 
   const miscFunctions = MiscFunctions.build();
   miscFunctions.listen();
+
+  const watcher = chokidar.watch(safeManager.getPath(), {
+    ignored: /^\./,
+    persistent: true
+  });
+
+  watcher.on("unlink", async safePath => {
+    let safeName = path.basename(safePath);
+    let safe = safeManager.getSafe(safeName);
+
+    safeManager.removeSafe(safe);
+    win.webContents.send("forced-delete");
+  });
 
   win.on("ready-to-show", () => {
     win.show();

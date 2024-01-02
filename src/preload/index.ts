@@ -50,7 +50,10 @@ const api: Api = {
 // just add to the DOM global.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld("ipcRenderer", ipcRenderer);
+    contextBridge.exposeInMainWorld("ipcRenderer", {
+      ...ipcRenderer,
+      on: ipcRenderer.on.bind(ipcRenderer)
+    });
     contextBridge.exposeInMainWorld("api", api);
   } catch (error) {
     console.error(error);
