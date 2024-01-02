@@ -1,11 +1,14 @@
+import { Trans, useTranslation } from "react-i18next";
 import { Dialog } from "tredici";
 
 const CreateSafeDescription = () => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Dialog.Title>Create safe</Dialog.Title>
+      <Dialog.Title>{t("safe-man-create-title")}</Dialog.Title>
       <Dialog.Description>
-        Create a new safe. Remember to choose a strong password to keep it secure.
+        <Trans t={t} i18nKey="safe-man-create-desc" components={{ br: <br /> }} />
       </Dialog.Description>
     </>
   );

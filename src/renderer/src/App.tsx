@@ -5,6 +5,25 @@ import { IconSelector, AddEntry, Navbar, SafeManagerContextProvider } from "./co
 import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
 import { useBoolean, useSettings } from "./hooks";
 import { useEffect, useState } from "react";
+import { useTranslation, initReactI18next } from "react-i18next";
+import i18n from "i18next";
+import HttpApi from "i18next-http-backend";
+import LanguageDetector from "i18next-browser-languagedetector";
+
+// Initialize i18n outside of the component
+i18n
+  .use(initReactI18next)
+  .use(LanguageDetector)
+  .use(HttpApi)
+  .init({
+    fallbackLng: "en",
+    detection: {
+      order: ["htmlTag"]
+    },
+    backend: {
+      loadPath: "/locales/{{lng}}/translations.json"
+    }
+  });
 
 const App = () => {
   const { theme, setTheme } = useTheme();

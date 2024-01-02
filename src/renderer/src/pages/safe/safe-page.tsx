@@ -5,6 +5,7 @@ import { AddEntryDialog } from "@renderer/components";
 import { SafeEntry } from "@renderer/pages/safe/safe-entry/safe-entry";
 import { useSafeManager } from "@renderer/hooks";
 import { EntryCreationContextProvider } from "@renderer/components/providers/entry-creation-context-provider";
+import { useTranslation } from "react-i18next";
 
 export interface Entry {
   name: string;
@@ -16,6 +17,7 @@ export interface Entry {
 const SafePage = () => {
   const { openedSafe } = useSafeManager();
   const { entries } = openedSafe.get()!;
+  const { t } = useTranslation();
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-2 relative">
@@ -33,8 +35,8 @@ const SafePage = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-1 justify-center items-center">
-          <h1 className="text-5xl font-bold">This safe is empty!</h1>
-          <h3 className="text-xl font-semibold">Click the + button to add an entry.</h3>
+          <h1 className="text-5xl font-bold">{t("safe-empty")}</h1>
+          <h3 className="text-xl font-semibold">{t("click-to-add")}</h3>
           <EntryCreationContextProvider>
             <AddEntryDialog>
               <Button.Icon icon={<LuPlus size={20} />} />

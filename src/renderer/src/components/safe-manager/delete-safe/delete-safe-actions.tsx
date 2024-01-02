@@ -1,5 +1,6 @@
 import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button, Spinner } from "tredici";
 
 interface DeleteSafeActionProps {
@@ -26,6 +27,7 @@ const DeleteSafeActions: React.FC<DeleteSafeActionProps> = ({
 }) => {
   const { switchToBank } = useSafeManager();
   const [loading, { on, off }] = useBoolean();
+  const { t } = useTranslation();
 
   const onDelete = () => {
     on();
@@ -39,7 +41,7 @@ const DeleteSafeActions: React.FC<DeleteSafeActionProps> = ({
   return (
     <div className="w-full flex justify-end gap-2 mt-4">
       <Button colorScheme="gray" onClick={switchToBank}>
-        Cancel
+        {t("cancel")}
       </Button>
 
       <Button colorScheme="crimson" onClick={onDelete} disabled={loading}>
@@ -50,7 +52,7 @@ const DeleteSafeActions: React.FC<DeleteSafeActionProps> = ({
             style={{ animationDuration: "400ms" }}
           />
         )}
-        Delete
+        {t("delete")}
       </Button>
     </div>
   );

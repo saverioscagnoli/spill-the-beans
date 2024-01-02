@@ -1,6 +1,7 @@
 import { Entry } from "@renderer/contexts";
 import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Button, Spinner } from "tredici";
 
@@ -29,6 +30,7 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
   const navigate = useNavigate();
   const { switchToBank, openedSafe } = useSafeManager();
   const [loading, { on, off }] = useBoolean();
+  const { t } = useTranslation();
 
   const onOpen = async () => {
     on();
@@ -44,7 +46,7 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
   return (
     <div className="w-full flex justify-end gap-2 mt-4">
       <Button colorScheme="gray" onClick={switchToBank}>
-        Cancel
+        {t("cancel")}
       </Button>
 
       <Button colorScheme="green" onClick={onOpen} disabled={loading}>
@@ -55,7 +57,7 @@ const OpenSafeActions: React.FC<OpenSafeActionProps> = ({
             style={{ animationDuration: "400ms" }}
           />
         )}
-        Open
+        {t("open")}
       </Button>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Attribute } from "@renderer/contexts";
 import { useBoolean, usePasswordGenerator } from "@renderer/hooks";
-import {  useEffect } from "react";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Checkbox, Tooltip } from "tredici";
 
 interface AttributeFormProps {
@@ -39,6 +40,7 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
 const Checkboxes = () => {
   const { numbers, symbols, lowercase, uppercase } = usePasswordGenerator();
   const [tooltipOpen, { on, off }] = useBoolean();
+  const { t } = useTranslation();
 
   /**
    * This function is called when a checkbox is checked or unchecked,
@@ -64,29 +66,29 @@ const Checkboxes = () => {
 
   return (
     <Tooltip
-      content="At least one checkbox must always be checked!"
+      content={t("pwgen-err-no-checkboxes")}
       open={tooltipOpen}
       withArrow={false}
       side="bottom"
     >
       <div className="w-full flex justify-between mt-2">
         <AttributeForm checked={numbers.get()} onCheckedChange={onCheckedChange(numbers)}>
-          Numbers
+          {t("numbers")}
         </AttributeForm>
         <AttributeForm checked={symbols.get()} onCheckedChange={onCheckedChange(symbols)}>
-          Symbols
+          {t("symbols")}
         </AttributeForm>
         <AttributeForm
           checked={lowercase.get()}
           onCheckedChange={onCheckedChange(lowercase)}
         >
-          Lowercase
+          {t("lowercase")}
         </AttributeForm>
         <AttributeForm
           checked={uppercase.get()}
           onCheckedChange={onCheckedChange(uppercase)}
         >
-          Uppercase
+          {t("uppercase")}
         </AttributeForm>
       </div>
     </Tooltip>

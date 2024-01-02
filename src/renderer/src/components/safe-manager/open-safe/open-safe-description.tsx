@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Dialog } from "tredici";
 
 interface OpenSafeDescriptionProps {
@@ -8,15 +9,17 @@ interface OpenSafeDescriptionProps {
 }
 
 const OpenSafeDescription: React.FC<OpenSafeDescriptionProps> = ({ wrongPassword }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Dialog.Title>Open safe</Dialog.Title>
+      <Dialog.Title>{t("safe-man-open-title")}</Dialog.Title>
       <Dialog.Description>
-        Please input the password for this safe to unlock it.
+        {t("safe-man-open-desc")}
         {wrongPassword && (
           <>
             <br />
-            <strong className="text-red-500">The password you entered is wrong.</strong>
+            <strong className="text-red-500">{t("safe-man-err-wrong-password")}</strong>
           </>
         )}
       </Dialog.Description>

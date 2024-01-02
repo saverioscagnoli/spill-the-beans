@@ -1,5 +1,6 @@
 import { useBoolean, useEntryCreation, useSafeManager } from "@renderer/hooks";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Dialog, Button, Spinner } from "tredici";
 
@@ -7,6 +8,7 @@ const AddEntryActions = () => {
   const { openedSafe } = useSafeManager();
   const { name, password, email, iconName } = useEntryCreation();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const { t } = useTranslation();
 
   const [loading, { on, off }] = useBoolean();
 
@@ -31,7 +33,7 @@ const AddEntryActions = () => {
     <div className="w-full flex justify-end gap-2 mt-4">
       <Dialog.Close asChild>
         <Button ref={closeButtonRef} colorScheme="gray">
-          Close
+          {t("close")}
         </Button>
       </Dialog.Close>
       <Button
@@ -46,7 +48,7 @@ const AddEntryActions = () => {
             style={{ animationDuration: "400ms" }}
           />
         )}
-        Create
+        {t("create")}
       </Button>
     </div>
   );

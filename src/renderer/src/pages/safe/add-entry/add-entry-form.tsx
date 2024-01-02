@@ -1,4 +1,5 @@
 import { useBoolean, useEntryCreation } from "@renderer/hooks";
+import { useTranslation } from "react-i18next";
 import { LuDices } from "react-icons/lu";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { Button, Input, Tooltip } from "tredici";
@@ -7,6 +8,7 @@ const AddEntryForm = () => {
   const { name, password, email } = useEntryCreation();
   const [type, { toggle }] = useBoolean(true);
   const [tooltipOpen, { on: onTooltip, off: offTooltip }] = useBoolean();
+  const { t } = useTranslation();
 
   const onGeneratePassword = () => {
     api
@@ -25,7 +27,7 @@ const AddEntryForm = () => {
       <div className="w-full flex flex-col mt-2">
         <div className="flex flex-col gap-1">
           <label className="text-sm" htmlFor="name">
-            Name <span className="text-red-500">*</span>
+            {t("name")} <span className="text-red-500">*</span>
           </label>
           <Input
             spellCheck={false}
@@ -54,7 +56,7 @@ const AddEntryForm = () => {
               onChange={password.set as any}
             />
 
-            <Tooltip content={type ? "show" : "hide"} open={tooltipOpen}>
+            <Tooltip content={type ? t("show") : t("hide")} open={tooltipOpen}>
               <Button.Icon
                 onClick={toggle}
                 icon={type ? <RxEyeOpen /> : <RxEyeClosed />}
@@ -62,7 +64,7 @@ const AddEntryForm = () => {
                 onMouseLeave={offTooltip}
               />
             </Tooltip>
-            <Tooltip content="Generate password">
+            <Tooltip content={`${t("generate")} Password`}>
               <Button.Icon icon={<LuDices />} onClick={onGeneratePassword} />
             </Tooltip>
           </div>

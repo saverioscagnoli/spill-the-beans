@@ -1,5 +1,6 @@
 import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React, { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { AlertDialog, Button, Spinner } from "tredici";
 
@@ -21,6 +22,7 @@ const DeleteEntry: React.FC<DeleteEntryProps> = ({ children, entryName }) => {
   const { name, password, entries } = openedSafe.get()!;
   const [dialogOpen, { toggle: toggleDialogOpen, off: closeDialog }] = useBoolean();
   const [loading, { on, off }] = useBoolean();
+  const { t } = useTranslation();
 
   const onDelete = async () => {
     on();
@@ -32,20 +34,18 @@ const DeleteEntry: React.FC<DeleteEntryProps> = ({ children, entryName }) => {
     closeDialog();
   };
 
-  console.log("render")
-
   return (
     <AlertDialog open={dialogOpen} onOpenChange={toggleDialogOpen}>
       <AlertDialog.Trigger asChild>{children}</AlertDialog.Trigger>
 
       <AlertDialog.Content>
-        <AlertDialog.Title>Delete {entryName}</AlertDialog.Title>
-        <AlertDialog.Description>
-          Are you sure you want to delete this entry?
-        </AlertDialog.Description>
+        <AlertDialog.Title>
+          {t("delete")} {entryName}
+        </AlertDialog.Title>
+        <AlertDialog.Description>{t("delete-entry-confirm")}</AlertDialog.Description>
         <div className="w-full flex gap-2 justify-end mt-4">
           <AlertDialog.Cancel asChild>
-            <Button colorScheme="gray">Cancel</Button>
+            <Button colorScheme="gray">{t("cancel")}</Button>
           </AlertDialog.Cancel>
 
           <Button colorScheme="crimson" onClick={onDelete} disabled={loading}>
@@ -56,7 +56,7 @@ const DeleteEntry: React.FC<DeleteEntryProps> = ({ children, entryName }) => {
                 style={{ animationDuration: "400ms" }}
               />
             )}
-            Delete
+            {t("delete")}
           </Button>
         </div>
       </AlertDialog.Content>

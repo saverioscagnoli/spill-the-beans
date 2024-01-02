@@ -17,6 +17,7 @@ import { RxDotsHorizontal } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { useEntryCreation, useSafeManager } from "@renderer/hooks";
 import { iconMap } from "@renderer/lib";
+import { useTranslation } from "react-i18next";
 
 const basicIcons = [
   "BsGoogle",
@@ -34,6 +35,8 @@ const basicIcons = [
 const IconContainer = () => {
   const { openedSafe } = useSafeManager();
   const { iconName } = useEntryCreation();
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   const switchToIcons = () => navigate(`/${openedSafe.get()!.name}/icons`);
@@ -46,7 +49,7 @@ const IconContainer = () => {
   const renderer = () => {
     if (iconName.get() === "" || basicIcons.includes(iconName.get()))
       return (
-        <Tooltip content="Other icons...">
+        <Tooltip content={t("create-entry-other-icons")}>
           <Button.Icon
             variant="ghost"
             colorScheme="gray"
@@ -57,7 +60,7 @@ const IconContainer = () => {
       );
     else
       return (
-        <Tooltip content="Other icons...">
+        <Tooltip content={t("create-entry-other-icons")}>
           <Button.Icon
             colorScheme="green"
             icon={createElement(iconMap.get(iconName.get()))}
@@ -70,7 +73,7 @@ const IconContainer = () => {
   return (
     <div className="w-full flex flex-col mt-2">
       <div className="flex flex-col gap-1">
-        <p className="text-sm">Icon</p>
+        <p className="text-sm">{t("icon")}</p>
         <div className="w-full flex justify-between items-center gap-2 h-12 px-1 rounded-lg">
           {basicIcons.map(icon => (
             <Button.Icon

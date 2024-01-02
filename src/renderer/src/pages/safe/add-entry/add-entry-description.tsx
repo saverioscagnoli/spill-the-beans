@@ -1,12 +1,14 @@
+import { useTranslation, Trans } from "react-i18next";
 import { Dialog } from "tredici";
 
 const AddEntryDescription = () => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Dialog.Title>Create entry</Dialog.Title>
+      <Dialog.Title>{t("create-entry-title")}</Dialog.Title>
       <Dialog.Description>
-        Here you can create a new entry. <br />
-        You can personalize it by adding any information you want.
+        <Trans t={t} i18nKey="create-entry-desc" components={{ br: <br /> }} />
       </Dialog.Description>
     </>
   );

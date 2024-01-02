@@ -1,4 +1,5 @@
 import { SettingsContext } from "@renderer/contexts";
+import i18next from "i18next";
 import { ReactNode, useEffect, useState } from "react";
 import { ColorScheme } from "tredici";
 
@@ -21,6 +22,8 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
     api.getUsername().then(setUsername);
     api.getPropic().then(res => void (typeof res !== "boolean" && setPropic(res)));
     api.getColorScheme().then(setColorScheme);
+
+    api.getLanguage().then(i18next.changeLanguage)
   }, []);
 
   useEffect(() => {
@@ -30,6 +33,7 @@ const SettingsContextProvider: React.FC<SettingsContextProviderProps> = ({
   useEffect(() => {
     api.setUsername(username);
   }, [username]);
+  
 
   return (
     <SettingsContext.Provider

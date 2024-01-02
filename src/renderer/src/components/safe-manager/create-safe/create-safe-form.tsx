@@ -3,10 +3,12 @@ import { Button, Input, Tooltip } from "tredici";
 import { RxEyeOpen, RxEyeClosed } from "react-icons/rx";
 import { LuDices } from "react-icons/lu";
 import { ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 const CreateSafeForm = () => {
   const [type, { toggle }] = useBoolean(true);
   const [tooltipOpen, { on, off }] = useBoolean();
+  const { t } = useTranslation();
 
   const { name, password } = useSafeManager();
 
@@ -31,7 +33,7 @@ const CreateSafeForm = () => {
     <div className="w-full flex flex-col">
       <div className=" flex flex-col mt-2">
         <label htmlFor="safe-name" className="text-sm">
-          Name
+          {t("name")}
         </label>
         <Input
           spellCheck={false}
@@ -53,7 +55,7 @@ const CreateSafeForm = () => {
             value={password.get()}
             onChange={onPasswordChange}
           />
-          <Tooltip content={type ? "show" : "hide"} open={tooltipOpen} withArrow>
+          <Tooltip content={type ? t("show") : t("hide")} open={tooltipOpen} withArrow>
             <Button.Icon
               onClick={toggle}
               icon={type ? <RxEyeOpen /> : <RxEyeClosed />}
@@ -61,7 +63,7 @@ const CreateSafeForm = () => {
               onMouseLeave={off}
             />
           </Tooltip>
-          <Tooltip content="Generate password" withArrow>
+          <Tooltip content={`${t("generate")} Password`} withArrow>
             <Button.Icon icon={<LuDices />} onClick={onGeneratePassword} />
           </Tooltip>
         </div>
