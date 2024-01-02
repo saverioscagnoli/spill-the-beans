@@ -1,10 +1,13 @@
 {
   "name": "spill-the-beans",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "Manage all your little secrets in one place!",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://www.electronjs.org",
+  "author": "saverioscagnoli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saverioscagnoli/spill-the-beans"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -37,7 +40,8 @@
     "react-window": "^1.8.10",
     "sharp": "^0.33.1",
     "tailwind-merge": "^2.1.0",
-    "tredici": "^1.0.2"
+    "tredici": "^1.0.2",
+    "update-electron-app": "^3.0.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^1.0.1",

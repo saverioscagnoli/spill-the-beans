@@ -4,51 +4,54 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
 
-  async function createWindow(): Promise<void> {
-    // Create the browser window.
-    const win = new BrowserWindow({
-      autoHideMenuBar: true,
-      maxWidth: 800,
-      maxHeight: 600,
-      minWidth: 800,
-      minHeight: 600,
-      ...(process.platform !== "darwin" ? { icon } : {}),
+import { updateElectronApp } from "update-electron-app";
 
-      webPreferences: {
-        preload: path.join(__dirname, "../preload/index.js"),
-        sandbox: false,
-        devTools: is.dev
-      }
-    });
+updateElectronApp();
 
-    const safeManager = SafeManager.build();
-    safeManager.listen();
+async function createWindow(): Promise<void> {
+  // Create the browser window.
+  const win = new BrowserWindow({
+    autoHideMenuBar: true,
+    maxWidth: 800,
+    maxHeight: 600,
+    minWidth: 800,
+    minHeight: 600,
+    ...(process.platform !== "darwin" ? { icon } : {}),
 
-    const settingsManager = SettingsManager.build();
-    settingsManager.listen();
-
-    const miscFunctions = MiscFunctions.build();
-    miscFunctions.listen();
-
-    win.on("ready-to-show", () => {
-      win.show();
-    });
-
-    win.webContents.setWindowOpenHandler(details => {
-      shell.openExternal(details.url);
-      return { action: "deny" };
-    });
-
-    // HMR for renderer base on electron-vite cli.
-    // Load the remote URL for development or the local html file for production.
-    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-      win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
-      win.webContents.openDevTools();
-    } else {
-      win.loadFile(path.join(__dirname, "../renderer/index.html"));
+    webPreferences: {
+      preload: path.join(__dirname, "../preload/index.js"),
+      sandbox: false,
+      devTools: is.dev
     }
-  }
+  });
 
+  const safeManager = SafeManager.build();
+  safeManager.listen();
+
+  const settingsManager = SettingsManager.build();
+  settingsManager.listen();
+
+  const miscFunctions = MiscFunctions.build();
+  miscFunctions.listen();
+
+  win.on("ready-to-show", () => {
+    win.show();
+  });
+
+  win.webContents.setWindowOpenHandler(details => {
+    shell.openExternal(details.url);
+    return { action: "deny" };
+  });
+
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+    win.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+    win.webContents.openDevTools();
+  } else {
+    win.loadFile(path.join(__dirname, "../renderer/index.html"));
+  }
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
