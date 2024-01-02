@@ -1,5 +1,5 @@
 appId: spill.the.beans
-productName: spill-the-beans
+productName: Spill the beans
 directories:
   buildResources: build
 files:
