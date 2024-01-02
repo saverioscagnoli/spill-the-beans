@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const DeleteSafe = () => {
   const [password, onPasswordChange] = useInput();
-  const [wrongPassword, { toggle }] = useBoolean();
+  const [wrongPassword, { on }] = useBoolean();
   const { t } = useTranslation();
 
   const { pathname } = useLocation();
@@ -22,7 +22,7 @@ const DeleteSafe = () => {
         onPasswordChange={onPasswordChange}
         wrongPassword={wrongPassword}
       />
-      <DeleteSafeActions name={name} password={password} toggleWrongPassword={toggle} />
+      <DeleteSafeActions name={name} password={password} toggleWrongPassword={on} />
     </>
   );
 };

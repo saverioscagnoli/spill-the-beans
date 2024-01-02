@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
 import chokidar from "chokidar";
-//import { autoUpdater } from "electron-updater";
+import { autoUpdater } from "electron-updater";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.
@@ -23,9 +23,9 @@ async function createWindow(): Promise<void> {
     }
   });
 
-  /*   autoUpdater.on("update-available", () => {
-    autoUpdater.downloadUpdate;
-  }); */
+  autoUpdater.on("update-available", () => {
+    autoUpdater.downloadUpdate().then(() => app.relaunch());
+  });
 
   const safeManager = SafeManager.build();
   safeManager.listen();
@@ -66,11 +66,7 @@ async function createWindow(): Promise<void> {
   } else {
     win.loadFile(path.join(__dirname, "../renderer/index.html"));
 
-    /* try {
-      autoUpdater.checkForUpdatesAndNotify();
-    } catch (error) {
-      console.log(error);
-    } */
+    autoUpdater.checkForUpdates();
   }
 }
 

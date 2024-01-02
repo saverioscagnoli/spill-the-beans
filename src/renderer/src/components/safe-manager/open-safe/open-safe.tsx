@@ -8,7 +8,7 @@ const OpenSafe = () => {
   const { pathname } = useLocation();
   const name = pathname.split("/").at(-1)!;
 
-  const [wrongPassword, { toggle }] = useBoolean();
+  const [wrongPassword, { on }] = useBoolean();
   const [password, onPasswordChange] = useInput();
 
   return (
@@ -20,7 +20,7 @@ const OpenSafe = () => {
         onPasswordChange={onPasswordChange}
         wrongPassword={wrongPassword}
       />
-      <OpenSafeActions name={name} password={password} toggleWrongPassword={toggle} />
+      <OpenSafeActions name={name} password={password} toggleWrongPassword={on} />
     </>
   );
 };

@@ -1,10 +1,15 @@
 import { useBoolean, useEntryCreation } from "@renderer/hooks";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { LuDices } from "react-icons/lu";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { Button, Input, Tooltip } from "tredici";
 
-const AddEntryForm = () => {
+interface AddEntryFormProps {
+  alreadyExists: boolean;
+}
+
+const AddEntryForm: React.FC<AddEntryFormProps> = ({ alreadyExists }) => {
   const { name, password, email } = useEntryCreation();
   const [type, { toggle }] = useBoolean(true);
   const [tooltipOpen, { on: onTooltip, off: offTooltip }] = useBoolean();
@@ -26,9 +31,16 @@ const AddEntryForm = () => {
     <>
       <div className="w-full flex flex-col mt-2">
         <div className="flex flex-col gap-1">
+          {alreadyExists && (
+            <strong className="text-red-500">
+              {t("create-entry-err-already-exists")}
+            </strong>
+          )}
+
           <label className="text-sm" htmlFor="name">
             {t("name")} <span className="text-red-500">*</span>
           </label>
+
           <Input
             spellCheck={false}
             className="w-full"

@@ -1,9 +1,13 @@
 import { useBoolean, useEntryCreation, useSafeManager } from "@renderer/hooks";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, Button, Spinner } from "tredici";
 
-const AddEntryActions = () => {
+interface AddEntryActionsProps {
+  toggleAlreadyExists: () => void;
+}
+
+const AddEntryActions: React.FC<AddEntryActionsProps> = ({ toggleAlreadyExists }) => {
   const { openedSafe } = useSafeManager();
   const { name, password, email, iconName } = useEntryCreation();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -12,6 +16,11 @@ const AddEntryActions = () => {
   const [loading, { on, off }] = useBoolean();
 
   const onCreate = async () => {
+    if (openedSafe.get().entries.find(entry => entry.name === name.get())) {
+      toggleAlreadyExists();
+      return;
+    }
+
     on();
     let newEntries = await api.createEntry(
       openedSafe.get()!.name,
