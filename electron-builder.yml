@@ -36,7 +36,7 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: saverioscagnolias
+  maintainer: saverioscagnoli
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
