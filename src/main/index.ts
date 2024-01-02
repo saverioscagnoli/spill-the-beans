@@ -3,10 +3,7 @@ import path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
-
-import { updateElectronApp } from "update-electron-app";
-
-updateElectronApp();
+import { autoUpdater } from "electron-updater";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.
@@ -24,6 +21,10 @@ async function createWindow(): Promise<void> {
       devTools: is.dev
     }
   });
+
+  /*   autoUpdater.on("update-available", () => {
+    autoUpdater.downloadUpdate;
+  }); */
 
   const safeManager = SafeManager.build();
   safeManager.listen();
@@ -50,6 +51,12 @@ async function createWindow(): Promise<void> {
     win.webContents.openDevTools();
   } else {
     win.loadFile(path.join(__dirname, "../renderer/index.html"));
+
+    /* try {
+      autoUpdater.checkForUpdatesAndNotify();
+    } catch (error) {
+      console.log(error);
+    } */
   }
 }
 
@@ -58,7 +65,7 @@ async function createWindow(): Promise<void> {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId("com.electron");
+  electronApp.setAppUserModelId("spilled.beans");
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
