@@ -2,6 +2,7 @@ import { createContext } from "react";
 import { Attribute } from "./types";
 import { ColorScheme } from "tredici";
 
+
 export interface SettingsContextProps {
   /**
    * The username of the user.

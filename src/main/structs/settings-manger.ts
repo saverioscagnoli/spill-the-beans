@@ -8,6 +8,8 @@ import sharp from "sharp";
 import { fileTypeFromBuffer } from "file-type";
 import { ColorScheme } from "tredici";
 
+type Language = "en" | "it";
+
 interface Settings {
   /**
    * Username of the user.
@@ -23,6 +25,11 @@ interface Settings {
    * The colorscheme of the ui components.
    */
   colorScheme: ColorScheme;
+
+  /**
+   * The language of the app.
+   */
+  language: Language;
 }
 
 class SettingsManager {
@@ -56,14 +63,19 @@ class SettingsManager {
   }
 
   private getDefaultSettings(): Settings {
-    return { username: os.userInfo().username, theme: "light", colorScheme: "amethyst" };
+    return {
+      username: os.userInfo().username,
+      theme: "light",
+      colorScheme: "amethyst",
+      language: "en"
+    };
   }
 
   /**
    * Listens for events from the renderer process.
    */
   public listen() {
-    ipcMain.handle("read-settings", async () => await this.readSettings());
+    ipcMain.handle("read-settings", async () => this.readSettings());
     ipcMain.handle("get-username", async () => await this.getUsername());
     ipcMain.handle(
       "set-username",
@@ -78,6 +90,8 @@ class SettingsManager {
     ipcMain.handle("set-color-scheme", async (_, colorScheme) =>
       this.setColorScheme(colorScheme)
     );
+    ipcMain.handle("get-language", async () => this.getLanguage());
+    ipcMain.handle("set-language", async (_, language) => this.setLanguage(language));
   }
 
   /**
@@ -201,6 +215,14 @@ class SettingsManager {
 
   public setColorScheme(colorScheme: ColorScheme) {
     this.setCached("colorScheme", colorScheme);
+  }
+
+  public getLanguage() {
+    return this.getCached("language");
+  }
+
+  public setLanguage(language: Language) {
+    this.setCached("language", language);
   }
 }
 

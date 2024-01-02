@@ -16,6 +16,8 @@ interface Entry {
   icon?: string;
 }
 
+type Language = "en" | "it";
+
 interface Api {
   getUsername: () => Promise<string>;
   setUsername: (username: string) => Promise<void>;
@@ -51,6 +53,9 @@ interface Api {
 
   getColorScheme: () => Promise<ColorScheme>;
   setColorScheme: (scheme: ColorScheme) => Promise<void>;
+
+  getLanguage: () => Promise<Language>;
+  setLanguage: (language: Language) => Promise<void>;
 }
 
 export { type Api };

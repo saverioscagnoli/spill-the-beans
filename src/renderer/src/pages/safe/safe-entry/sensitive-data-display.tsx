@@ -33,7 +33,7 @@ const SensitiveDataDisplay: React.FC<SensitiveDataDisplayProps> = ({
     <Dialog>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
       <Dialog.Content>
-        <Dialog.Title>{t("entry-info")}</Dialog.Title>
+        <Dialog.Title>{t("entry-info-title")}</Dialog.Title>
 
         <div className="flex flex-col gap-2 mt-4">
           <div className="flex flex-col gap-1">

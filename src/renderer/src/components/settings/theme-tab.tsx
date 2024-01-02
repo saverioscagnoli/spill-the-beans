@@ -43,11 +43,7 @@ const ThemeTab = () => {
             onValueChange={v => colorScheme.set(v as ColorScheme)}
             defaultValue={colorScheme.get()}
           >
-            <Select.Trigger>
-              {colorScheme.get() === "b/w"
-                ? "Black and white"
-                : capitalize(colorScheme.get())}
-            </Select.Trigger>
+            <Select.Trigger />
             <Select.Content>
               <Select.Item value="amethyst">{t("amethyst")}</Select.Item>
               <Select.Item value="teal">{t("teal")}</Select.Item>
