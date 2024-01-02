@@ -1,18 +1,5 @@
-import { Attribute } from "@renderer/contexts/types";
-import React, { ReactNode, createElement, useState } from "react";
+import { createElement } from "react";
 import { Button, Tooltip } from "tredici";
-import {
-  BsGithub,
-  BsSpotify,
-  BsInstagram,
-  BsFacebook,
-  BsTwitterX,
-  BsGoogle,
-  BsAmazon,
-  BsSteam,
-  BsDiscord
-} from "react-icons/bs";
-import { LuPiggyBank } from "react-icons/lu";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { useEntryCreation, useSafeManager } from "@renderer/hooks";

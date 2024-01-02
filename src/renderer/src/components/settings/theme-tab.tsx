@@ -1,5 +1,4 @@
 import { useSettings } from "@renderer/hooks";
-import { capitalize } from "@renderer/lib";
 import { useTranslation } from "react-i18next";
 import { Checkbox, ColorScheme, Select, Tabs, Tooltip, useTheme } from "tredici";
 

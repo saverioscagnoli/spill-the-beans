@@ -9,9 +9,7 @@
   ],
   "compilerOptions": {
     "composite": true,
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "strictNullChecks": false,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {

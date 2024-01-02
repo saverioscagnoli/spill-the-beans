@@ -3,7 +3,7 @@ import path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { MiscFunctions, SafeManager, SettingsManager } from "./structs";
-import { autoUpdater } from "electron-updater";
+//import { autoUpdater } from "electron-updater";
 
 async function createWindow(): Promise<void> {
   // Create the browser window.

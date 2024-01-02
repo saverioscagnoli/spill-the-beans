@@ -1,6 +1,6 @@
-import {  SafeInfo, SafeManagerContext } from "@renderer/contexts";
+import { SafeInfo, SafeManagerContext } from "@renderer/contexts";
 import { useBoolean } from "@renderer/hooks";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface SafeManagerContextProviderProps {
@@ -18,18 +18,14 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
 
   const [openedSafe, setOpenedSafe] = useState<SafeInfo | null>(null);
 
-
-
   const switchToBank = () => {
     navigate("/", { replace: true });
     setName("");
     setPassword("");
-
   };
 
   const switchToCreateSafe = () => {
     navigate("manage/create", { replace: true });
-
   };
 
   /**
@@ -37,12 +33,10 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
    */
   const switchToDeleteSafe = (name: string) => {
     navigate(`manage/delete/${name}`, { replace: true });
-
   };
 
   const switchToOpenSafe = (name: string) => {
     navigate(`manage/open/${name}`, { replace: true });
-
   };
 
   const switchToIcons = (name: string) => navigate(`/${name}/icons`);

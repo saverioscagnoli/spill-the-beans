@@ -3,7 +3,6 @@ import encryptWorker from "../workers/encrypt?nodeWorker";
 import decryptWorker from "../workers/decrypt?nodeWorker";
 import fs from "fs";
 import fsp from "fs/promises";
-import { SafeManager } from "./safe-manager";
 import { bufferFromCSV, parseCSV } from "../lib";
 import { app } from "electron";
 

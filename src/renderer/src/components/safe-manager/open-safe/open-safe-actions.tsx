@@ -1,4 +1,3 @@
-import { Entry } from "@renderer/contexts";
 import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";

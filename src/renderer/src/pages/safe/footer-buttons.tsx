@@ -3,7 +3,7 @@ import { Button, Tooltip } from "tredici";
 import { RxArrowLeft } from "react-icons/rx";
 import React from "react";
 import { LuPlus } from "react-icons/lu";
-import { AddEntry, AddEntryDialog } from "@renderer/components";
+import { AddEntryDialog } from "@renderer/components";
 import { useSafeManager } from "@renderer/hooks";
 import { EntryCreationContextProvider } from "@renderer/components/providers/entry-creation-context-provider";
 import { useTranslation } from "react-i18next";

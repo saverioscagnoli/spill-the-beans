@@ -9,10 +9,8 @@
   ],
   "compilerOptions": {
     "composite": true,
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "noImplicitReturns": false,
+    "strictNullChecks": false,
     "types": ["electron-vite/node"]
   }
 }
