@@ -2,9 +2,11 @@ import { useSettings } from "@renderer/hooks";
 import { ChangeEvent } from "react";
 import { Input, Tabs, Tooltip } from "tredici";
 import { UserAvatar } from "../user-avatar";
+import { useTranslation } from "react-i18next";
 
 const ProfileTab = () => {
   const { username, propic } = useSettings();
+  const { t } = useTranslation();
 
   const onUsernameChange = (evt: ChangeEvent<HTMLInputElement>) => {
     username.set(evt.target.value);
@@ -19,7 +21,7 @@ const ProfileTab = () => {
   return (
     <Tabs.Content value="profile">
       <div className="flex gap-4 items-center">
-        <Tooltip content="Click to edit!">
+        <Tooltip content={t("click-to-edit")}>
           <UserAvatar
             className="w-20 h-20 cursor-pointer"
             colorScheme="b/w"

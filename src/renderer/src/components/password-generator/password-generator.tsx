@@ -6,6 +6,7 @@ import { PasswordDisplay } from "./password-display";
 import { LengthSlider } from "./length-slider";
 import { PasswordActions } from "./password-actions";
 import { ExcludeCharacters } from "./exclude-characters";
+import { useTranslation } from "react-i18next";
 
 interface PasswordGeneratorProps {
   /**
@@ -16,16 +17,16 @@ interface PasswordGeneratorProps {
 }
 
 const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ children }) => {
+  const { t } = useTranslation();
+
   return (
     <PasswordGeneratorContextProvider>
       <Dialog>
         <Dialog.Trigger>{children}</Dialog.Trigger>
         <Dialog.Content className="flex flex-col  items-center">
-          <Dialog.Title className="self-start">Generate a strong password</Dialog.Title>
+          <Dialog.Title className="self-start">{t("pwgen-title")}</Dialog.Title>
 
-          <Dialog.Description>
-            Select the attributes that you want your password to have.
-          </Dialog.Description>
+          <Dialog.Description>{t("pwgen-desc")}</Dialog.Description>
 
           <Checkboxes />
 

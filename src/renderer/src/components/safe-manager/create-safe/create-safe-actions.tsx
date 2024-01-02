@@ -1,9 +1,11 @@
 import { useBoolean, useSafeManager } from "@renderer/hooks";
+import { useTranslation } from "react-i18next";
 import { Button, Spinner } from "tredici";
 
 const CreateSafeActions = () => {
   const { name, password, switchToBank } = useSafeManager();
   const [loading, { on, off }] = useBoolean(false);
+  const { t } = useTranslation();
 
   const onCreate = async () => {
     on();
@@ -23,7 +25,7 @@ const CreateSafeActions = () => {
   return (
     <div className="w-full flex justify-end gap-2 mt-4">
       <Button colorScheme="gray" onClick={switchToBank}>
-        Cancel
+        {t("cancel")}
       </Button>
       <Button
         colorScheme="green"
@@ -37,7 +39,7 @@ const CreateSafeActions = () => {
             style={{ animationDuration: "400ms" }}
           />
         )}
-        Create
+        {t("create")}
       </Button>
     </div>
   );

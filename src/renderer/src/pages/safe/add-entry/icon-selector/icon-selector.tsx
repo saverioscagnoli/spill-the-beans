@@ -7,12 +7,14 @@ import { Button, Input, Tooltip } from "tredici";
 import { LuTrash2 } from "react-icons/lu";
 import { AutoSizer, Grid } from "react-virtualized";
 import { IconCell } from "./icon-cell";
+import { useTranslation } from "react-i18next";
 
 const names = Array.from(iconMap.keys());
 
 const IconSelector = () => {
   const [searchTerm, onSearchTermChange] = useInput("", true);
   const [filtered, setFiltered] = useState<string[]>(names);
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -45,7 +47,7 @@ const IconSelector = () => {
     <div className="w-full flex flex-col gap-2">
       <div className="flex flex-col gap-1">
         <label className="text-sm" htmlFor="filter">
-          Filter
+          {t("filter")}
         </label>
         <div className="flex gap-2">
           <Input
@@ -55,7 +57,7 @@ const IconSelector = () => {
             value={searchTerm}
             onChange={onSearchTermChange}
           />
-          <Tooltip content="Clear">
+          <Tooltip content={t("clear")}>
             <Button.Icon
               variant="ghost"
               colorScheme="crimson"
@@ -87,7 +89,7 @@ const IconSelector = () => {
 
       <div className="w-full flex justify-start mt-2">
         <Button colorScheme="gray" onClick={switchToCreateEntry}>
-          Back
+          {t("back")}
         </Button>
       </div>
     </div>

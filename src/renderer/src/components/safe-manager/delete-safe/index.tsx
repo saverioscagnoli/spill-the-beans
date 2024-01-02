@@ -3,10 +3,12 @@ import { DeleteSafeDescription } from "./delete-safe-description";
 import { useBoolean, useInput } from "@renderer/hooks";
 import { useLocation } from "react-router-dom";
 import { PasswordCheck } from "../password-check";
+import { useTranslation } from "react-i18next";
 
 const DeleteSafe = () => {
   const [password, onPasswordChange] = useInput();
   const [wrongPassword, { toggle }] = useBoolean();
+  const { t } = useTranslation();
 
   const { pathname } = useLocation();
   const name = pathname.split("/").at(-1)!;
@@ -15,7 +17,7 @@ const DeleteSafe = () => {
     <>
       <DeleteSafeDescription wrongPassword={wrongPassword} />
       <PasswordCheck
-        label="Please enter the password of the safe to confirm."
+        label={t("safe-man-delete-confirm")}
         password={password}
         onPasswordChange={onPasswordChange}
         wrongPassword={wrongPassword}

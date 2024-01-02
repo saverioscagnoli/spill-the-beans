@@ -2,6 +2,7 @@ import { InputChangeFunction, useBoolean } from "@renderer/hooks";
 import { Button, Input, Tooltip, useTheme } from "tredici";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PasswordCheckProps {
   /**
@@ -32,6 +33,7 @@ const PasswordCheck: React.FC<PasswordCheckProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [type, { toggle }] = useBoolean(true);
   const [tooltipOpen, { on, off }] = useBoolean();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus({ preventScroll: true });
@@ -52,7 +54,7 @@ const PasswordCheck: React.FC<PasswordCheckProps> = ({
           value={password}
           onChange={onPasswordChange}
         />
-        <Tooltip content={type ? "Show" : "hide"} open={tooltipOpen}>
+        <Tooltip content={type ? t("show") : t("hide")} open={tooltipOpen}>
           <Button.Icon
             icon={type ? <LuEye size={18} /> : <LuEyeOff size={18} />}
             onClick={toggle}

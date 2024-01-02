@@ -3,6 +3,7 @@ import { Button, Tooltip } from "tredici";
 import { LuDoorOpen, LuTrash2 } from "react-icons/lu";
 import { cn } from "@renderer/lib";
 import { useSafeManager } from "@renderer/hooks";
+import { useTranslation } from "react-i18next";
 
 /**
  * This component is a container for the safes.
@@ -10,6 +11,7 @@ import { useSafeManager } from "@renderer/hooks";
 const SafeDisplay = () => {
   const { switchToDeleteSafe, switchToOpenSafe } = useSafeManager();
   const [safeNames, setSafeNames] = useState<string[]>([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     api.getSafeNames().then(setSafeNames);
@@ -30,14 +32,14 @@ const SafeDisplay = () => {
         >
           <p>{name}</p>
           <div className="flex gap-2">
-            <Tooltip content="Delete" disableHoverableContent>
+            <Tooltip content={t("delete")} disableHoverableContent>
               <Button.Icon
                 colorScheme="crimson"
                 icon={<LuTrash2 size={20} />}
                 onClick={onDelete(name)}
               />
             </Tooltip>
-            <Tooltip content="Open" disableHoverableContent>
+            <Tooltip content={t("open")} disableHoverableContent>
               <Button.Icon icon={<LuDoorOpen size={20} />} onClick={onOpen(name)} />
             </Tooltip>
           </div>

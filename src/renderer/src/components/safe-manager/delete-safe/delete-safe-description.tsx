@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Dialog } from "tredici";
 
 interface DeleteSafeDescriptionProps {
@@ -11,16 +12,20 @@ interface DeleteSafeDescriptionProps {
 const DeleteSafeDescription: React.FC<DeleteSafeDescriptionProps> = ({
   wrongPassword
 }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Dialog.Title>Delete safe</Dialog.Title>
+      <Dialog.Title>{t("safe-man-delete-title")}</Dialog.Title>
       <Dialog.Description>
-        Are you sure that you want to delete this safe? <br />
-        <strong>This action cannot be undone.</strong>
+        <Trans
+          i18nKey="safe-man-delete-desc"
+          components={{ strong: <strong />, br: <br /> }}
+        />
         {wrongPassword && (
           <>
             <br />
-            <strong className="text-red-500">The password you entered is wrong.</strong>
+            <strong className="text-red-500">{t("safe-man-err-wrong-password")}</strong>
           </>
         )}
       </Dialog.Description>
