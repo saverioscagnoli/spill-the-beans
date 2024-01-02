@@ -1,5 +1,7 @@
 # Spill the beans 🫘
 
+![home-page](./docs/screenshots/1.png)
+
 Spill the beans is a simple secret-keeping app to store all your passwords!
 I started developing this app because my dad asked for a place to store all his passwords, (that is why the only languages are english and italian, he can't speak english that well)
 but since it is quite useful, I shared it.
