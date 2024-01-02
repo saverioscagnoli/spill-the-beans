@@ -190,6 +190,17 @@ class SafeManager {
     return entries;
   }
 
+  /**
+   * Creates a new entry in a safe.
+   *
+   * @param safeName The name of the safe
+   * @param safePassword The password of the safe
+   * @param name The name provided for the entry
+   * @param password The password provided for the entry
+   * @param email The email provided for the entry
+   * @param icon The icon provided for the entry
+   * @returns The entries of the safe after the creation of the new entry
+   */
   private async createEntry(
     safeName: string,
     safePassword: string,
@@ -210,6 +221,15 @@ class SafeManager {
     return entries;
   }
 
+  /**
+   * Deletes an entry from a safe.
+   *
+   * @param safeName The name of the safe
+   * @param safePassword The password of the safe
+   * @param entryName The name of the entry to delete
+   * @param currentEntries The entries of the safe before the deletion
+   * @returns The entries of the safe after the deletion of the entry
+   */
   private async deleteEntry(
     safeName: string,
     safePassword: string,

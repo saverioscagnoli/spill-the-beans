@@ -1,12 +1,16 @@
 import { Tredici, useTheme } from "tredici";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import { HomePage, SafePage } from "./pages";
-import { IconSelector, AddEntry, Navbar, SafeManagerContextProvider } from "./components";
-import { Bank, CreateSafe, DeleteSafe, OpenSafe } from "./components/safe-manager";
-import { useBoolean, useSettings } from "./hooks";
+import {
+  Navbar,
+  SafeManagerContextProvider,
+  Bank,
+  CreateSafe,
+  DeleteSafe,
+  OpenSafe
+} from "@renderer/components";
+import { IconSelector, AddEntry, HomePage, SafePage } from "@renderer/pages";
+import { useBoolean, useSettings } from "@renderer/hooks";
 import { useEffect } from "react";
-
-
 
 const App = () => {
   const { theme, setTheme } = useTheme();

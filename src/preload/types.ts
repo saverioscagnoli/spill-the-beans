@@ -21,7 +21,7 @@ type Language = "en" | "it";
 interface Api {
   getUsername: () => Promise<string>;
   setUsername: (username: string) => Promise<void>;
-  generatePassword: (flags: PasswordFlags) => Promise<string>;
+  generatePassword: (flags?: PasswordFlags) => Promise<string>;
   getEntries: (name: string, password: string) => Promise<Entry[]>;
   createEntry: (
     safeName: string,

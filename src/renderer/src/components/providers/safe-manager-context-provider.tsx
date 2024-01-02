@@ -1,5 +1,4 @@
 import { SafeInfo, SafeManagerContext } from "@renderer/contexts";
-import { useBoolean } from "@renderer/hooks";
 import React, { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,8 +12,6 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  const [isAnimating, { set, toggle }] = useBoolean();
 
   const [openedSafe, setOpenedSafe] = useState<SafeInfo | null>(null);
 
@@ -54,8 +51,7 @@ const SafeManagerContextProvider: React.FC<SafeManagerContextProviderProps> = ({
         openedSafe: { get: () => openedSafe, set: setOpenedSafe },
 
         name: { get: () => name, set: setName },
-        password: { get: () => password, set: setPassword },
-        isAnimating: { get: () => isAnimating, set, toggle }
+        password: { get: () => password, set: setPassword }
       }}
     >
       {children}

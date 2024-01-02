@@ -6,10 +6,25 @@ import fsp from "fs/promises";
 import { bufferFromCSV, parseCSV } from "../lib";
 import { app } from "electron";
 
-export interface Entry {
+interface Entry {
+  /**
+   * The name of the entry.
+   */
   name: string;
+
+  /**
+   * The password of the entry.
+   */
   password: string;
+
+  /**
+   * The email of the entry.
+   */
   email?: string;
+
+  /**
+   * The icon of the entry.
+   */
   icon?: string;
 }
 
@@ -47,11 +62,23 @@ class Safe {
     return this.name;
   }
 
+  /**
+   * Reads the safe file and returns the entries, without writing to file.
+   *
+   * @param password The password to decrypt the safe with.
+   * @returns
+   */
   public async read(password: string) {
     let bytes = await this.decrypt(password);
     return parseCSV(Buffer.from(bytes));
   }
 
+  /**
+   * Writes the entries to the safe file.
+   *
+   * @param password The password to encrypt the safe with.
+   * @param entries The entries to write to the safe.
+   */
   public async write(password: string, entries: Entry | Entry[]) {
     if (!Array.isArray(entries)) entries = [entries];
 
@@ -71,6 +98,13 @@ class Safe {
     });
   }
 
+  /**
+   * Encrypts a buffer with a password.
+   *
+   * @param password The password to encrypt the safe with.
+   * @param buffer The buffer to encrypt.
+   * @returns The salt, iv and encrypted buffer.
+   */
   public async encrypt(
     password: string,
     buffer: Buffer
@@ -87,6 +121,12 @@ class Safe {
     });
   }
 
+  /**
+   * Decrypts a buffer with a password.
+   *
+   * @param password The password to decrypt the safe with.
+   * @returns The decrypted buffer.
+   */
   public async decrypt(password: string): Promise<Buffer> {
     let buffer = await fsp.readFile(this.getPath());
     let lines = buffer.toString().split("\n");
@@ -106,3 +146,4 @@ class Safe {
 }
 
 export { Safe };
+export type { Entry };

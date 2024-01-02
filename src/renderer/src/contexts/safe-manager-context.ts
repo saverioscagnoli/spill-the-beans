@@ -26,8 +26,6 @@ interface SafeManagerContextProps {
 
   name: Attribute<string>;
   password: Attribute<string>;
-
-  isAnimating: Attribute<boolean>;
 }
 
 const SafeManagerContext = createContext<SafeManagerContextProps | null>(null);

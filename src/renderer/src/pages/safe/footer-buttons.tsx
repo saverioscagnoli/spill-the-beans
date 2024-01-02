@@ -3,9 +3,9 @@ import { Button, Tooltip } from "tredici";
 import { RxArrowLeft } from "react-icons/rx";
 import React from "react";
 import { LuPlus } from "react-icons/lu";
-import { AddEntryDialog } from "@renderer/components";
+import { AddEntryDialog } from "@renderer/pages";
 import { useSafeManager } from "@renderer/hooks";
-import { EntryCreationContextProvider } from "@renderer/components/providers/entry-creation-context-provider";
+import { EntryCreationContextProvider } from "@renderer/components";
 import { useTranslation } from "react-i18next";
 
 interface FooterButtonsProps {

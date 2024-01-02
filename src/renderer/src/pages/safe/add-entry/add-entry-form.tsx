@@ -1,32 +1,21 @@
+import { GeneratePasswordButton, ShowHideButton } from "@renderer/components";
 import { useBoolean, useEntryCreation } from "@renderer/hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { LuDices } from "react-icons/lu";
-import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
-import { Button, Input, Tooltip } from "tredici";
+import { Input } from "tredici";
 
 interface AddEntryFormProps {
+  /**
+   * Flag to toggle the "already exists" error message.
+   */
   alreadyExists: boolean;
 }
 
 const AddEntryForm: React.FC<AddEntryFormProps> = ({ alreadyExists }) => {
   const { name, password, email } = useEntryCreation();
-  const [type, { toggle }] = useBoolean(true);
-  const [tooltipOpen, { on: onTooltip, off: offTooltip }] = useBoolean();
+  const [show, { toggle }] = useBoolean(true);
   const { t } = useTranslation();
 
-  const onGeneratePassword = () => {
-    api
-      .generatePassword({
-        length: 19,
-        numbers: true,
-        symbols: true,
-        lowercase: true,
-        uppercase: true,
-        exclude: ""
-      })
-      .then(password.set);
-  };
   return (
     <>
       <div className="w-full flex flex-col mt-2">
@@ -45,7 +34,6 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ alreadyExists }) => {
             spellCheck={false}
             className="w-full"
             id="name"
-            placeholder="Instagram"
             value={name.get()}
             onChange={name.set as any}
           />
@@ -61,24 +49,15 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ alreadyExists }) => {
             <Input
               spellCheck={false}
               style={{ width: "calc(100% - 4.5rem)" }}
-              type={type ? "password" : "text"}
+              type={show ? "password" : "text"}
               id="password"
-              placeholder="********"
               value={password.get()}
               onChange={password.set as any}
             />
 
-            <Tooltip content={type ? t("show") : t("hide")} open={tooltipOpen}>
-              <Button.Icon
-                onClick={toggle}
-                icon={type ? <RxEyeOpen /> : <RxEyeClosed />}
-                onMouseEnter={onTooltip}
-                onMouseLeave={offTooltip}
-              />
-            </Tooltip>
-            <Tooltip content={`${t("generate")} Password`}>
-              <Button.Icon icon={<LuDices />} onClick={onGeneratePassword} />
-            </Tooltip>
+            <ShowHideButton show={show} toggle={toggle} />
+
+            <GeneratePasswordButton setPassword={password.set} />
           </div>
         </div>
       </div>
@@ -92,7 +71,6 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ alreadyExists }) => {
             spellCheck={false}
             className="w-full"
             id="email"
-            placeholder="jimmy.mcgill@gmail.com"
             value={email.get()}
             onChange={email.set as any}
           />
