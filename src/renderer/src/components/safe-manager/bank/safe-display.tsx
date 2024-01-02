@@ -15,6 +15,10 @@ const SafeDisplay = () => {
 
   useEffect(() => {
     api.getSafeNames().then(setSafeNames);
+
+    ipcRenderer.on("forced-delete", () => {
+      api.getSafeNames().then(setSafeNames);
+    });
   }, []);
 
   const onDelete = (name: string) => () => switchToDeleteSafe(name);

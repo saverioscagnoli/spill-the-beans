@@ -2,9 +2,7 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { CSV_DELIMITER, PBKDF2_ITERATIONS, SAFE_HEADERS } from "./consts";
 import readFileWorker from "../workers/read-file?nodeWorker";
-import readline from "readline";
-import fs from "fs";
-import { Entry, Safe } from "../structs";
+import { Entry } from "../structs";
 
 async function readFileWithWorker(path: string): Promise<Buffer> {
   return new Promise((res, rej) => {

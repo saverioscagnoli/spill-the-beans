@@ -1,5 +1,5 @@
-import { CopyButton } from "@renderer/components";
-import { useSafeManager } from "@renderer/hooks";
+import { CopyButton, ShowHideButton } from "@renderer/components";
+import { useBoolean, useSafeManager } from "@renderer/hooks";
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Dialog } from "tredici";
@@ -24,6 +24,7 @@ const SensitiveDataDisplay: React.FC<SensitiveDataDisplayProps> = ({
   const { openedSafe } = useSafeManager();
   const { entries } = openedSafe.get()!;
   const { t } = useTranslation();
+  const [show, { toggle }] = useBoolean();
 
   const entry = entries.find(e => e.name === entryName);
 
@@ -46,7 +47,11 @@ const SensitiveDataDisplay: React.FC<SensitiveDataDisplayProps> = ({
           <div className="flex flex-col gap-1">
             <p className="text-sm">Password</p>
             <div className="w-full h-14 rounded-lg flex justify-center items-center bg-gray-300/50 dark:bg-gray-600/30 relative">
-              <p className="font-semibold">{entry.password}</p>
+              <p className="font-semibold">{show ? "•••••••••" : entry.password}</p>
+
+              <span className="absolute left-0 ml-2">
+                <ShowHideButton show={show} toggle={toggle} />
+              </span>
 
               <span className="absolute right-0 mr-2">
                 <CopyButton text={entry.password} />
@@ -57,12 +62,8 @@ const SensitiveDataDisplay: React.FC<SensitiveDataDisplayProps> = ({
           {entry.email && (
             <div className="flex flex-col gap-1">
               <p className="text-sm">Email</p>
-              <div className="w-full h-14 rounded-lg flex justify-center items-center bg-gray-300/50 dark:bg-gray-600/30 relative">
+              <div className="w-full h-14 rounded-lg flex justify-center items-center bg-gray-300/50 dark:bg-gray-600/30">
                 <p className="font-semibold">{entry.email}</p>
-
-                <span className="absolute right-0 mr-2">
-                  <CopyButton text={entry.email} />
-                </span>
               </div>
             </div>
           )}

@@ -1,5 +1,5 @@
 appId: spill.the.beans
-productName: spill-the-beans
+productName: Spill the beans
 directories:
   buildResources: build
 files:
@@ -36,7 +36,7 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: saverioscagnolias
+  maintainer: saverioscagnoli
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}

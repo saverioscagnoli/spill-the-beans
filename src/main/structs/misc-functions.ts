@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { generatePassword } from "../lib";
+import { RandomPasswordRange, generatePassword, rng } from "../lib";
 
 class MiscFunctions {
   private static instance: MiscFunctions;
@@ -14,8 +14,22 @@ class MiscFunctions {
     return MiscFunctions.instance;
   }
 
+  /**
+   * Listens for the events in the renderer process.
+   */
   public listen() {
-    ipcMain.handle("generate-password", (_, flags) => generatePassword(flags));
+    ipcMain.handle("generate-password", (_, flags) =>
+      generatePassword(
+        flags ?? {
+          numbers: true,
+          symbols: true,
+          uppercase: true,
+          lowercase: true,
+          length: rng({ min: RandomPasswordRange.Min, max: RandomPasswordRange.Max }),
+          exclude: ""
+        }
+      )
+    );
   }
 }
 

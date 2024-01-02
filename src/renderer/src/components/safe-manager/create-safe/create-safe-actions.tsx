@@ -1,8 +1,13 @@
 import { useBoolean, useSafeManager } from "@renderer/hooks";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Spinner } from "tredici";
 
-const CreateSafeActions = () => {
+interface CreateSafeActionsProps {
+  toggleAlreadyExists: () => void;
+}
+
+const CreateSafeActions: React.FC<CreateSafeActionsProps> = ({ toggleAlreadyExists }) => {
   const { name, password, switchToBank } = useSafeManager();
   const [loading, { on, off }] = useBoolean(false);
   const { t } = useTranslation();
@@ -10,12 +15,16 @@ const CreateSafeActions = () => {
   const onCreate = async () => {
     on();
 
-    let res = await api.createSafe(name.get(), password.get());
+    let res = await api.createSafe(
+      // Remove illegal characters from the filename
+      name.get().replace(/[/\\?%*:|"<>]/g, ""),
+      password.get()
+    );
 
     off();
 
     if (res === -1) {
-      alert("Error creating safe: The safe already exists.");
+      toggleAlreadyExists();
       return;
     }
 

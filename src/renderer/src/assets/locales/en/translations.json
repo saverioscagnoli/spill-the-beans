@@ -63,5 +63,7 @@
   "entry-info-title": "Entry info",
   "max-entries-reached": "Max number of entries reached for this safe.",
   "safe-empty": "This safe is empty!",
-  "click-to-add": "Click the \"+\" button to add a new entry."
+  "click-to-add": "Click the \"+\" button to add a new entry.",
+  "safe-man-err-already-exists": "The safe already exists! Please choose a different name.",
+  "create-entry-err-already-exists": "An entry with this name already exists! Please choose a different name."
 }

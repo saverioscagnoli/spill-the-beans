@@ -8,6 +8,11 @@ const RESIZED_DIMS = [128, 128];
 const CSV_DELIMITER = ",";
 const SAFE_HEADERS = ["name", "password", "email", "icon"];
 
+enum RandomPasswordRange {
+  Min = 17,
+  Max = 23
+}
+
 export {
   SALT_ROUNDS,
   PBKDF2_ITERATIONS,
@@ -16,5 +21,6 @@ export {
   IV_LENGTH,
   RESIZED_DIMS,
   CSV_DELIMITER,
-  SAFE_HEADERS
+  SAFE_HEADERS,
+  RandomPasswordRange
 };

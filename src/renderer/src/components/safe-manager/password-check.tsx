@@ -1,8 +1,7 @@
 import { InputChangeFunction, useBoolean } from "@renderer/hooks";
-import { Button, Input, Tooltip, useTheme } from "tredici";
-import { LuEye, LuEyeOff } from "react-icons/lu";
+import { Input, useTheme } from "tredici";
 import React, { useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { ShowHideButton } from "../show-hide-button";
 
 interface PasswordCheckProps {
   /**
@@ -31,9 +30,7 @@ const PasswordCheck: React.FC<PasswordCheckProps> = ({
   wrongPassword
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [type, { toggle }] = useBoolean(true);
-  const [tooltipOpen, { on, off }] = useBoolean();
-  const { t } = useTranslation();
+  const [show, { toggle }] = useBoolean(true);
 
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus({ preventScroll: true });
@@ -50,18 +47,11 @@ const PasswordCheck: React.FC<PasswordCheckProps> = ({
           ref={inputRef}
           colorScheme={wrongPassword ? "crimson" : useTheme().defaultColorScheme}
           style={{ width: "calc(100% - 2.25rem)" }}
-          type={type ? "password" : "text"}
+          type={show ? "password" : "text"}
           value={password}
           onChange={onPasswordChange}
         />
-        <Tooltip content={type ? t("show") : t("hide")} open={tooltipOpen}>
-          <Button.Icon
-            icon={type ? <LuEye size={18} /> : <LuEyeOff size={18} />}
-            onClick={toggle}
-            onMouseEnter={on}
-            onMouseLeave={off}
-          />
-        </Tooltip>
+        <ShowHideButton show={show} toggle={toggle} />
       </div>
     </div>
   );

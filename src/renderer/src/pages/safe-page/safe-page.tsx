@@ -1,10 +1,9 @@
 import { Button } from "tredici";
 import { FooterButtons } from "./footer-buttons";
 import { LuPlus } from "react-icons/lu";
-import { AddEntryDialog } from "@renderer/components";
-import { SafeEntry } from "@renderer/pages/safe/safe-entry/safe-entry";
+import { AddEntryDialog, SafeEntry } from "@renderer/pages";
 import { useSafeManager } from "@renderer/hooks";
-import { EntryCreationContextProvider } from "@renderer/components/providers/entry-creation-context-provider";
+import { EntryCreationContextProvider } from "@renderer/components";
 import { useTranslation } from "react-i18next";
 
 export interface Entry {

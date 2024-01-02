@@ -1,5 +1,5 @@
 import { useSettings } from "@renderer/hooks";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent } from "react";
 import { Input, Select, Tabs, Tooltip } from "tredici";
 import { UserAvatar } from "../user-avatar";
 import { useTranslation } from "react-i18next";
@@ -7,15 +7,9 @@ import i18next from "i18next";
 
 type Language = "en" | "it";
 
-const langMap = {
-  en: "English",
-  it: "Italiano"
-};
-
 const ProfileTab = () => {
   const { username, propic } = useSettings();
   const { t } = useTranslation();
-  const [language, setLanguage] = useState<string>("English");
 
   const onUsernameChange = (evt: ChangeEvent<HTMLInputElement>) => {
     username.set(evt.target.value);
@@ -30,7 +24,6 @@ const ProfileTab = () => {
   const onLanguageChange = async (v: Language) => {
     i18next.changeLanguage(v);
     await api.setLanguage(v);
-    setLanguage(langMap[v]);
   };
 
   return (
@@ -55,7 +48,7 @@ const ProfileTab = () => {
           />
         </div>
 
-        <div className="flex gap-4 items center">
+        <div className="flex gap-4 items-center">
           <p>Language</p>
           <Select onValueChange={onLanguageChange} defaultValue={i18next.language}>
             <Select.Trigger />

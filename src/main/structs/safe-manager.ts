@@ -78,12 +78,38 @@ class SafeManager {
     );
   }
 
+  public getPath() {
+    return this.path;
+  }
+
   /**
    * Adds a safe to the safe manager.
    * @param safe The safe to add.
    */
   private addSafe(safe: Safe) {
     this.safes.push(safe);
+  }
+
+  /**
+   * Removes a safe from the safe manager.
+   * @param safeOrIndex The safe to remove or its index.
+   */
+  public removeSafe(safeOrIndex: Safe | number) {
+    if (typeof safeOrIndex === "number") {
+      this.safes.splice(safeOrIndex, 1);
+    } else {
+      let index = this.safes.findIndex(safe => safe === safeOrIndex);
+      if (index === -1) return;
+      this.safes.splice(index, 1);
+    }
+  }
+
+  /**
+   * Gets a safe from the safe manager.
+   * @param name The name of the safe to get.
+   */
+  public getSafe(name: string) {
+    return this.safes.find(safe => safe.name === name);
   }
 
   /**
@@ -103,6 +129,8 @@ class SafeManager {
       console.log("Failed to encrypt safe.");
       return 0;
     }
+
+    await fsp.chmod(safe.getPath(), 0o644);
 
     this.addSafe(safe);
     return 1;
@@ -125,7 +153,7 @@ class SafeManager {
       return false;
     }
 
-    this.safes.splice(index, 1);
+    this.removeSafe(index);
     await fsp.unlink(path.join(this.path, name));
     return true;
   }
@@ -162,6 +190,17 @@ class SafeManager {
     return entries;
   }
 
+  /**
+   * Creates a new entry in a safe.
+   *
+   * @param safeName The name of the safe
+   * @param safePassword The password of the safe
+   * @param name The name provided for the entry
+   * @param password The password provided for the entry
+   * @param email The email provided for the entry
+   * @param icon The icon provided for the entry
+   * @returns The entries of the safe after the creation of the new entry
+   */
   private async createEntry(
     safeName: string,
     safePassword: string,
@@ -182,6 +221,15 @@ class SafeManager {
     return entries;
   }
 
+  /**
+   * Deletes an entry from a safe.
+   *
+   * @param safeName The name of the safe
+   * @param safePassword The password of the safe
+   * @param entryName The name of the entry to delete
+   * @param currentEntries The entries of the safe before the deletion
+   * @returns The entries of the safe after the deletion of the entry
+   */
   private async deleteEntry(
     safeName: string,
     safePassword: string,

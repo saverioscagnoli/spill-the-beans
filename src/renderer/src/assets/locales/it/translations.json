@@ -40,7 +40,7 @@
   "clear": "Reimposta",
   "icon": "Icona",
   "safe-man-bank-title": "Gestisci casseforti",
-  "safe-man-bank-desc": "Qui puoi aprire, aggiungere o eliminare le casseforti",
+  "safe-man-bank-desc": "Qui puoi aprire, aggiungere o eliminare le casseforti.",
   "safe-man-create-title": "Aggiungi cassaforte",
   "safe-man-create-desc": "Qui puoi creare una nuova cassaforte. <br /> Ricorda di scegliere una password sicura per tenerla al sicuro.",
   "safe-man-delete-title": "Elimina cassaforte",
@@ -52,10 +52,10 @@
   "click-to-edit": "Clicca per modificare!",
   "home-greeting": "Ciao",
   "home-what-do": "Cosa vuoi fare?",
-  "pwgen": "Generatore di password",
-  "pwgen-home-desc": "Genera una password robusta da valori arbitrari e personalizzabili.",
+  "pwgen": "Genera password",
+  "pwgen-home-desc": "Genera una password robusta da valori personalizzati.",
   "safe-manager": "Gestisci casseforti",
-  "safe-manager-home-desc": "Le casseforti sono contenitori criptati che contengono le tue password.",
+  "safe-manager-home-desc": "Le casseforti che contengono le tue password sono criptate.",
   "create-entry-title": "Crea voce",
   "create-entry-desc": "Qui puoi aggiungere una voce alla cassaforte. <br /> Puoi personalizzarla come vuoi.",
   "create-entry-other-icons": "Altre icone...",
@@ -63,5 +63,7 @@
   "entry-info-title": "Informazioni voce",
   "max-entries-reached": "Hai raggiunto il numero massimo di voci per questa cassaforte.",
   "safe-empty": "Questa cassaforte è vuota!",
-  "click-to-add": "Premi il pulsante \"+\" per aggiungere una voce."
+  "click-to-add": "Premi il pulsante \"+\" per aggiungere una voce.",
+  "safe-man-err-already-exists": "La cassaforte esiste già! Per favore scegli un nome diverso.",
+  "create-entry-err-already-exists": "La voce esiste già! Per favore scegli un nome diverso."
 }

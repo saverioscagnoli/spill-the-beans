@@ -1,8 +1,5 @@
-import { useBoolean, useInput } from "@renderer/hooks";
 import React, { ReactNode } from "react";
 import { Dialog } from "tredici";
-import { IconContainer } from "./icon-container";
-import { Entry } from "@renderer/pages";
 import { Outlet } from "react-router-dom";
 
 interface AddEntryDialogProps {
