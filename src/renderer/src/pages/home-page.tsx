@@ -9,7 +9,7 @@ const HomePage = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <h1 className="text-5xl font-bold">
+      <h1 className="text-5xl font-bold text-center">
         {t("home-greeting")}, {username.get()}!
       </h1>
       <h3 className="text-xl font-semibold">{t("home-what-do")}</h3>
@@ -26,9 +26,7 @@ const HomePage = () => {
           <Card>
             <LuLock size={24} />
             <h2 className="text-lg font-semibold">{t("safe-manager")}</h2>
-            <p className="text-center">
-              {t("safe-manager-home-desc")}
-            </p>
+            <p className="text-center">{t("safe-manager-home-desc")}</p>
           </Card>
         </SafeManager>
       </div>

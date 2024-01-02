@@ -1,2 +1,2 @@
 export * from "./home-page";
-export * from "./safe";
+export * from "./safe-page";
