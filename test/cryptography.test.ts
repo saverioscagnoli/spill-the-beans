@@ -7,7 +7,7 @@ import {
   SALT_ROUNDS,
   IV_LENGTH,
   ENCRYPTION_ALGORITHM
-} from "../src/main/lib";
+} from "../app/src/main/lib";
 import path from "path";
 import fsp from "fs/promises";
 import bcrypt from "bcrypt";

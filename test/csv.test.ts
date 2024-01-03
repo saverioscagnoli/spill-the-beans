@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { generateRandomEnties } from "./utils";
-import { CSV_DELIMITER, bufferFromCSV, parseCSV } from "../src/main/lib";
+import { CSV_DELIMITER, bufferFromCSV, parseCSV } from "../app/src/main/lib";
 import { faker } from "@faker-js/faker";
 
 /**
