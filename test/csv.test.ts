@@ -27,7 +27,7 @@ describe("csv parsing and reading for buffers", () => {
       "name,password,email,icon",
       ...entries.map(entry =>
         Object.values(entry)
-          .map(v => (v ? (v.includes(CSV_DELIMITER) ? `"${v}"` : v) : "null"))
+          .map(v => (v ? ((v as string).includes(CSV_DELIMITER) ? `"${v}"` : v) : "null"))
           .join(CSV_DELIMITER)
       )
     ]);
