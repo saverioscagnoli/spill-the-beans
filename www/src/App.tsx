@@ -2,7 +2,7 @@ import { MDXProvider } from "@mdx-js/react";
 import { BeansModel, Navbar } from "./components";
 import { Checkbox, CheckboxProps } from "tredici";
 
-import About from "../../docs/about.mdx";
+import About from "../docs/about.mdx";
 import { ComponentProps } from "react";
 
 const Heading1 = (props: ComponentProps<"h1">) => (
