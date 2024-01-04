@@ -16,6 +16,10 @@ const Heading3 = (props: ComponentProps<"h3">) => (
 );
 const input = (props: CheckboxProps) => <Checkbox {...props} />;
 
+console.log(
+  'The 3d model is from "Urpo": https://sketchfab.com/3d-models/can-of-beans-566323fb276f4fa7ac2943b38bb4e98d'
+);
+
 function App() {
   return (
     <div className="w-screen h-screen flex flex-col items-center antialiased">

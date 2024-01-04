@@ -17,7 +17,7 @@ const Navbar = () => {
 
       <div className="flex gap-2">
         <a target="_blank" href="https://github.com/saverioscagnoli/spill-the-beans">
-          <Button.Icon aria-aria-label="github" icon={<BsGithub />} colorScheme="gray" />
+          <Button.Icon aria-label="github" icon={<BsGithub />} colorScheme="gray" />
         </a>
         <Button.Icon
           aria-label="change-theme"
