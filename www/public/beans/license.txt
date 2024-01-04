@@ -1,0 +1,11 @@
+Model Information:
+* title:	Can of beans
+* source:	https://sketchfab.com/3d-models/can-of-beans-566323fb276f4fa7ac2943b38bb4e98d
+* author:	Urpo (https://sketchfab.com/Urpo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Can of beans" (https://sketchfab.com/3d-models/can-of-beans-566323fb276f4fa7ac2943b38bb4e98d) by Urpo (https://sketchfab.com/Urpo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
