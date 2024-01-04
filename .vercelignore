@@ -1,9 +1,3 @@
 app
 .vscode
-node_modules
 test
-.eslintrc
-.prettierrc
-LICENSE.md
-package.json
-package-lock.json
