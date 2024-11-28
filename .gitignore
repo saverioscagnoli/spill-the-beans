@@ -1,5 +1,3 @@
+build/bin
 node_modules
-dist
-out
-*.log*
-*.env
+frontend/dist

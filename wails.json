@@ -1,0 +1,14 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "spill-the-beans",
+  "outputfilename": "spill-the-beans",
+  "frontend:dir": "./webui",
+  "frontend:install": "yarn",
+  "frontend:build": "yarn build",
+  "frontend:dev:watcher": "yarn dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Saverio Scagnoli",
+    "email": "95577971+saverioscagnoli@users.noreply.github.com"
+  }
+}
